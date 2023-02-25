@@ -1,14 +1,13 @@
-use std::collections::HashMap;
 use std::marker::PhantomData;
 
 use bevy::{
     pbr::{NotShadowCaster, NotShadowReceiver},
-    prelude::*,
 };
-use ordered_float::OrderedFloat;
+use bevy::prelude::{Added, App, Assets, BuildChildren, Changed, Commands, Component, default, Entity, Handle, MaterialMeshBundle, MaterialPlugin, Mesh, Name, Plugin, Query, Reflect, ResMut, shape, Transform, Vec2, Vec3};
 
 use crate::configuration::{HealthBarHeight, HealthBarOffset, HealthBarWidth, Percentage};
 use crate::material::HealthBarMaterial;
+use crate::mesh::MeshHandles;
 
 pub struct HealthBarPlugin<T: Percentage + Component> {
     phantom: PhantomData<T>,
@@ -41,20 +40,6 @@ struct WithHealthBar(Entity);
 impl WithHealthBar {
     fn get(&self) -> Entity {
         self.0
-    }
-}
-
-#[derive(Resource, Default)]
-struct MeshHandles(HashMap<(OrderedFloat<f32>, OrderedFloat<f32>), Handle<Mesh>>);
-
-impl MeshHandles {
-    fn get(&self, width: f32, height: f32) -> Option<&Handle<Mesh>> {
-        self.0.get(&(OrderedFloat(width), OrderedFloat(height)))
-    }
-
-    fn insert(&mut self, width: f32, height: f32, handle: Handle<Mesh>) -> Handle<Mesh> {
-        self.0.insert((OrderedFloat(width), OrderedFloat(height)), handle.clone());
-        handle
     }
 }
 
