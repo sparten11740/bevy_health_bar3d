@@ -5,9 +5,7 @@ use bevy::pbr::{PbrBundle, PointLight, PointLightBundle, StandardMaterial};
 use bevy::prelude::{Camera3d, Camera3dBundle, Color, Commands, Component, Local, Mesh, Msaa, Query, Reflect, Res, ResMut, shape, Time, Transform, Vec3, With};
 use bevy::utils::default;
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
-use bevy_health_bar3d::configuration::{HealthBarWidth, Percentage};
-use bevy_health_bar3d::plugin::HealthBarPlugin;
-use bevy_health_bar3d::prelude::HealthBarOffset;
+use bevy_health_bar3d::prelude::{HealthBarOffset, HealthBarPlugin, HealthBarWidth, Percentage};
 
 
 #[derive(Component, Reflect)]
