@@ -1,0 +1,15 @@
+[package]
+name = "bevy_health_bar3d"
+version = "0.1.0"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+readme = "README.md"
+exclude = ["./examples"]
+
+[dependencies]
+bevy = { version = "0.9", features = ["bevy_pbr", "bevy_render"] }
+ordered-float = "3.4.0"
+
+
+[dev-dependencies]
+bevy-inspector-egui = "0.17.0"
