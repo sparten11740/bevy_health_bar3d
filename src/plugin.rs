@@ -7,14 +7,8 @@ use bevy::{
 };
 use ordered_float::OrderedFloat;
 
-use crate::configuration::{HealthBarHeight, HealthBarOffset, HealthBarWidth};
+use crate::configuration::{HealthBarHeight, HealthBarOffset, HealthBarWidth, Percentage};
 use crate::material::HealthBarMaterial;
-
-/// Trait implemented by the component to be tracked by the health bar
-pub trait Percentage {
-    /// Value between 0 and 1
-    fn value(&self) -> f32;
-}
 
 pub struct HealthBarPlugin<T: Percentage + Component> {
     phantom: PhantomData<T>,

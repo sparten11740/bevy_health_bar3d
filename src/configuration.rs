@@ -29,3 +29,9 @@ impl HealthBarHeight {
         self.0
     }
 }
+
+/// Trait implemented by the component to be tracked by the health bar
+pub trait Percentage {
+    /// Value between 0 and 1
+    fn value(&self) -> f32;
+}
