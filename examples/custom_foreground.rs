@@ -5,9 +5,9 @@ use bevy::pbr::{PbrBundle, PointLight, PointLightBundle, StandardMaterial};
 use bevy::prelude::{Camera3dBundle, Color, Commands, Component, Mesh, Msaa, Reflect, ResMut, shape, Transform, Vec3};
 use bevy::utils::default;
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
-use bevy_health_bar3d::configuration::ForegroundColor;
 
-use bevy_health_bar3d::prelude::{ColorScheme, BarOffset, HealthBarPlugin, BarWidth, Percentage};
+use bevy_health_bar3d::configuration::ForegroundColor;
+use bevy_health_bar3d::prelude::{BarBundle, BarOffset, BarWidth, ColorScheme, HealthBarPlugin, Percentage};
 
 #[derive(Component, Reflect)]
 struct Mana {
@@ -60,8 +60,10 @@ fn setup(
             max: 10.,
             current: 8.,
         },
-        BarOffset::<Mana>::new(radius * 1.5),
-        BarWidth::<Mana>::new(radius * 2.)
+        BarBundle::<Mana> {
+            offset: BarOffset::new(radius * 1.5),
+            width: BarWidth::new(radius * 2.),
+        },
     ));
 
     commands.spawn(PointLightBundle {

@@ -1,7 +1,14 @@
 use std::marker::PhantomData;
-use bevy::prelude::{Color, Component, Resource};
+use bevy::prelude::{Bundle, Color, Component, Resource};
 use bevy::utils::default;
 use crate::constants::{DEFAULT_BACKGROUND_COLOR, DEFAULT_HIGH_COLOR, DEFAULT_LOW_COLOR, DEFAULT_MODERATE_COLOR};
+
+/// Bundle to to easily customize multiple aspects
+#[derive(Bundle)]
+pub struct BarBundle<T: Percentage + Component> {
+    pub offset: BarOffset<T>,
+    pub width: BarWidth<T>,
+}
 
 /// Component to configure the Y-offset of the bar relative to the entity its attached to
 #[derive(Component)]
