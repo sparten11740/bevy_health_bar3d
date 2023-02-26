@@ -38,17 +38,26 @@ impl<T: Percentage + Component> BarWidth<T> {
     }
 }
 
-/// Component to configure the width of the bar
+/// Component to configure the height of the bar
+///
+/// # Examples
+///
+/// ```
+/// use bevy_health_bar3d::prelude::BarHeight;
+/// commands.entity(entity).insert(BarHeight::<Health>::new(0.2)); // configures the bar height to be 20% of its width
+/// ```
 #[derive(Component)]
-pub struct BarHeight<T: Percentage + Component>(f32, PhantomData<T>);
+pub enum BarHeight<T: Percentage + Component> {
+    /// Bar height relative to its width
+    Relative(f32),
+    /// Static bar width
+    Static(f32, PhantomData<T>),
+
+}
 
 impl<T: Percentage + Component> BarHeight<T> {
-    pub fn new(height: f32) -> Self {
-        BarHeight(height, PhantomData)
-    }
-
-    pub fn get(&self) -> f32 {
-        self.0
+    pub fn from_static(height: f32) -> Self {
+        BarHeight::Static(height, PhantomData)
     }
 }
 

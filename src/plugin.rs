@@ -6,6 +6,7 @@ use bevy::{
 use bevy::prelude::{Added, App, Assets, BuildChildren, Changed, Commands, Component, default, Entity, Handle, MaterialMeshBundle, MaterialPlugin, Mesh, Name, Plugin, Query, Reflect, Res, ResMut, shape, Transform, Vec2, Vec3};
 
 use crate::configuration::{ForegroundColor, BarHeight, BarOffset, BarWidth, Percentage};
+use crate::constants::{DEFAULT_RELATIVE_HEIGHT, DEFAULT_WIDTH};
 use crate::material::HealthBarMaterial;
 use crate::mesh::MeshHandles;
 use crate::prelude::ColorScheme;
@@ -55,14 +56,18 @@ fn spawn<T: Percentage + Component>(
     query: Query<(Entity, &T, Option<&BarOffset<T>>, Option<&BarWidth<T>>, Option<&BarHeight<T>>), Added<T>>,
 ) {
     query.iter().for_each(|(entity, percentage, offset, width, height)| {
-        let width = width.map(|it| it.get()).unwrap_or(1.2);
-        let height = height.map(|it| it.get()).unwrap_or(width / 6.);
+        let width = width.map(|it| it.get()).unwrap_or(DEFAULT_WIDTH);
+        let height = height.map(|it| match it {
+            BarHeight::Relative(pct) => pct * width,
+            BarHeight::Static(height, _) => *height
+        }).unwrap_or(width * DEFAULT_RELATIVE_HEIGHT);
+
         let mesh = mesh_handles.get(width, height).cloned().unwrap_or_else(|| {
             mesh_handles.insert(width, height, meshes.add(Mesh::from(shape::Quad::new(Vec2::new(width, height)))))
         });
 
-        let height = offset.map(|it| it.get()).unwrap_or(0.);
-        let transform = Transform::from_translation(height * Vec3::Y);
+        let offset = offset.map(|it| it.get()).unwrap_or(0.);
+        let transform = Transform::from_translation(offset * Vec3::Y);
 
         let (high, moderate, low) = match color_scheme.foreground_color {
             ForegroundColor::Static(color) => (color, color, color),
@@ -76,7 +81,6 @@ fn spawn<T: Percentage + Component>(
             moderate_color: moderate,
             low_color: low
         });
-
 
         let health_bar = commands
             .spawn((
