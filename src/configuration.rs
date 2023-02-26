@@ -1,5 +1,6 @@
 use std::marker::PhantomData;
 use bevy::prelude::{Color, Component, Resource};
+use bevy::utils::default;
 use crate::constants::DEFAULT_BACKGROUND_COLOR;
 
 /// Component to configure the Y-offset of the bar relative to the entity its attached to
@@ -38,10 +39,24 @@ pub trait Percentage {
     fn value(&self) -> f32;
 }
 
-#[derive(Resource)]
+#[derive(Resource, Clone)]
 pub struct ColorScheme<T: Percentage + Component> {
     pub background_color: Color,
     phantom_data: PhantomData<T>
+}
+
+impl<T: Percentage + Component> ColorScheme<T> {
+    pub fn new() -> Self {
+        Self {
+            phantom_data: PhantomData,
+            ..default()
+        }
+    }
+
+    pub fn background_color(mut self, color: Color) -> Self {
+        self.background_color = color;
+        self
+    }
 }
 
 impl<T: Percentage + Component> Default for ColorScheme<T> {
