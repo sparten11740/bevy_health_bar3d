@@ -2,13 +2,9 @@
 #import bevy_pbr::mesh_bindings
 #import bevy_pbr::mesh_functions
 
-let BACKGROUND_COLOR = vec4<f32>(0., 0., 0., 0.75);
 let GOOD_HEALTH = vec4<f32>(0., 1., 0., 0.95);
 let OK_HEALTH = vec4<f32>(1., 1., 0., 0.95);
 let BAD_HEALTH = vec4<f32>(1., 0., 0., 0.95);
-
-
-
 
 @group(1) @binding(0)
 var<uniform> value: f32;
