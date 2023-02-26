@@ -3,11 +3,12 @@ use std::marker::PhantomData;
 use bevy::{
     pbr::{NotShadowCaster, NotShadowReceiver},
 };
-use bevy::prelude::{Added, App, Assets, BuildChildren, Changed, Commands, Component, default, Entity, Handle, MaterialMeshBundle, MaterialPlugin, Mesh, Name, Plugin, Query, Reflect, ResMut, shape, Transform, Vec2, Vec3};
+use bevy::prelude::{Added, App, Assets, BuildChildren, Changed, Commands, Component, default, Entity, Handle, MaterialMeshBundle, MaterialPlugin, Mesh, Name, Plugin, Query, Reflect, Res, ResMut, shape, Transform, Vec2, Vec3};
 
 use crate::configuration::{HealthBarHeight, HealthBarOffset, HealthBarWidth, Percentage};
 use crate::material::HealthBarMaterial;
 use crate::mesh::MeshHandles;
+use crate::prelude::ColorScheme;
 
 pub struct HealthBarPlugin<T: Percentage + Component> {
     phantom: PhantomData<T>,
@@ -29,6 +30,7 @@ impl<T: Percentage + Component> Plugin for HealthBarPlugin<T> {
 
         app
             .init_resource::<MeshHandles>()
+            .init_resource::<ColorScheme<T>>()
             .add_system(spawn::<T>)
             .add_system(update::<T>);
     }
@@ -49,6 +51,7 @@ fn spawn<T: Percentage + Component>(
     mut materials: ResMut<Assets<HealthBarMaterial>>,
     mut meshes: ResMut<Assets<Mesh>>,
     mut mesh_handles: ResMut<MeshHandles>,
+    color_scheme: Res<ColorScheme<T>>,
     query: Query<(Entity, &T, Option<&HealthBarOffset>, Option<&HealthBarWidth>, Option<&HealthBarHeight>), Added<T>>,
 ) {
     query.iter().for_each(|(entity, percentage, offset, width, height)| {
@@ -60,7 +63,7 @@ fn spawn<T: Percentage + Component>(
 
         let height = offset.map(|it| it.get()).unwrap_or(0.);
         let transform = Transform::from_translation(height * Vec3::Y);
-        let material = materials.add(HealthBarMaterial { value: percentage.value() });
+        let material = materials.add(HealthBarMaterial { value: percentage.value(), background_color: color_scheme.background_color });
         let health_bar = commands
             .spawn((
                 Name::new(format!("{}Bar", std::any::type_name::<T>().split("::").last().unwrap_or("Unknown"))),

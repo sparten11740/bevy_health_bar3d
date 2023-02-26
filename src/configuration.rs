@@ -1,4 +1,6 @@
-use bevy::prelude::Component;
+use std::marker::PhantomData;
+use bevy::prelude::{Color, Component, Resource};
+use crate::constants::DEFAULT_BACKGROUND_COLOR;
 
 /// Component to configure the Y-offset of the bar relative to the entity its attached to
 #[derive(Component)]
@@ -34,4 +36,19 @@ impl HealthBarHeight {
 pub trait Percentage {
     /// Value between 0 and 1
     fn value(&self) -> f32;
+}
+
+#[derive(Resource)]
+pub struct ColorScheme<T: Percentage + Component> {
+    pub background_color: Color,
+    phantom_data: PhantomData<T>
+}
+
+impl<T: Percentage + Component> Default for ColorScheme<T> {
+    fn default() -> Self {
+       Self {
+           background_color: DEFAULT_BACKGROUND_COLOR,
+           phantom_data: PhantomData,
+       }
+    }
 }

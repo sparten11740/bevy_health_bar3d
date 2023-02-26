@@ -7,8 +7,13 @@ let GOOD_HEALTH = vec4<f32>(0., 1., 0., 0.95);
 let OK_HEALTH = vec4<f32>(1., 1., 0., 0.95);
 let BAD_HEALTH = vec4<f32>(1., 0., 0., 0.95);
 
+
+
+
 @group(1) @binding(0)
 var<uniform> value: f32;
+@group(1) @binding(1)
+var<uniform> background_color: vec4<f32>;
 
 struct Vertex {
     @location(0) position: vec3<f32>,
@@ -38,7 +43,7 @@ fn vertex(vertex: Vertex) -> VertexOutput {
 @fragment
 fn fragment(in: FragmentInput) -> @location(0) vec4<f32> {
     if in.x > value {
-        return BACKGROUND_COLOR;
+        return background_color;
     }
 
     if value < 0.4 {

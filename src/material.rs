@@ -1,5 +1,5 @@
 use bevy::pbr::{AlphaMode, Material, MaterialPipeline, MaterialPipelineKey};
-use bevy::prelude::Mesh;
+use bevy::prelude::{Color, Mesh};
 use bevy::reflect::TypeUuid;
 use bevy::render::mesh::MeshVertexBufferLayout;
 use bevy::render::render_resource::{AsBindGroup, RenderPipelineDescriptor, ShaderRef, SpecializedMeshPipelineError};
@@ -9,6 +9,8 @@ use bevy::render::render_resource::{AsBindGroup, RenderPipelineDescriptor, Shade
 pub(crate) struct HealthBarMaterial {
     #[uniform(0)]
     pub value: f32,
+    #[uniform(1)]
+    pub background_color: Color,
 }
 
 
