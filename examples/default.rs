@@ -5,7 +5,7 @@ use bevy::pbr::{PbrBundle, PointLight, PointLightBundle, StandardMaterial};
 use bevy::prelude::{Camera3d, Camera3dBundle, Color, Commands, Component, Local, Mesh, Msaa, Query, Reflect, Res, ResMut, shape, Time, Transform, Vec3, With};
 use bevy::utils::default;
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
-use bevy_health_bar3d::prelude::{HealthBarOffset, HealthBarPlugin, HealthBarWidth, Percentage};
+use bevy_health_bar3d::prelude::{BarOffset, HealthBarPlugin, BarWidth, Percentage};
 
 
 #[derive(Component, Reflect)]
@@ -59,8 +59,8 @@ fn setup(
             max: 10.,
             current: 8.,
         },
-        HealthBarOffset(radius * 1.5),
-        HealthBarWidth(radius * 2.)
+        BarOffset(radius * 1.5),
+        BarWidth(radius * 2.)
     ));
 
     commands.spawn((
@@ -74,8 +74,8 @@ fn setup(
             max: 10.,
             current: 2.,
         },
-        HealthBarOffset(radius * 1.5),
-        HealthBarWidth(radius * 2.)
+        BarOffset(radius * 1.5),
+        BarWidth(radius * 2.)
     ));
 
     commands.spawn(PointLightBundle {

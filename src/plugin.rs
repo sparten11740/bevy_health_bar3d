@@ -5,7 +5,7 @@ use bevy::{
 };
 use bevy::prelude::{Added, App, Assets, BuildChildren, Changed, Commands, Component, default, Entity, Handle, MaterialMeshBundle, MaterialPlugin, Mesh, Name, Plugin, Query, Reflect, Res, ResMut, shape, Transform, Vec2, Vec3};
 
-use crate::configuration::{ForegroundColor, HealthBarHeight, HealthBarOffset, HealthBarWidth, Percentage};
+use crate::configuration::{ForegroundColor, BarHeight, BarOffset, BarWidth, Percentage};
 use crate::material::HealthBarMaterial;
 use crate::mesh::MeshHandles;
 use crate::prelude::ColorScheme;
@@ -52,7 +52,7 @@ fn spawn<T: Percentage + Component>(
     mut meshes: ResMut<Assets<Mesh>>,
     mut mesh_handles: ResMut<MeshHandles>,
     color_scheme: Res<ColorScheme<T>>,
-    query: Query<(Entity, &T, Option<&HealthBarOffset>, Option<&HealthBarWidth>, Option<&HealthBarHeight>), Added<T>>,
+    query: Query<(Entity, &T, Option<&BarOffset>, Option<&BarWidth>, Option<&BarHeight>), Added<T>>,
 ) {
     query.iter().for_each(|(entity, percentage, offset, width, height)| {
         let width = width.map(|it| it.get()).unwrap_or(1.2);

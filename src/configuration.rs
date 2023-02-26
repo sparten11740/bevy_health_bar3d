@@ -5,9 +5,9 @@ use crate::constants::{DEFAULT_BACKGROUND_COLOR, DEFAULT_HIGH_COLOR, DEFAULT_LOW
 
 /// Component to configure the Y-offset of the bar relative to the entity its attached to
 #[derive(Component)]
-pub struct HealthBarOffset(pub f32);
+pub struct BarOffset(pub f32);
 
-impl HealthBarOffset {
+impl BarOffset {
     pub fn get(&self) -> f32 {
         self.0
     }
@@ -15,9 +15,9 @@ impl HealthBarOffset {
 
 /// Component to configure the width of the bar
 #[derive(Component)]
-pub struct HealthBarWidth(pub f32);
+pub struct BarWidth(pub f32);
 
-impl HealthBarWidth {
+impl BarWidth {
     pub fn get(&self) -> f32 {
         self.0
     }
@@ -25,9 +25,9 @@ impl HealthBarWidth {
 
 /// Component to configure the width of the bar
 #[derive(Component)]
-pub struct HealthBarHeight(pub f32);
+pub struct BarHeight(pub f32);
 
-impl HealthBarHeight {
+impl BarHeight {
     pub fn get(&self) -> f32 {
         self.0
     }
@@ -39,6 +39,10 @@ pub trait Percentage {
     fn value(&self) -> f32;
 }
 
+/// ForegroundColor enum. The foreground color can either be static or a tri-color spectrum
+/// The tri-color spectrum defines three colors: high, moderate, and low.
+/// The high color is applied when the tracked component's value is more than or equal to 80%,
+/// moderate when it's between 40% and 80%, and low when it is less than 40%.
 #[derive(Debug, Clone)]
 pub enum ForegroundColor {
     Static(Color),
@@ -46,17 +50,26 @@ pub enum ForegroundColor {
         high: Color,
         moderate: Color,
         low: Color,
-    }
+    },
 }
 
+/// Resource to customize the appearance of bars per tracked component type.
 #[derive(Resource, Debug, Clone)]
 pub struct ColorScheme<T: Percentage + Component> {
     pub foreground_color: ForegroundColor,
     pub background_color: Color,
-    phantom_data: PhantomData<T>
+    phantom_data: PhantomData<T>,
 }
 
 impl<T: Percentage + Component> ColorScheme<T> {
+    /// Returns a default initialized ColorScheme for the given component type
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use bevy_health_bar3d::prelude::ColorScheme;
+    /// let color_scheme = ColorScheme::<Health>::new();
+    /// ```
     pub fn new() -> Self {
         Self {
             phantom_data: PhantomData,
@@ -64,11 +77,26 @@ impl<T: Percentage + Component> ColorScheme<T> {
         }
     }
 
+
     pub fn background_color(mut self, color: Color) -> Self {
         self.background_color = color;
         self
     }
 
+    /// Sets the foreground color to either a static value or a tri-color spectrum
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use bevy::prelude::Color;
+    /// use bevy_health_bar3d::prelude::{ColorScheme, ForegroundColor};
+    /// let mana_scheme = ColorScheme::<Mana>::new().foreground_color(ForegroundColor::Static(Color::BLUE));
+    /// let health_scheme = ColorScheme::<Health>::new().foreground_color(ForegroundColor::TriSpectrum {
+    ///     high: Color::GREEN,
+    ///     moderate: Color::ORANGE,
+    ///     low: Color::RED
+    /// });
+    /// ```
     pub fn foreground_color(mut self, color: ForegroundColor) -> Self {
         self.foreground_color = color;
         self
@@ -77,14 +105,14 @@ impl<T: Percentage + Component> ColorScheme<T> {
 
 impl<T: Percentage + Component> Default for ColorScheme<T> {
     fn default() -> Self {
-       Self {
-           foreground_color: ForegroundColor::TriSpectrum {
-               high: DEFAULT_HIGH_COLOR,
-               moderate: DEFAULT_MODERATE_COLOR,
-               low: DEFAULT_LOW_COLOR,
-           },
-           background_color: DEFAULT_BACKGROUND_COLOR,
-           phantom_data: PhantomData,
-       }
+        Self {
+            foreground_color: ForegroundColor::TriSpectrum {
+                high: DEFAULT_HIGH_COLOR,
+                moderate: DEFAULT_MODERATE_COLOR,
+                low: DEFAULT_LOW_COLOR,
+            },
+            background_color: DEFAULT_BACKGROUND_COLOR,
+            phantom_data: PhantomData,
+        }
     }
 }

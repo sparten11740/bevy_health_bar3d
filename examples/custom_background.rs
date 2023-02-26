@@ -6,7 +6,7 @@ use bevy::prelude::{Camera3dBundle, Color, Commands, Component, Mesh, Msaa, Refl
 use bevy::utils::default;
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
 
-use bevy_health_bar3d::prelude::{ColorScheme, HealthBarOffset, HealthBarPlugin, HealthBarWidth, Percentage};
+use bevy_health_bar3d::prelude::{ColorScheme, BarOffset, HealthBarPlugin, BarWidth, Percentage};
 
 #[derive(Component, Reflect)]
 struct Health {
@@ -59,8 +59,8 @@ fn setup(
             max: 10.,
             current: 8.,
         },
-        HealthBarOffset(radius * 1.5),
-        HealthBarWidth(radius * 2.)
+        BarOffset(radius * 1.5),
+        BarWidth(radius * 2.)
     ));
 
     commands.spawn(PointLightBundle {
