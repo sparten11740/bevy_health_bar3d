@@ -1,8 +1,8 @@
 pub mod plugin;
 pub mod configuration;
+pub mod constants;
 mod material;
 mod mesh;
-mod constants;
 
 pub mod prelude {
     pub use crate::configuration::*;
