@@ -5,7 +5,7 @@ use bevy::{
 };
 use bevy::prelude::{Added, App, Assets, BuildChildren, Changed, Commands, Component, default, Entity, Handle, MaterialMeshBundle, MaterialPlugin, Mesh, Name, Plugin, Query, Reflect, Res, ResMut, shape, Transform, Vec2, Vec3};
 
-use crate::configuration::{HealthBarHeight, HealthBarOffset, HealthBarWidth, Percentage};
+use crate::configuration::{ForegroundColor, HealthBarHeight, HealthBarOffset, HealthBarWidth, Percentage};
 use crate::material::HealthBarMaterial;
 use crate::mesh::MeshHandles;
 use crate::prelude::ColorScheme;
@@ -63,7 +63,21 @@ fn spawn<T: Percentage + Component>(
 
         let height = offset.map(|it| it.get()).unwrap_or(0.);
         let transform = Transform::from_translation(height * Vec3::Y);
-        let material = materials.add(HealthBarMaterial { value: percentage.value(), background_color: color_scheme.background_color });
+
+        let (high, moderate, low) = match color_scheme.foreground_color {
+            ForegroundColor::Static(color) => (color, color, color),
+            ForegroundColor::TriSpectrum { high, moderate, low } => (high, moderate, low)
+        };
+
+        let material = materials.add(HealthBarMaterial {
+            value: percentage.value(),
+            background_color: color_scheme.background_color,
+            high_color: high,
+            moderate_color: moderate,
+            low_color: low
+        });
+
+
         let health_bar = commands
             .spawn((
                 Name::new(format!("{}Bar", std::any::type_name::<T>().split("::").last().unwrap_or("Unknown"))),

@@ -1,7 +1,7 @@
 use std::marker::PhantomData;
 use bevy::prelude::{Color, Component, Resource};
 use bevy::utils::default;
-use crate::constants::DEFAULT_BACKGROUND_COLOR;
+use crate::constants::{DEFAULT_BACKGROUND_COLOR, DEFAULT_HIGH_COLOR, DEFAULT_LOW_COLOR, DEFAULT_MODERATE_COLOR};
 
 /// Component to configure the Y-offset of the bar relative to the entity its attached to
 #[derive(Component)]
@@ -39,8 +39,19 @@ pub trait Percentage {
     fn value(&self) -> f32;
 }
 
-#[derive(Resource, Clone)]
+#[derive(Debug, Clone)]
+pub enum ForegroundColor {
+    Static(Color),
+    TriSpectrum {
+        high: Color,
+        moderate: Color,
+        low: Color,
+    }
+}
+
+#[derive(Resource, Debug, Clone)]
 pub struct ColorScheme<T: Percentage + Component> {
+    pub foreground_color: ForegroundColor,
     pub background_color: Color,
     phantom_data: PhantomData<T>
 }
@@ -57,11 +68,21 @@ impl<T: Percentage + Component> ColorScheme<T> {
         self.background_color = color;
         self
     }
+
+    pub fn foreground_color(mut self, color: ForegroundColor) -> Self {
+        self.foreground_color = color;
+        self
+    }
 }
 
 impl<T: Percentage + Component> Default for ColorScheme<T> {
     fn default() -> Self {
        Self {
+           foreground_color: ForegroundColor::TriSpectrum {
+               high: DEFAULT_HIGH_COLOR,
+               moderate: DEFAULT_MODERATE_COLOR,
+               low: DEFAULT_LOW_COLOR,
+           },
            background_color: DEFAULT_BACKGROUND_COLOR,
            phantom_data: PhantomData,
        }

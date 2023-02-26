@@ -11,6 +11,12 @@ pub(crate) struct HealthBarMaterial {
     pub value: f32,
     #[uniform(1)]
     pub background_color: Color,
+    #[uniform(2)]
+    pub high_color: Color,
+    #[uniform(3)]
+    pub moderate_color: Color,
+    #[uniform(4)]
+    pub low_color: Color,
 }
 
 

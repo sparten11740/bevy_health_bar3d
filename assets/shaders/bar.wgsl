@@ -2,14 +2,16 @@
 #import bevy_pbr::mesh_bindings
 #import bevy_pbr::mesh_functions
 
-let GOOD_HEALTH = vec4<f32>(0., 1., 0., 0.95);
-let OK_HEALTH = vec4<f32>(1., 1., 0., 0.95);
-let BAD_HEALTH = vec4<f32>(1., 0., 0., 0.95);
-
 @group(1) @binding(0)
 var<uniform> value: f32;
 @group(1) @binding(1)
 var<uniform> background_color: vec4<f32>;
+@group(1) @binding(2)
+var<uniform> high_color: vec4<f32>;
+@group(1) @binding(3)
+var<uniform> moderate_color: vec4<f32>;
+@group(1) @binding(4)
+var<uniform> low_color: vec4<f32>;
 
 struct Vertex {
     @location(0) position: vec3<f32>,
@@ -43,12 +45,12 @@ fn fragment(in: FragmentInput) -> @location(0) vec4<f32> {
     }
 
     if value < 0.4 {
-        return BAD_HEALTH;
+        return low_color;
     }
 
     if value < 0.8 {
-        return OK_HEALTH;
+        return moderate_color;
     }
 
-    return GOOD_HEALTH;
+    return high_color;
 }
