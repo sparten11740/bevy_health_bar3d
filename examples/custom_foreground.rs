@@ -21,13 +21,31 @@ impl Percentage for Mana {
     }
 }
 
+#[derive(Component, Reflect)]
+struct Health {
+    max: f32,
+    current: f32,
+}
+
+impl Percentage for Health {
+    fn value(&self) -> f32 {
+        self.current / self.max
+    }
+}
+
 fn main() {
     App::new()
         .register_type::<Mana>()
         .add_plugins(DefaultPlugins)
         .add_plugin(WorldInspectorPlugin)
         .add_plugin(HealthBarPlugin::<Mana>::default())
+        .add_plugin(HealthBarPlugin::<Health>::default())
         .insert_resource(ColorScheme::<Mana>::new().foreground_color(ForegroundColor::Static(Color::BLUE)))
+        .insert_resource(ColorScheme::<Health>::new().foreground_color(ForegroundColor::TriSpectrum {
+            high: Color::LIME_GREEN,
+            moderate: Color::ORANGE_RED,
+            low: Color::PURPLE,
+        }))
         .add_startup_system(setup)
         .insert_resource(Msaa { samples: 4 })
         .run();
@@ -38,40 +56,53 @@ fn setup(
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
 ) {
-    commands.spawn(
-        PbrBundle {
-            mesh: meshes.add(Mesh::from(shape::Plane { size: 5.0 })),
-            material: materials.add(Color::rgb(0.3, 0.5, 0.3).into()),
-            ..Default::default()
-        }
-    );
+    let radius = 0.15;
+    let values = [2.0f32, 5., 9.];
 
+    values.into_iter().enumerate().for_each(|(i, value)| {
+        commands.spawn((
+            PbrBundle {
+                mesh: meshes.add(Mesh::from(shape::Icosphere { radius, ..default() })),
+                material: materials.add(Color::rgb(1., 0.2, 0.2).into()),
+                transform: Transform::from_xyz(-2. * radius, 0.4 + i as f32 / 2., 0.0),
+                ..Default::default()
+            },
+            Mana {
+                max: 10.,
+                current: value,
+            },
+            BarBundle::<Mana> {
+                offset: BarOffset::new(radius * 1.5),
+                width: BarWidth::new(radius * 2.),
+                ..default()
+            },
+        ));
 
-    let radius = 0.2;
+        commands.spawn((
+            PbrBundle {
+                mesh: meshes.add(Mesh::from(shape::Icosphere { radius, ..default() })),
+                material: materials.add(Color::rgb(1., 0.2, 0.2).into()),
+                transform: Transform::from_xyz(2. * radius, 0.4 + i as f32 / 2., 0.0),
+                ..Default::default()
+            },
+            Health {
+                max: 10.,
+                current: value,
+            },
+            BarBundle::<Health> {
+                offset: BarOffset::new(radius * 1.5),
+                width: BarWidth::new(radius * 2.),
+                ..default()
+            },
+        ));
+    });
 
-    commands.spawn((
-        PbrBundle {
-            mesh: meshes.add(Mesh::from(shape::Icosphere { radius, ..default() })),
-            material: materials.add(Color::rgb(1., 0.2, 0.2).into()),
-            transform: Transform::from_xyz(0.0, 1., 0.0),
-            ..Default::default()
-        },
-        Mana {
-            max: 10.,
-            current: 8.,
-        },
-        BarBundle::<Mana> {
-            offset: BarOffset::new(radius * 1.5),
-            width: BarWidth::new(radius * 2.),
-            ..default()
-        },
-    ));
 
     commands.spawn(PointLightBundle {
         transform: Transform::from_xyz(4.0, 8.0, 4.0),
         point_light: PointLight {
             intensity: 1500.0,
-            shadows_enabled: true,
+            shadows_enabled: false,
             ..Default::default()
         },
         ..Default::default()
@@ -79,7 +110,7 @@ fn setup(
 
     commands.spawn(
         Camera3dBundle {
-            transform: Transform::from_xyz(0., 2.5, 5.0).looking_at(Vec3::ZERO, Vec3::Y),
+            transform: Transform::from_xyz(0., 1.5, 4.0).looking_at(Vec3::Y, Vec3::Y),
             ..Default::default()
         },
     );
