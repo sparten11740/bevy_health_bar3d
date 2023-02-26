@@ -1,13 +1,24 @@
 use std::marker::PhantomData;
 use bevy::prelude::{Bundle, Color, Component, Resource};
 use bevy::utils::default;
-use crate::constants::{DEFAULT_BACKGROUND_COLOR, DEFAULT_HIGH_COLOR, DEFAULT_LOW_COLOR, DEFAULT_MODERATE_COLOR};
+use crate::constants::{DEFAULT_BACKGROUND_COLOR, DEFAULT_HIGH_COLOR, DEFAULT_LOW_COLOR, DEFAULT_MODERATE_COLOR, DEFAULT_RELATIVE_HEIGHT, DEFAULT_WIDTH};
 
 /// Bundle to to easily customize multiple aspects
 #[derive(Bundle)]
 pub struct BarBundle<T: Percentage + Component> {
     pub offset: BarOffset<T>,
     pub width: BarWidth<T>,
+    pub height: BarHeight<T>
+}
+
+impl<T: Percentage + Component> Default for BarBundle<T> {
+    fn default() -> Self {
+        Self {
+            offset: BarOffset::default(),
+            width: BarWidth::default(),
+            height: BarHeight::default()
+        }
+    }
 }
 
 /// Component to configure the Y-offset of the bar relative to the entity its attached to
@@ -16,13 +27,20 @@ pub struct BarOffset<T: Percentage + Component>(f32, PhantomData<T>);
 
 impl<T: Percentage + Component> BarOffset<T> {
     pub fn new(offset: f32) -> Self {
-        BarOffset(offset, PhantomData)
+        Self(offset, PhantomData)
     }
 
     pub fn get(&self) -> f32 {
         self.0
     }
 }
+
+impl<T: Percentage + Component> Default for BarOffset<T> {
+    fn default() -> Self {
+        Self::new(0.)
+    }
+}
+
 
 /// Component to configure the width of the bar
 #[derive(Component)]
@@ -30,13 +48,20 @@ pub struct BarWidth<T: Percentage + Component>(f32, PhantomData<T>);
 
 impl<T: Percentage + Component> BarWidth<T> {
     pub fn new(width: f32) -> Self {
-        BarWidth(width, PhantomData)
+        Self(width, PhantomData)
     }
 
     pub fn get(&self) -> f32 {
         self.0
     }
 }
+
+impl<T: Percentage + Component> Default for BarWidth<T> {
+    fn default() -> Self {
+        Self::new(DEFAULT_WIDTH)
+    }
+}
+
 
 /// Component to configure the height of the bar
 ///
@@ -57,7 +82,13 @@ pub enum BarHeight<T: Percentage + Component> {
 
 impl<T: Percentage + Component> BarHeight<T> {
     pub fn from_static(height: f32) -> Self {
-        BarHeight::Static(height, PhantomData)
+        Self::Static(height, PhantomData)
+    }
+}
+
+impl<T: Percentage + Component> Default for BarHeight<T> {
+    fn default() -> Self {
+        Self::Relative(DEFAULT_RELATIVE_HEIGHT)
     }
 }
 

@@ -62,6 +62,7 @@ fn setup(
         BarBundle::<Health> {
             offset: BarOffset::new(radius * 1.5),
             width: BarWidth::new(radius * 2.),
+            ..default()
         },
     ));
 
@@ -79,6 +80,7 @@ fn setup(
         BarBundle::<Health> {
             offset: BarOffset::new(radius * 1.5),
             width: BarWidth::new(radius * 2.),
+            ..default()
         },
     ));
 

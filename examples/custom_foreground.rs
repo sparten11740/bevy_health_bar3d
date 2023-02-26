@@ -63,6 +63,7 @@ fn setup(
         BarBundle::<Mana> {
             offset: BarOffset::new(radius * 1.5),
             width: BarWidth::new(radius * 2.),
+            ..default()
         },
     ));
 
