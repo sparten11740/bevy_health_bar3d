@@ -59,8 +59,8 @@ fn setup(
             max: 10.,
             current: 8.,
         },
-        BarOffset(radius * 1.5),
-        BarWidth(radius * 2.)
+        BarOffset::<Health>::new(radius * 1.5),
+        BarWidth::<Health>::new(radius * 2.)
     ));
 
     commands.spawn((
@@ -74,8 +74,8 @@ fn setup(
             max: 10.,
             current: 2.,
         },
-        BarOffset(radius * 1.5),
-        BarWidth(radius * 2.)
+        BarOffset::<Health>::new(radius * 1.5),
+        BarWidth::<Health>::new(radius * 2.)
     ));
 
     commands.spawn(PointLightBundle {

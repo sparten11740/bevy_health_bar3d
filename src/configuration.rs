@@ -5,9 +5,13 @@ use crate::constants::{DEFAULT_BACKGROUND_COLOR, DEFAULT_HIGH_COLOR, DEFAULT_LOW
 
 /// Component to configure the Y-offset of the bar relative to the entity its attached to
 #[derive(Component)]
-pub struct BarOffset(pub f32);
+pub struct BarOffset<T: Percentage + Component>(f32, PhantomData<T>);
 
-impl BarOffset {
+impl<T: Percentage + Component> BarOffset<T> {
+    pub fn new(offset: f32) -> Self {
+        BarOffset(offset, PhantomData)
+    }
+
     pub fn get(&self) -> f32 {
         self.0
     }
@@ -15,9 +19,13 @@ impl BarOffset {
 
 /// Component to configure the width of the bar
 #[derive(Component)]
-pub struct BarWidth(pub f32);
+pub struct BarWidth<T: Percentage + Component>(f32, PhantomData<T>);
 
-impl BarWidth {
+impl<T: Percentage + Component> BarWidth<T> {
+    pub fn new(width: f32) -> Self {
+        BarWidth(width, PhantomData)
+    }
+
     pub fn get(&self) -> f32 {
         self.0
     }
@@ -25,9 +33,13 @@ impl BarWidth {
 
 /// Component to configure the width of the bar
 #[derive(Component)]
-pub struct BarHeight(pub f32);
+pub struct BarHeight<T: Percentage + Component>(f32, PhantomData<T>);
 
-impl BarHeight {
+impl<T: Percentage + Component> BarHeight<T> {
+    pub fn new(height: f32) -> Self {
+        BarHeight(height, PhantomData)
+    }
+
     pub fn get(&self) -> f32 {
         self.0
     }

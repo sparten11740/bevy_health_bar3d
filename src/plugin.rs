@@ -52,7 +52,7 @@ fn spawn<T: Percentage + Component>(
     mut meshes: ResMut<Assets<Mesh>>,
     mut mesh_handles: ResMut<MeshHandles>,
     color_scheme: Res<ColorScheme<T>>,
-    query: Query<(Entity, &T, Option<&BarOffset>, Option<&BarWidth>, Option<&BarHeight>), Added<T>>,
+    query: Query<(Entity, &T, Option<&BarOffset<T>>, Option<&BarWidth<T>>, Option<&BarHeight<T>>), Added<T>>,
 ) {
     query.iter().for_each(|(entity, percentage, offset, width, height)| {
         let width = width.map(|it| it.get()).unwrap_or(1.2);
