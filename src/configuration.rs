@@ -3,7 +3,7 @@ use bevy::prelude::{Bundle, Color, Component, Resource};
 use bevy::utils::default;
 use crate::constants::{DEFAULT_BACKGROUND_COLOR, DEFAULT_HIGH_COLOR, DEFAULT_LOW_COLOR, DEFAULT_MODERATE_COLOR, DEFAULT_RELATIVE_HEIGHT, DEFAULT_WIDTH};
 
-/// Bundle to to easily customize multiple aspects
+/// Bundle to customize multiple aspects at the same time
 #[derive(Bundle)]
 pub struct BarBundle<T: Percentage + Component> {
     pub offset: BarOffset<T>,
