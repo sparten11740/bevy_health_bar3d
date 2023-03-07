@@ -59,7 +59,7 @@ fn spawn<T: Percentage + Component>(
         let width = width.map(|it| it.get()).unwrap_or(DEFAULT_WIDTH);
         let height = height.map(|it| match it {
             BarHeight::Relative(pct) => pct * width,
-            BarHeight::Static(height, _) => *height
+            BarHeight::Static(height) => *height
         }).unwrap_or(width * DEFAULT_RELATIVE_HEIGHT);
 
         let mesh = mesh_handles.get(width, height).cloned().unwrap_or_else(|| {

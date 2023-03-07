@@ -1,3 +1,4 @@
+use std::convert::Infallible;
 use std::marker::PhantomData;
 use bevy::prelude::{Bundle, Color, Component, Resource};
 use bevy::utils::default;
@@ -76,14 +77,9 @@ pub enum BarHeight<T: Percentage + Component> {
     /// Bar height relative to its width
     Relative(f32),
     /// Static bar width
-    Static(f32, PhantomData<T>),
+    Static(f32),
 
-}
-
-impl<T: Percentage + Component> BarHeight<T> {
-    pub fn from_static(height: f32) -> Self {
-        Self::Static(height, PhantomData)
-    }
+    _Internal(Infallible, PhantomData<T>),
 }
 
 impl<T: Percentage + Component> Default for BarHeight<T> {
