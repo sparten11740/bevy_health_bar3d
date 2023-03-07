@@ -26,7 +26,7 @@ fn main() {
         .add_plugins(DefaultPlugins)
         .add_plugin(WorldInspectorPlugin)
         .add_plugin(HealthBarPlugin::<Health>::default())
-        .insert_resource(ColorScheme::<Health>::new().background_color(Color::WHITE))
+        .insert_resource(ColorScheme::<Health>::new().background_color(Color::RED))
         .add_startup_system(setup)
         .insert_resource(Msaa { samples: 4 })
         .run();
