@@ -1,7 +1,9 @@
 use std::convert::Infallible;
 use std::marker::PhantomData;
-use bevy::prelude::{Bundle, Color, Component, Resource};
+
+use bevy::prelude::*;
 use bevy::utils::default;
+
 use crate::constants::{DEFAULT_BACKGROUND_COLOR, DEFAULT_HIGH_COLOR, DEFAULT_LOW_COLOR, DEFAULT_MODERATE_COLOR, DEFAULT_RELATIVE_HEIGHT, DEFAULT_WIDTH};
 
 /// Bundle to customize multiple aspects at the same time
@@ -9,7 +11,8 @@ use crate::constants::{DEFAULT_BACKGROUND_COLOR, DEFAULT_HIGH_COLOR, DEFAULT_LOW
 pub struct BarBundle<T: Percentage + Component> {
     pub offset: BarOffset<T>,
     pub width: BarWidth<T>,
-    pub height: BarHeight<T>
+    pub height: BarHeight<T>,
+    pub orientation: BarOrientation<T>
 }
 
 impl<T: Percentage + Component> Default for BarBundle<T> {
@@ -17,14 +20,19 @@ impl<T: Percentage + Component> Default for BarBundle<T> {
         Self {
             offset: BarOffset::default(),
             width: BarWidth::default(),
-            height: BarHeight::default()
+            height: BarHeight::default(),
+            orientation: BarOrientation::default(),
         }
     }
 }
 
 /// Component to configure the Y-offset of the bar relative to the entity its attached to
-#[derive(Component)]
-pub struct BarOffset<T: Percentage + Component>(f32, PhantomData<T>);
+#[derive(Component, Debug, Clone, Reflect)]
+pub struct BarOffset<T: Percentage + Component>(
+    f32,
+    #[reflect(ignore)]
+    PhantomData<T>
+);
 
 impl<T: Percentage + Component> BarOffset<T> {
     pub fn new(offset: f32) -> Self {
@@ -44,8 +52,12 @@ impl<T: Percentage + Component> Default for BarOffset<T> {
 
 
 /// Component to configure the width of the bar
-#[derive(Component)]
-pub struct BarWidth<T: Percentage + Component>(f32, PhantomData<T>);
+#[derive(Component, Debug, Clone, Reflect)]
+pub struct BarWidth<T: Percentage + Component>(
+    f32,
+    #[reflect(ignore)]
+    PhantomData<T>
+);
 
 impl<T: Percentage + Component> BarWidth<T> {
     pub fn new(width: f32) -> Self {
@@ -72,20 +84,41 @@ impl<T: Percentage + Component> Default for BarWidth<T> {
 /// use bevy_health_bar3d::prelude::BarHeight;
 /// commands.entity(entity).insert(BarHeight::<Health>::new(0.2)); // configures the bar height to be 20% of its width
 /// ```
-#[derive(Component)]
+#[derive(Component, Debug, Clone)]
 pub enum BarHeight<T: Percentage + Component> {
     /// Bar height relative to its width
     Relative(f32),
     /// Static bar width
     Static(f32),
 
-    _Internal(Infallible, PhantomData<T>),
+    _Internal(
+        Infallible,
+        PhantomData<T>
+    ),
 }
 
 impl<T: Percentage + Component> Default for BarHeight<T> {
     fn default() -> Self {
         Self::Relative(DEFAULT_RELATIVE_HEIGHT)
     }
+}
+
+
+/// Component to configure the height of the bar
+///
+/// # Examples
+///
+/// ```
+/// use bevy_health_bar3d::prelude::BarOrientation;
+/// commands.entity(entity).insert(BarOrientation::<Health>::Vertical);
+/// ```
+#[derive(Component, Debug, Clone, PartialEq, Eq, Default)]
+pub enum BarOrientation<T: Percentage + Component> {
+    #[default]
+    Horizontal,
+    Vertical,
+
+    _Internal(Infallible, PhantomData<T>),
 }
 
 /// Trait implemented by the component to be tracked by the health bar

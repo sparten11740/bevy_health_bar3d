@@ -6,6 +6,7 @@ use bevy::render::render_resource::{AsBindGroup, RenderPipelineDescriptor, Shade
 
 #[derive(AsBindGroup, Debug, Clone, TypeUuid)]
 #[uuid = "94B33B1F-CDA6-468C-9F72-176557EFD304"]
+#[bind_group_data(HealthBarMaterialKey)]
 pub(crate) struct HealthBarMaterial {
     #[uniform(0)]
     pub value: f32,
@@ -17,6 +18,20 @@ pub(crate) struct HealthBarMaterial {
     pub moderate_color: Color,
     #[uniform(4)]
     pub low_color: Color,
+    pub vertical: bool,
+}
+
+#[derive(Eq, PartialEq, Hash, Clone)]
+pub struct HealthBarMaterialKey {
+    vertical: bool,
+}
+
+impl From<&HealthBarMaterial> for HealthBarMaterialKey {
+    fn from(material: &HealthBarMaterial) -> Self {
+        Self {
+            vertical: material.vertical,
+        }
+    }
 }
 
 
@@ -37,12 +52,18 @@ impl Material for HealthBarMaterial {
         _pipeline: &MaterialPipeline<Self>,
         descriptor: &mut RenderPipelineDescriptor,
         layout: &MeshVertexBufferLayout,
-        _key: MaterialPipelineKey<Self>,
+        key: MaterialPipelineKey<Self>,
     ) -> Result<(), SpecializedMeshPipelineError> {
         let vertex_layout = layout.get_layout(&[
             Mesh::ATTRIBUTE_POSITION.at_shader_location(0),
             Mesh::ATTRIBUTE_UV_0.at_shader_location(1),
         ])?;
+
+        if key.bind_group_data.vertical {
+            let fragment = descriptor.fragment.as_mut().unwrap();
+            fragment.shader_defs.push("IS_VERTICAL".into());
+        }
+
 
 
         descriptor.vertex.buffers = vec![vertex_layout];
