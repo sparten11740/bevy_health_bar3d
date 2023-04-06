@@ -73,7 +73,8 @@ fn setup(
             BarBundle::<Health> {
                 offset: BarOffset::new(offset),
                 width: BarWidth::new(bar_width),
-                height: BarHeight::Static(bar_height)
+                height: BarHeight::Static(bar_height),
+                ..default()
             },
             Mana {
                 max: 10.,
@@ -82,7 +83,8 @@ fn setup(
             BarBundle::<Mana> {
                 offset: BarOffset::new(offset + bar_height / 1.5),
                 width: BarWidth::new(bar_width),
-                height: BarHeight::Static(bar_height)
+                height: BarHeight::Static(bar_height),
+                ..default()
             },
         ));
     });
