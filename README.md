@@ -1,8 +1,7 @@
 ## bevy_health_bar3d
 
-Health Bar plugin for Bevy 3D. Don't let the name fool you – this plugin is designed not
-only for tracking health, but also for managing other values such as Mana or any attribute that can be represented
-as a percentage.
+Health Bar plugin for Bevy 3D. Not just for tracking health, but also for other values such as Mana 
+or any attribute that can be represented as a percentage.
 
 ## Bevy Compatibility
 
