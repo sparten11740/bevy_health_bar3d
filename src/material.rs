@@ -34,7 +34,6 @@ impl From<&HealthBarMaterial> for HealthBarMaterialKey {
     }
 }
 
-
 impl Material for HealthBarMaterial {
     fn vertex_shader() -> ShaderRef {
         "shaders/bar.wgsl".into()
@@ -63,8 +62,6 @@ impl Material for HealthBarMaterial {
             let fragment = descriptor.fragment.as_mut().unwrap();
             fragment.shader_defs.push("IS_VERTICAL".into());
         }
-
-
 
         descriptor.vertex.buffers = vec![vertex_layout];
         Ok(())

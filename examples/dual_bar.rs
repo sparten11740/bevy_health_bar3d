@@ -55,7 +55,7 @@ fn setup(
     let values = [2.0f32, 5., 9.];
 
     let bar_width = radius * 2.;
-    let bar_height = bar_width / 5.;
+    let bar_height = bar_width / 6.;
     let offset = radius * 1.5;
 
     values.into_iter().enumerate().for_each(|(i, value)| {
@@ -81,7 +81,7 @@ fn setup(
                 current: values[2 - i],
             },
             BarBundle::<Mana> {
-                offset: BarOffset::new(offset + bar_height / 1.5),
+                offset: BarOffset::new(offset + bar_height + bar_height / 5.),
                 width: BarWidth::new(bar_width),
                 height: BarHeight::Static(bar_height),
                 ..default()
