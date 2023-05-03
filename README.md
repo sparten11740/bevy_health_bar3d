@@ -60,8 +60,8 @@ fn setup(
             current: 2.,
         },
         BarBundle::<Health> {
-            offset: BarOffset::new(radius * 1.5),
-            width: BarWidth::new(radius * 2.),
+            width: BarWidth::new(mesh_width),
+            offset: BarOffset::new(mesh_height),
             orientation: BarOrientation::Vertical, // defaults is horizontal
             ..default()
         },
