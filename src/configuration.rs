@@ -4,7 +4,10 @@ use std::marker::PhantomData;
 use bevy::prelude::*;
 use bevy::utils::default;
 
-use crate::constants::{DEFAULT_BACKGROUND_COLOR, DEFAULT_HIGH_COLOR, DEFAULT_LOW_COLOR, DEFAULT_MODERATE_COLOR, DEFAULT_RELATIVE_HEIGHT, DEFAULT_WIDTH};
+use crate::constants::{
+    DEFAULT_BACKGROUND_COLOR, DEFAULT_HIGH_COLOR, DEFAULT_LOW_COLOR, DEFAULT_MODERATE_COLOR,
+    DEFAULT_RELATIVE_HEIGHT, DEFAULT_WIDTH,
+};
 
 /// Bundle to customize multiple aspects at the same time
 #[derive(Bundle)]
@@ -12,7 +15,7 @@ pub struct BarBundle<T: Percentage + Component> {
     pub offset: BarOffset<T>,
     pub width: BarWidth<T>,
     pub height: BarHeight<T>,
-    pub orientation: BarOrientation<T>
+    pub orientation: BarOrientation<T>,
 }
 
 impl<T: Percentage + Component> Default for BarBundle<T> {
@@ -28,11 +31,7 @@ impl<T: Percentage + Component> Default for BarBundle<T> {
 
 /// Component to configure the Y-offset of the bar relative to the entity its attached to
 #[derive(Component, Debug, Clone, Reflect)]
-pub struct BarOffset<T: Percentage + Component>(
-    f32,
-    #[reflect(ignore)]
-    PhantomData<T>
-);
+pub struct BarOffset<T: Percentage + Component>(f32, #[reflect(ignore)] PhantomData<T>);
 
 impl<T: Percentage + Component> BarOffset<T> {
     pub fn new(offset: f32) -> Self {
@@ -50,14 +49,9 @@ impl<T: Percentage + Component> Default for BarOffset<T> {
     }
 }
 
-
 /// Component to configure the width of the bar
 #[derive(Component, Debug, Clone, Reflect)]
-pub struct BarWidth<T: Percentage + Component>(
-    f32,
-    #[reflect(ignore)]
-    PhantomData<T>
-);
+pub struct BarWidth<T: Percentage + Component>(f32, #[reflect(ignore)] PhantomData<T>);
 
 impl<T: Percentage + Component> BarWidth<T> {
     pub fn new(width: f32) -> Self {
@@ -75,7 +69,6 @@ impl<T: Percentage + Component> Default for BarWidth<T> {
     }
 }
 
-
 /// Component to configure the height of the bar
 ///
 /// # Examples
@@ -91,10 +84,7 @@ pub enum BarHeight<T: Percentage + Component> {
     /// Static bar width
     Static(f32),
 
-    _Internal(
-        Infallible,
-        PhantomData<T>
-    ),
+    _Internal(Infallible, PhantomData<T>),
 }
 
 impl<T: Percentage + Component> Default for BarHeight<T> {
@@ -102,7 +92,6 @@ impl<T: Percentage + Component> Default for BarHeight<T> {
         Self::Relative(DEFAULT_RELATIVE_HEIGHT)
     }
 }
-
 
 /// Component to configure the height of the bar
 ///
@@ -164,7 +153,6 @@ impl<T: Percentage + Component> ColorScheme<T> {
             ..default()
         }
     }
-
 
     pub fn background_color(mut self, color: Color) -> Self {
         self.background_color = color;

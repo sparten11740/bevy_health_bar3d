@@ -2,7 +2,9 @@ use bevy::pbr::{AlphaMode, Material, MaterialPipeline, MaterialPipelineKey};
 use bevy::prelude::{Color, Mesh};
 use bevy::reflect::TypeUuid;
 use bevy::render::mesh::MeshVertexBufferLayout;
-use bevy::render::render_resource::{AsBindGroup, RenderPipelineDescriptor, ShaderRef, SpecializedMeshPipelineError};
+use bevy::render::render_resource::{
+    AsBindGroup, RenderPipelineDescriptor, ShaderRef, SpecializedMeshPipelineError,
+};
 
 #[derive(AsBindGroup, Debug, Clone, TypeUuid)]
 #[uuid = "94B33B1F-CDA6-468C-9F72-176557EFD304"]
