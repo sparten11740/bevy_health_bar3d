@@ -26,7 +26,7 @@ fn main() {
     App::new()
         .register_type::<Health>()
         .add_plugins(DefaultPlugins)
-        .add_plugin(WorldInspectorPlugin)
+        .add_plugin(WorldInspectorPlugin::new())
         .add_plugin(HealthBarPlugin::<Health>::default())
         .add_startup_system(setup)
         .run();
@@ -41,10 +41,13 @@ fn setup(
 
     commands.spawn((
         PbrBundle {
-            mesh: meshes.add(Mesh::from(shape::Icosphere {
-                radius,
-                ..default()
-            })),
+            mesh: meshes.add(
+                TryInto::<Mesh>::try_into(shape::Icosphere {
+                    radius,
+                    ..default()
+                })
+                .unwrap(),
+            ),
             material: materials.add(Color::rgb(1., 0.2, 0.2).into()),
             transform: Transform::from_xyz(0., 1., 0.0),
             ..Default::default()

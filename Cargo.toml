@@ -13,9 +13,9 @@ authors = ["Jan Wendland"]
 exclude = ["examples"]
 
 [dependencies]
-bevy = { version = "0.9", features = ["bevy_pbr", "bevy_render"] }
+bevy = { version = "0.10.1", features = ["bevy_pbr", "bevy_render"] }
 ordered-float = "3.4.0"
 
 
 [dev-dependencies]
-bevy-inspector-egui = "0.17.0"
+bevy-inspector-egui = "0.18.3"

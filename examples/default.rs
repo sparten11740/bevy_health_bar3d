@@ -1,10 +1,7 @@
 use bevy::app::App;
 use bevy::asset::Assets;
-use bevy::pbr::{PbrBundle, PointLight, PointLightBundle, StandardMaterial};
-use bevy::prelude::{
-    shape, Camera3d, Camera3dBundle, Color, Commands, Component, Local, Mesh, Msaa, Query, Reflect,
-    Res, ResMut, Time, Transform, Vec3, With,
-};
+use bevy::pbr::*;
+use bevy::prelude::*;
 use bevy::utils::default;
 use bevy::DefaultPlugins;
 use bevy_health_bar3d::prelude::{BarBundle, BarOffset, BarWidth, HealthBarPlugin, Percentage};
@@ -26,11 +23,11 @@ fn main() {
     App::new()
         .register_type::<Health>()
         .add_plugins(DefaultPlugins)
-        .add_plugin(WorldInspectorPlugin)
+        .add_plugin(WorldInspectorPlugin::new())
         .add_plugin(HealthBarPlugin::<Health>::default())
         .add_startup_system(setup)
         .add_system(rotate_camera)
-        .insert_resource(Msaa { samples: 4 })
+        .insert_resource(Msaa::Sample4)
         .run();
 }
 
@@ -40,7 +37,10 @@ fn setup(
     mut materials: ResMut<Assets<StandardMaterial>>,
 ) {
     commands.spawn(PbrBundle {
-        mesh: meshes.add(Mesh::from(shape::Plane { size: 5.0 })),
+        mesh: meshes.add(Mesh::from(shape::Plane {
+            size: 5.0,
+            subdivisions: 0,
+        })),
         material: materials.add(Color::rgb(0.3, 0.5, 0.3).into()),
         ..Default::default()
     });
@@ -49,10 +49,13 @@ fn setup(
 
     commands.spawn((
         PbrBundle {
-            mesh: meshes.add(Mesh::from(shape::Icosphere {
-                radius,
-                ..default()
-            })),
+            mesh: meshes.add(
+                TryInto::<Mesh>::try_into(shape::Icosphere {
+                    radius,
+                    ..default()
+                })
+                .unwrap(),
+            ),
             material: materials.add(Color::rgb(1., 0.2, 0.2).into()),
             transform: Transform::from_xyz(0.0, 1., 0.0),
             ..Default::default()
@@ -70,10 +73,13 @@ fn setup(
 
     commands.spawn((
         PbrBundle {
-            mesh: meshes.add(Mesh::from(shape::Icosphere {
-                radius,
-                ..default()
-            })),
+            mesh: meshes.add(
+                TryInto::<Mesh>::try_into(shape::Icosphere {
+                    radius,
+                    ..default()
+                })
+                .unwrap(),
+            ),
             material: materials.add(Color::rgb(1., 0.2, 0.2).into()),
             transform: Transform::from_xyz(0.0 + 3. * radius, 0.5, 0.0),
             ..Default::default()
