@@ -30,7 +30,7 @@ jobs:
           restore-keys: ${{ runner.os }}-cargo-
       - uses: dtolnay/rust-toolchain@nightly
         with:
-          components: clippy
+          components: clippy, rustfmt
       - name: Install system libs
         run: sudo apt-get install libasound2-dev libudev-dev pkg-config
       - name: Lint
