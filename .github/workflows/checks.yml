@@ -33,5 +33,7 @@ jobs:
           components: clippy
       - name: Install system libs
         run: sudo apt-get install libasound2-dev libudev-dev pkg-config
-      - name: Run clippy
+      - name: Lint
         run: cargo clippy -- -Dwarnings
+      - name: Check format
+        run: cargo fmt --all -- --check
