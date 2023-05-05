@@ -1,3 +1,4 @@
+[![Checks](https://github.com/sparten11740/bevy_health_bar3d/actions/workflows/checks.yml/badge.svg)](https://github.com/sparten11740/bevy_health_bar3d/actions/workflows/checks.yml) [![Release](https://github.com/sparten11740/bevy_health_bar3d/actions/workflows/release.yml/badge.svg)](https://github.com/sparten11740/bevy_health_bar3d/actions/workflows/release.yml)
 ## bevy_health_bar3d
 
 Health Bar plugin for Bevy 3D. Not just for tracking health, but also for other values such as Mana 
