@@ -7,8 +7,9 @@ or any attribute that can be represented as a percentage.
 ## Bevy Compatibility
 
 | Bevy Version | Crate Version |
-| ------------ | ------------- |
-| `0.9`        | `^1.0.0`      |
+|--------------|---------------|
+| `0.10`       | `1.1.0`       |
+| `0.9`        | `1.0.0`       |
 
 ## Usage
 
