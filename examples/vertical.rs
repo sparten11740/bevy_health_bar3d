@@ -1,12 +1,14 @@
 use bevy::app::App;
 use bevy::asset::Assets;
-use bevy::DefaultPlugins;
 use bevy::pbr::{PbrBundle, PointLight, PointLightBundle, StandardMaterial};
 use bevy::prelude::*;
 use bevy::utils::default;
+use bevy::DefaultPlugins;
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
 
-use bevy_health_bar3d::prelude::{BarBundle, BarOffset, BarOrientation, BarWidth, HealthBarPlugin, Percentage};
+use bevy_health_bar3d::prelude::{
+    BarBundle, BarOffset, BarOrientation, BarWidth, HealthBarPlugin, Percentage,
+};
 
 #[derive(Component, Reflect)]
 struct Health {
@@ -39,7 +41,10 @@ fn setup(
 
     commands.spawn((
         PbrBundle {
-            mesh: meshes.add(Mesh::from(shape::Icosphere { radius, ..default()})),
+            mesh: meshes.add(Mesh::from(shape::Icosphere {
+                radius,
+                ..default()
+            })),
             material: materials.add(Color::rgb(1., 0.2, 0.2).into()),
             transform: Transform::from_xyz(0., 1., 0.0),
             ..Default::default()
@@ -66,10 +71,8 @@ fn setup(
         ..Default::default()
     });
 
-    commands.spawn(
-        Camera3dBundle {
-            transform: Transform::from_xyz(0., 1.5, 5.0).looking_at(Vec3::Y, Vec3::Y),
-            ..Default::default()
-        },
-    );
+    commands.spawn(Camera3dBundle {
+        transform: Transform::from_xyz(0., 1.5, 5.0).looking_at(Vec3::Y, Vec3::Y),
+        ..Default::default()
+    });
 }

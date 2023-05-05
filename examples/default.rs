@@ -1,12 +1,14 @@
 use bevy::app::App;
 use bevy::asset::Assets;
-use bevy::DefaultPlugins;
 use bevy::pbr::{PbrBundle, PointLight, PointLightBundle, StandardMaterial};
-use bevy::prelude::{Camera3d, Camera3dBundle, Color, Commands, Component, Local, Mesh, Msaa, Query, Reflect, Res, ResMut, shape, Time, Transform, Vec3, With};
+use bevy::prelude::{
+    shape, Camera3d, Camera3dBundle, Color, Commands, Component, Local, Mesh, Msaa, Query, Reflect,
+    Res, ResMut, Time, Transform, Vec3, With,
+};
 use bevy::utils::default;
+use bevy::DefaultPlugins;
+use bevy_health_bar3d::prelude::{BarBundle, BarOffset, BarWidth, HealthBarPlugin, Percentage};
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
-use bevy_health_bar3d::prelude::{BarOffset, HealthBarPlugin, BarWidth, Percentage, BarBundle};
-
 
 #[derive(Component, Reflect)]
 struct Health {
@@ -37,20 +39,20 @@ fn setup(
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
 ) {
-    commands.spawn(
-        PbrBundle {
-            mesh: meshes.add(Mesh::from(shape::Plane { size: 5.0 })),
-            material: materials.add(Color::rgb(0.3, 0.5, 0.3).into()),
-            ..Default::default()
-        }
-    );
-
+    commands.spawn(PbrBundle {
+        mesh: meshes.add(Mesh::from(shape::Plane { size: 5.0 })),
+        material: materials.add(Color::rgb(0.3, 0.5, 0.3).into()),
+        ..Default::default()
+    });
 
     let radius = 0.2;
 
     commands.spawn((
         PbrBundle {
-            mesh: meshes.add(Mesh::from(shape::Icosphere { radius, ..default() })),
+            mesh: meshes.add(Mesh::from(shape::Icosphere {
+                radius,
+                ..default()
+            })),
             material: materials.add(Color::rgb(1., 0.2, 0.2).into()),
             transform: Transform::from_xyz(0.0, 1., 0.0),
             ..Default::default()
@@ -68,7 +70,10 @@ fn setup(
 
     commands.spawn((
         PbrBundle {
-            mesh: meshes.add(Mesh::from(shape::Icosphere { radius, ..default() })),
+            mesh: meshes.add(Mesh::from(shape::Icosphere {
+                radius,
+                ..default()
+            })),
             material: materials.add(Color::rgb(1., 0.2, 0.2).into()),
             transform: Transform::from_xyz(0.0 + 3. * radius, 0.5, 0.0),
             ..Default::default()
@@ -94,12 +99,10 @@ fn setup(
         ..Default::default()
     });
 
-    commands.spawn(
-        Camera3dBundle {
-            transform: Transform::from_xyz(0., 2.5, 5.0).looking_at(Vec3::ZERO, Vec3::Y),
-            ..Default::default()
-        },
-    );
+    commands.spawn(Camera3dBundle {
+        transform: Transform::from_xyz(0., 2.5, 5.0).looking_at(Vec3::ZERO, Vec3::Y),
+        ..Default::default()
+    });
 }
 
 fn rotate_camera(
