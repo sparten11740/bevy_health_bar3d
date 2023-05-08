@@ -10,6 +10,8 @@ use bevy::prelude::*;
 use bevy::utils::default;
 use bevy::DefaultPlugins;
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
+use bevy_tweening::lens::{TransformPositionLens, TransformRotationLens};
+use bevy_tweening::{Animator, EaseFunction, Tracks, Tween, TweeningPlugin};
 
 use bevy_health_bar3d::prelude::{
     BarBundle, BarHeight, BarOffset, BarWidth, ColorScheme, ForegroundColor, HealthBarPlugin,
@@ -53,9 +55,9 @@ fn main() {
     App::new()
         .register_type::<Health>()
         .add_plugins(DefaultPlugins)
-        .add_plugin(WorldInspectorPlugin::new())
         .add_plugin(HealthBarPlugin::<Health>::default())
         .add_plugin(HealthBarPlugin::<Distance>::default())
+        .add_plugin(TweeningPlugin)
         .insert_resource(
             ColorScheme::<Distance>::new().foreground_color(ForegroundColor::Static(Color::BISQUE)),
         )
@@ -67,6 +69,7 @@ fn main() {
         .insert_resource(Msaa::Sample4)
         .add_startup_system(setup)
         .add_systems((
+            move_camera,
             link_animations,
             setup_idle_animation,
             setup_walking_animation,
@@ -171,7 +174,6 @@ fn setup(
     commands.spawn((
         Camera3dBundle {
             transform: Transform::from_xyz(100., 90., 100.0).looking_at(Vec3::ZERO, Vec3::Y),
-
             ..Default::default()
         },
         FogSettings {
@@ -187,10 +189,10 @@ fn setup(
 
 fn setup_walking_animation(
     animations: Res<Animations>,
-    dinos: Query<&PlayerEntity, (With<Distance>, Added<PlayerEntity>)>,
+    dinos: Query<&WithAnimationPlayer, (With<Distance>, Added<WithAnimationPlayer>)>,
     mut players: Query<&mut AnimationPlayer>,
 ) {
-    for &PlayerEntity(entity) in dinos.iter() {
+    for &WithAnimationPlayer(entity) in dinos.iter() {
         players
             .get_mut(entity)
             .unwrap()
@@ -201,10 +203,10 @@ fn setup_walking_animation(
 
 fn setup_idle_animation(
     animations: Res<Animations>,
-    dinos: Query<&PlayerEntity, (Without<Distance>, Added<PlayerEntity>)>,
+    dinos: Query<&WithAnimationPlayer, (Without<Distance>, Added<WithAnimationPlayer>)>,
     mut players: Query<&mut AnimationPlayer>,
 ) {
-    for &PlayerEntity(entity) in dinos.iter() {
+    for &WithAnimationPlayer(entity) in dinos.iter() {
         players
             .get_mut(entity)
             .unwrap()
@@ -215,20 +217,20 @@ fn setup_idle_animation(
 
 fn kill_trex(
     animations: Res<Animations>,
-    mut query: Query<(&mut Health, &PlayerEntity), Without<Distance>>,
+    mut query: Query<(&mut Health, &WithAnimationPlayer), Without<Distance>>,
     mut players: Query<&mut AnimationPlayer>,
     time: Res<Time>,
 ) {
     query
         .iter_mut()
         .filter(|(health, _)| health.current > 0.)
-        .for_each(|(mut health, player_entity)| {
+        .for_each(|(mut health, with_animation_player)| {
             let delta_z = time.delta_seconds();
             health.current -= delta_z;
 
             if health.current <= 0.01 {
                 players
-                    .get_mut(player_entity.0)
+                    .get_mut(with_animation_player.0)
                     .unwrap()
                     .play_with_transition(animations.die.clone(), Duration::from_millis(120));
             }
@@ -238,20 +240,20 @@ fn kill_trex(
 fn move_trex(
     animations: Res<Animations>,
     mut players: Query<&mut AnimationPlayer>,
-    mut query: Query<(&mut Transform, &mut Distance, &PlayerEntity)>,
+    mut query: Query<(&mut Transform, &mut Distance, &WithAnimationPlayer)>,
     time: Res<Time>,
 ) {
     query
         .iter_mut()
         .filter(|(_, distance, _)| distance.current > 0.)
-        .for_each(|(mut transform, mut distance, player_entity)| {
+        .for_each(|(mut transform, mut distance, with_animation_player)| {
             let delta_z = time.delta_seconds() * 10.;
             transform.translation.z += delta_z;
             distance.current -= delta_z;
 
             if distance.current <= 1. {
                 players
-                    .get_mut(player_entity.0)
+                    .get_mut(with_animation_player.0)
                     .unwrap()
                     .play_with_transition(animations.idle.clone(), Duration::from_millis(120))
                     .repeat();
@@ -260,7 +262,48 @@ fn move_trex(
 }
 
 #[derive(Component)]
-pub struct PlayerEntity(pub Entity);
+struct Moving;
+
+#[allow(clippy::type_complexity)]
+fn move_camera(
+    mut commands: Commands,
+    mut camera_query: Query<(Entity, &Transform), (With<Camera3d>, Without<Moving>)>,
+) {
+    camera_query.for_each_mut(|(entity, transform)| {
+        commands.entity(entity).insert(Moving);
+
+        let Vec3 { x, y, z } = transform.translation;
+
+        let target =
+            Transform::from_xyz(x + 20., y - 20., z - 100.).looking_at(Vec3::ZERO, Vec3::Y);
+
+        let translation_tween = Tween::new(
+            EaseFunction::QuadraticIn,
+            Duration::from_secs(5),
+            TransformPositionLens {
+                start: transform.translation,
+                end: target.translation,
+            },
+        );
+
+        let rotation_tween = Tween::new(
+            EaseFunction::QuadraticIn,
+            Duration::from_secs(5),
+            TransformRotationLens {
+                start: transform.rotation,
+                end: target.rotation,
+            },
+        );
+
+        commands.entity(entity).insert(Animator::new(Tracks::new([
+            translation_tween,
+            rotation_tween,
+        ])));
+    });
+}
+
+#[derive(Component)]
+pub struct WithAnimationPlayer(pub Entity);
 
 fn get_root(mut entity: Entity, parent_query: &Query<&Parent>) -> Entity {
     while let Ok(parent) = parent_query.get(entity) {
@@ -272,7 +315,7 @@ fn get_root(mut entity: Entity, parent_query: &Query<&Parent>) -> Entity {
 pub fn link_animations(
     player_query: Query<Entity, Added<AnimationPlayer>>,
     parent_query: Query<&Parent>,
-    animations_entity_link_query: Query<&PlayerEntity>,
+    animations_entity_link_query: Query<&WithAnimationPlayer>,
     mut commands: Commands,
 ) {
     for entity in player_query.iter() {
@@ -282,6 +325,6 @@ pub fn link_animations(
             return;
         }
 
-        commands.entity(root).insert(PlayerEntity(entity));
+        commands.entity(root).insert(WithAnimationPlayer(entity));
     }
 }
