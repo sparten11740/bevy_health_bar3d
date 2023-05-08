@@ -5,7 +5,7 @@
 Health Bar plugin for Bevy 3D. Not just for tracking health, but also for other values such as Mana
 or any attribute that can be represented as a percentage.
 
-<img src="https://user-images.githubusercontent.com/2863630/236699255-3b142725-f2bc-4b72-b597-53aeb159b4cb.gif" width="200" />
+<img src="https://user-images.githubusercontent.com/2863630/236909288-3064d576-f772-4c01-a6fc-0918f7c80703.gif" width="300" />
 
 ## Bevy Compatibility
 
