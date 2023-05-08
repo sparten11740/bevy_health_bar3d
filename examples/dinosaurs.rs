@@ -274,8 +274,7 @@ fn move_camera(
 
         let Vec3 { x, y, z } = transform.translation;
 
-        let target =
-            Transform::from_xyz(x + 20., y - 20., z - 100.).looking_at(Vec3::ZERO, Vec3::Y);
+        let target = Transform::from_xyz(x + 20., y - 30., z - 50.).looking_at(Vec3::ZERO, Vec3::Y);
 
         let translation_tween = Tween::new(
             EaseFunction::QuadraticIn,
