@@ -2,17 +2,18 @@
 
 ## bevy_health_bar3d
 
-Health Bar plugin for Bevy 3D. Not just for tracking health, but also for other values such as Mana
-or any attribute that can be represented as a percentage.
+<img src="https://user-images.githubusercontent.com/2863630/236912868-490ac178-ebd5-4389-a69e-64160b3c56e5.gif" width="300" align="left" />
+Health Bar plugin for Bevy 3D. Despite its name, this plugin is universally applicable. It can be used to render a bar 
+for any value that can be represented as percentage.
 
-<img src="https://user-images.githubusercontent.com/2863630/236909288-3064d576-f772-4c01-a6fc-0918f7c80703.gif" width="300" />
+<br clear="both" />
 
 ## Bevy Compatibility
 
-| Bevy Version |  Crate Version |
-| ------------ |---------------:|
-| `0.10`       |    \>= `1.1.0` |
-| `0.9`        |        `1.0.0` |
+| Bevy Version | Crate Version |
+| ------------ | ------------: |
+| `0.10`       |   \>= `1.1.0` |
+| `0.9`        |       `1.0.0` |
 
 ## Usage
 
