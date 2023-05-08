@@ -606,6 +606,7 @@ version = "1.1.1"
 dependencies = [
  "bevy",
  "bevy-inspector-egui",
+ "bevy_tweening",
  "ordered-float",
 ]
 
@@ -952,6 +953,16 @@ dependencies = [
  "bevy_hierarchy",
  "bevy_math",
  "bevy_reflect",
+]
+
+[[package]]
+name = "bevy_tweening"
+version = "0.7.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7adaf4294484caea3707d280198ad06dd53b9e9adbb0816618c7edce11c990d6"
+dependencies = [
+ "bevy",
+ "interpolation",
 ]
 
 [[package]]
@@ -1982,6 +1993,12 @@ dependencies = [
  "wasm-bindgen",
  "web-sys",
 ]
+
+[[package]]
+name = "interpolation"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d3b7357d2bbc5ee92f8e899ab645233e43d21407573cceb37fed8bc3dede2c02"
 
 [[package]]
 name = "io-kit-sys"
