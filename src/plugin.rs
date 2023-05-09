@@ -11,7 +11,7 @@ use crate::configuration::{BarHeight, BarOffset, BarWidth, ForegroundColor, Perc
 use crate::constants::{DEFAULT_RELATIVE_HEIGHT, DEFAULT_WIDTH};
 use crate::material::HealthBarMaterial;
 use crate::mesh::MeshHandles;
-use crate::prelude::{BarOrientation, ColorScheme};
+use crate::prelude::{BarBorderWidth, BarOrientation, ColorScheme};
 
 pub struct HealthBarPlugin<T: Percentage + Component> {
     phantom: PhantomData<T>,
@@ -65,13 +65,13 @@ fn spawn<T: Percentage + Component>(
             Option<&BarWidth<T>>,
             Option<&BarHeight<T>>,
             Option<&BarOrientation<T>>,
+            Option<&BarBorderWidth<T>>,
         ),
         Added<T>,
     >,
 ) {
-    query
-        .iter()
-        .for_each(|(entity, percentage, offset, width, height, orientation)| {
+    query.iter().for_each(
+        |(entity, percentage, offset, width, height, orientation, border_width)| {
             let width = width.map(|it| it.get()).unwrap_or(DEFAULT_WIDTH);
             let orientation = orientation.unwrap_or(&BarOrientation::Horizontal);
 
@@ -114,6 +114,8 @@ fn spawn<T: Percentage + Component>(
                 moderate_color: moderate,
                 low_color: low,
                 vertical,
+                resolution: Vec2::new(width, height),
+                border_width: border_width.map(|it| it.get()).unwrap_or(0.),
             });
 
             let health_bar = commands
@@ -140,7 +142,8 @@ fn spawn<T: Percentage + Component>(
                 .entity(entity)
                 .insert(WithHealthBar(health_bar))
                 .add_child(health_bar);
-        });
+        },
+    );
 }
 
 fn update<T: Percentage + Component>(

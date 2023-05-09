@@ -16,6 +16,7 @@ pub struct BarBundle<T: Percentage + Component> {
     pub width: BarWidth<T>,
     pub height: BarHeight<T>,
     pub orientation: BarOrientation<T>,
+    pub border_width: BarBorderWidth<T>,
 }
 
 impl<T: Percentage + Component> Default for BarBundle<T> {
@@ -25,6 +26,7 @@ impl<T: Percentage + Component> Default for BarBundle<T> {
             width: BarWidth::default(),
             height: BarHeight::default(),
             orientation: BarOrientation::default(),
+            border_width: BarBorderWidth::default(),
         }
     }
 }
@@ -66,6 +68,30 @@ impl<T: Percentage + Component> BarWidth<T> {
 impl<T: Percentage + Component> Default for BarWidth<T> {
     fn default() -> Self {
         Self::new(DEFAULT_WIDTH)
+    }
+}
+
+/// Component to configure the border width of the bar. Default is no border
+#[derive(Component, Debug, Clone, Reflect)]
+pub struct BarBorderWidth<T: Percentage + Component>(f32, #[reflect(ignore)] PhantomData<T>);
+
+impl<T: Percentage + Component> BarBorderWidth<T> {
+    pub fn new(width: f32) -> Self {
+        Self(width, PhantomData)
+    }
+
+    pub fn none() -> Self {
+        Self(0.0, PhantomData)
+    }
+
+    pub fn get(&self) -> f32 {
+        self.0
+    }
+}
+
+impl<T: Percentage + Component> Default for BarBorderWidth<T> {
+    fn default() -> Self {
+        Self::none()
     }
 }
 
