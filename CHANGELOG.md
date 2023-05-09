@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/sparten11740/bevy_health_bar3d/compare/v1.1.1...v1.2.0) (2023-05-09)
+
+
+### Features
+
+* add option to add border ([#8](https://github.com/sparten11740/bevy_health_bar3d/issues/8)) ([a5e5be4](https://github.com/sparten11740/bevy_health_bar3d/commit/a5e5be4c7856ad889fb9f3395931c8cff58a105c))
+
 ## [1.1.1](https://github.com/sparten11740/bevy_health_bar3d/compare/v1.1.0...v1.1.1) (2023-05-05)
 
 
