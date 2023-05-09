@@ -24,6 +24,8 @@ pub(crate) struct HealthBarMaterial {
     pub border_width: f32,
     #[uniform(6)]
     pub resolution: Vec2,
+    #[uniform(7)]
+    pub border_color: Color,
     pub vertical: bool,
 }
 

@@ -8,9 +8,8 @@ use bevy::utils::default;
 use bevy::DefaultPlugins;
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
 
-use bevy_health_bar3d::configuration::BarBorderWidth;
 use bevy_health_bar3d::prelude::{
-    BarBundle, BarHeight, BarOffset, BarWidth, HealthBarPlugin, Percentage,
+    BarBorder, BarBundle, BarHeight, BarOffset, BarWidth, HealthBarPlugin, Percentage,
 };
 
 #[derive(Component, Reflect)]
@@ -69,7 +68,7 @@ fn setup(
                 offset: BarOffset::new(offset),
                 width: BarWidth::new(bar_width),
                 height: BarHeight::Static(bar_height),
-                border_width: BarBorderWidth::new(bar_height / 4.),
+                border: BarBorder::new(bar_height / 4.).color(Color::PURPLE),
                 ..default()
             },
         ));

@@ -17,6 +17,8 @@ var<uniform> low_color: vec4<f32>;
 var<uniform> border_width: f32;
 @group(1) @binding(6)
 var<uniform> resolution: vec2<f32>;
+@group(1) @binding(7)
+var<uniform> border_color: vec4<f32>;
 #endif
 
 struct Vertex {
@@ -49,8 +51,6 @@ fn vertex(vertex: Vertex) -> VertexOutput {
 struct FragmentInput {
      @location(0) uv: vec2<f32>
 };
-
-const border_color = vec4<f32>(0., 0., 0., 1.);
 
 @fragment
 fn fragment(in: FragmentInput) -> @location(0) vec4<f32> {
