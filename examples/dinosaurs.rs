@@ -9,7 +9,6 @@ use bevy::pbr::*;
 use bevy::prelude::*;
 use bevy::utils::default;
 use bevy::DefaultPlugins;
-use bevy_inspector_egui::quick::WorldInspectorPlugin;
 use bevy_tweening::lens::{TransformPositionLens, TransformRotationLens};
 use bevy_tweening::{Animator, EaseFunction, Tracks, Tween, TweeningPlugin};
 
