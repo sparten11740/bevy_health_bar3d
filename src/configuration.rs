@@ -71,7 +71,14 @@ impl<T: Percentage + Component> Default for BarWidth<T> {
     }
 }
 
-/// Component to configure the border width of the bar. Default is no border
+/// Component to configure the border of the bar. Defaults to no border
+/// # Examples
+///
+/// ```
+/// use bevy::prelude::Color;
+/// use bevy_health_bar3d::prelude::BarBorder;
+/// commands.entity(entity).insert(BarBorder::<Health>::new(0.2).color(Color::PURPLE)); // configures the bar height to be 20% of its width
+/// ```
 #[derive(Component, Debug, Clone, Reflect)]
 pub struct BarBorder<T: Percentage + Component> {
     pub width: f32,
