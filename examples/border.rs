@@ -1,27 +1,17 @@
 use bevy::app::App;
 use bevy::asset::Assets;
 use bevy::pbr::{PbrBundle, PointLight, PointLightBundle, StandardMaterial};
-use bevy::prelude::*;
+use bevy::prelude::{
+    shape, Camera3d, Camera3dBundle, Color, Commands, Component, Local, Mesh, Msaa, Query, Reflect,
+    Res, ResMut, Time, Transform, Vec3, With,
+};
 use bevy::utils::default;
 use bevy::DefaultPlugins;
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
 
-use bevy_health_bar3d::configuration::ForegroundColor;
 use bevy_health_bar3d::prelude::{
-    BarBundle, BarOffset, BarWidth, ColorScheme, HealthBarPlugin, Percentage,
+    BarBorder, BarBundle, BarHeight, BarOffset, BarWidth, HealthBarPlugin, Percentage,
 };
-
-#[derive(Component, Reflect)]
-struct Mana {
-    max: f32,
-    current: f32,
-}
-
-impl Percentage for Mana {
-    fn value(&self) -> f32 {
-        self.current / self.max
-    }
-}
 
 #[derive(Component, Reflect)]
 struct Health {
@@ -37,22 +27,11 @@ impl Percentage for Health {
 
 fn main() {
     App::new()
-        .register_type::<Mana>()
         .add_plugins(DefaultPlugins)
         .add_plugin(WorldInspectorPlugin::new())
-        .add_plugin(HealthBarPlugin::<Mana>::default())
         .add_plugin(HealthBarPlugin::<Health>::default())
-        .insert_resource(
-            ColorScheme::<Mana>::new().foreground_color(ForegroundColor::Static(Color::BLUE)),
-        )
-        .insert_resource(ColorScheme::<Health>::new().foreground_color(
-            ForegroundColor::TriSpectrum {
-                high: Color::LIME_GREEN,
-                moderate: Color::ORANGE_RED,
-                low: Color::PURPLE,
-            },
-        ))
         .add_startup_system(setup)
+        .add_system(rotate_camera)
         .insert_resource(Msaa::Sample4)
         .run();
 }
@@ -62,34 +41,25 @@ fn setup(
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
 ) {
+    // Ground
+    commands.spawn(PbrBundle {
+        mesh: meshes.add(Mesh::from(shape::Plane {
+            size: 5.0,
+            subdivisions: 0,
+        })),
+        material: materials.add(Color::rgb(0.3, 0.5, 0.3).into()),
+        ..Default::default()
+    });
+
     let radius = 0.15;
     let values = [2.0f32, 5., 9.];
 
-    values.into_iter().enumerate().for_each(|(i, value)| {
-        commands.spawn((
-            PbrBundle {
-                mesh: meshes.add(
-                    TryInto::<Mesh>::try_into(shape::Icosphere {
-                        radius,
-                        ..default()
-                    })
-                    .unwrap(),
-                ),
-                material: materials.add(Color::rgb(1., 0.2, 0.2).into()),
-                transform: Transform::from_xyz(-2. * radius, 0.4 + i as f32 / 2., 0.0),
-                ..Default::default()
-            },
-            Mana {
-                max: 10.,
-                current: value,
-            },
-            BarBundle::<Mana> {
-                offset: BarOffset::new(radius * 1.5),
-                width: BarWidth::new(radius * 2.),
-                ..default()
-            },
-        ));
+    let bar_width = radius * 2.;
+    let bar_height = bar_width / 6.;
+    let offset = radius * 1.5;
 
+    // Spawn one mesh and bar for each value defined above
+    values.into_iter().enumerate().for_each(|(i, value)| {
         commands.spawn((
             PbrBundle {
                 mesh: meshes.add(
@@ -108,8 +78,11 @@ fn setup(
                 current: value,
             },
             BarBundle::<Health> {
-                offset: BarOffset::new(radius * 1.5),
-                width: BarWidth::new(radius * 2.),
+                offset: BarOffset::new(offset),
+                width: BarWidth::new(bar_width),
+                height: BarHeight::Static(bar_height),
+                // here is where the border is defined
+                border: BarBorder::new(bar_height / 4.).color(Color::PURPLE),
                 ..default()
             },
         ));
@@ -119,7 +92,7 @@ fn setup(
         transform: Transform::from_xyz(4.0, 8.0, 4.0),
         point_light: PointLight {
             intensity: 1500.0,
-            shadows_enabled: false,
+            shadows_enabled: true,
             ..Default::default()
         },
         ..Default::default()
@@ -129,4 +102,23 @@ fn setup(
         transform: Transform::from_xyz(0., 1.5, 4.0).looking_at(Vec3::Y, Vec3::Y),
         ..Default::default()
     });
+}
+
+fn rotate_camera(
+    mut camera_query: Query<&mut Transform, With<Camera3d>>,
+    mut angle: Local<f32>,
+    time: Res<Time>,
+) {
+    let mut transform = camera_query.single_mut();
+    let mut target_angle = *angle + 10. * time.delta_seconds();
+
+    if target_angle > 360. {
+        target_angle = 0.;
+    }
+
+    transform.translation.x = 5. * target_angle.to_radians().cos();
+    transform.translation.z = 5. * target_angle.to_radians().sin();
+
+    *angle = target_angle;
+    *transform = transform.looking_at(Vec3::ZERO, Vec3::Y);
 }

@@ -12,6 +12,15 @@ var<uniform> moderate_color: vec4<f32>;
 @group(1) @binding(4)
 var<uniform> low_color: vec4<f32>;
 
+#ifdef HAS_BORDER
+@group(1) @binding(5)
+var<uniform> border_width: f32;
+@group(1) @binding(6)
+var<uniform> resolution: vec2<f32>;
+@group(1) @binding(7)
+var<uniform> border_color: vec4<f32>;
+#endif
+
 struct Vertex {
     @location(0) position: vec3<f32>,
     @location(1) uv: vec2<f32>,
@@ -45,34 +54,43 @@ struct FragmentInput {
 
 @fragment
 fn fragment(in: FragmentInput) -> @location(0) vec4<f32> {
+    #ifdef HAS_BORDER
+      let border_y = border_width / resolution.y;
+      let border_x = border_width / resolution.x;
+
+      if in.uv.y < border_y || in.uv.y > 1. - border_y || in.uv.x < border_x || in.uv.x > 1. - border_x {
+          return border_color;
+      }
+    #endif
+
     #ifdef IS_VERTICAL
-        let val = 1.0 - value;
-        if in.uv.y < val {
-            return background_color;
-        }
+      let val = 1.0 - value;
+      if in.uv.y < val {
+          return background_color;
+      }
 
-        if val > 0.6 {
-            return low_color;
-        }
+      if val > 0.6 {
+          return low_color;
+      }
 
-        if val > 0.2 {
-            return moderate_color;
-        }
+      if val > 0.2 {
+          return moderate_color;
+      }
 
-        return high_color;
+      return high_color;
     #else
-        if in.uv.x > value {
-            return background_color;
-        }
+      if in.uv.x > value {
+          return background_color;
+      }
 
-        if value < 0.4 {
-            return low_color;
-        }
+      if value < 0.4 {
+          return low_color;
+      }
 
-        if value < 0.8 {
-            return moderate_color;
-        }
+      if value < 0.8 {
+          return moderate_color;
+      }
 
-        return high_color;
+      return high_color;
     #endif
 }

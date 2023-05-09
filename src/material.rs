@@ -1,5 +1,5 @@
 use bevy::pbr::{AlphaMode, Material, MaterialPipeline, MaterialPipelineKey};
-use bevy::prelude::{Color, Mesh};
+use bevy::prelude::{Color, Mesh, Vec2};
 use bevy::reflect::TypeUuid;
 use bevy::render::mesh::MeshVertexBufferLayout;
 use bevy::render::render_resource::{
@@ -20,18 +20,26 @@ pub(crate) struct HealthBarMaterial {
     pub moderate_color: Color,
     #[uniform(4)]
     pub low_color: Color,
+    #[uniform(5)]
+    pub border_width: f32,
+    #[uniform(6)]
+    pub resolution: Vec2,
+    #[uniform(7)]
+    pub border_color: Color,
     pub vertical: bool,
 }
 
 #[derive(Eq, PartialEq, Hash, Clone)]
 pub struct HealthBarMaterialKey {
     vertical: bool,
+    border: bool,
 }
 
 impl From<&HealthBarMaterial> for HealthBarMaterialKey {
     fn from(material: &HealthBarMaterial) -> Self {
         Self {
             vertical: material.vertical,
+            border: material.border_width > 0.,
         }
     }
 }
@@ -60,9 +68,13 @@ impl Material for HealthBarMaterial {
             Mesh::ATTRIBUTE_UV_0.at_shader_location(1),
         ])?;
 
+        let fragment = descriptor.fragment.as_mut().unwrap();
         if key.bind_group_data.vertical {
-            let fragment = descriptor.fragment.as_mut().unwrap();
             fragment.shader_defs.push("IS_VERTICAL".into());
+        }
+
+        if key.bind_group_data.border {
+            fragment.shader_defs.push("HAS_BORDER".into());
         }
 
         descriptor.vertex.buffers = vec![vertex_layout];

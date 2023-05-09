@@ -5,8 +5,8 @@ use bevy::prelude::*;
 use bevy::utils::default;
 
 use crate::constants::{
-    DEFAULT_BACKGROUND_COLOR, DEFAULT_HIGH_COLOR, DEFAULT_LOW_COLOR, DEFAULT_MODERATE_COLOR,
-    DEFAULT_RELATIVE_HEIGHT, DEFAULT_WIDTH,
+    DEFAULT_BACKGROUND_COLOR, DEFAULT_BORDER_COLOR, DEFAULT_HIGH_COLOR, DEFAULT_LOW_COLOR,
+    DEFAULT_MODERATE_COLOR, DEFAULT_RELATIVE_HEIGHT, DEFAULT_WIDTH,
 };
 
 /// Bundle to customize multiple aspects at the same time
@@ -16,6 +16,7 @@ pub struct BarBundle<T: Percentage + Component> {
     pub width: BarWidth<T>,
     pub height: BarHeight<T>,
     pub orientation: BarOrientation<T>,
+    pub border: BarBorder<T>,
 }
 
 impl<T: Percentage + Component> Default for BarBundle<T> {
@@ -25,6 +26,7 @@ impl<T: Percentage + Component> Default for BarBundle<T> {
             width: BarWidth::default(),
             height: BarHeight::default(),
             orientation: BarOrientation::default(),
+            border: BarBorder::default(),
         }
     }
 }
@@ -66,6 +68,46 @@ impl<T: Percentage + Component> BarWidth<T> {
 impl<T: Percentage + Component> Default for BarWidth<T> {
     fn default() -> Self {
         Self::new(DEFAULT_WIDTH)
+    }
+}
+
+/// Component to configure the border of the bar. Defaults to no border
+/// # Examples
+///
+/// ```
+/// use bevy::prelude::Color;
+/// use bevy_health_bar3d::prelude::BarBorder;
+/// commands.entity(entity).insert(BarBorder::<Health>::new(0.2).color(Color::PURPLE)); // configures the bar height to be 20% of its width
+/// ```
+#[derive(Component, Debug, Clone, Reflect)]
+pub struct BarBorder<T: Percentage + Component> {
+    pub width: f32,
+    pub color: Color,
+    phantom_data: PhantomData<T>,
+}
+
+impl<T: Percentage + Component> BarBorder<T> {
+    pub fn new(width: f32) -> Self {
+        Self {
+            width,
+            color: DEFAULT_BORDER_COLOR,
+            phantom_data: PhantomData,
+        }
+    }
+
+    pub fn color(mut self, color: Color) -> Self {
+        self.color = color;
+        self
+    }
+}
+
+impl<T: Percentage + Component> Default for BarBorder<T> {
+    fn default() -> Self {
+        Self {
+            width: 0.,
+            color: DEFAULT_BORDER_COLOR,
+            phantom_data: PhantomData,
+        }
     }
 }
 
