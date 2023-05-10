@@ -216,18 +216,20 @@ fn setup_idle_animation(
 
 fn kill_trex(
     animations: Res<Animations>,
-    mut query: Query<(&mut Health, &WithAnimationPlayer), Without<Distance>>,
+    mut commands: Commands,
+    mut query: Query<(&mut Health, &WithAnimationPlayer, Entity), Without<Distance>>,
     mut players: Query<&mut AnimationPlayer>,
     time: Res<Time>,
 ) {
     query
         .iter_mut()
-        .filter(|(health, _)| health.current > 0.)
-        .for_each(|(mut health, with_animation_player)| {
+        .filter(|(health, _, _)| health.current > 0.)
+        .for_each(|(mut health, with_animation_player, entity)| {
             let delta_z = time.delta_seconds();
             health.current -= delta_z;
 
             if health.current <= 0.01 {
+                commands.entity(entity).remove::<Health>();
                 players
                     .get_mut(with_animation_player.0)
                     .unwrap()
