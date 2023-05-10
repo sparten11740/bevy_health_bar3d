@@ -8,8 +8,8 @@ use bevy::render::render_resource::{
 
 #[derive(AsBindGroup, Debug, Clone, TypeUuid)]
 #[uuid = "94B33B1F-CDA6-468C-9F72-176557EFD304"]
-#[bind_group_data(HealthBarMaterialKey)]
-pub(crate) struct HealthBarMaterial {
+#[bind_group_data(BarMaterialKey)]
+pub(crate) struct BarMaterial {
     #[uniform(0)]
     pub value: f32,
     #[uniform(1)]
@@ -32,13 +32,13 @@ pub(crate) struct HealthBarMaterial {
 }
 
 #[derive(Eq, PartialEq, Hash, Clone)]
-pub struct HealthBarMaterialKey {
+pub(crate) struct BarMaterialKey {
     vertical: bool,
     border: bool,
 }
 
-impl From<&HealthBarMaterial> for HealthBarMaterialKey {
-    fn from(material: &HealthBarMaterial) -> Self {
+impl From<&BarMaterial> for BarMaterialKey {
+    fn from(material: &BarMaterial) -> Self {
         Self {
             vertical: material.vertical,
             border: material.border_width > 0.,
@@ -46,7 +46,7 @@ impl From<&HealthBarMaterial> for HealthBarMaterialKey {
     }
 }
 
-impl Material for HealthBarMaterial {
+impl Material for BarMaterial {
     fn vertex_shader() -> ShaderRef {
         "shaders/bar.wgsl".into()
     }

@@ -6,7 +6,7 @@ use bevy::prelude::*;
 
 use crate::configuration::{BarHeight, BarOffset, BarWidth, ForegroundColor, Percentage};
 use crate::constants::{DEFAULT_RELATIVE_HEIGHT, DEFAULT_WIDTH};
-use crate::material::HealthBarMaterial;
+use crate::material::BarMaterial;
 use crate::mesh::MeshHandles;
 use crate::prelude::{BarBorder, BarOrientation, ColorScheme};
 
@@ -24,9 +24,9 @@ impl<T: Percentage + Component> Default for HealthBarPlugin<T> {
 
 impl<T: Percentage + Component> Plugin for HealthBarPlugin<T> {
     fn build(&self, app: &mut App) {
-        if !app.is_plugin_added::<MaterialPlugin<HealthBarMaterial>>() {
-            app.add_plugin(MaterialPlugin::<HealthBarMaterial>::default())
-                .register_type::<WithHealthBar>();
+        if !app.is_plugin_added::<MaterialPlugin<BarMaterial>>() {
+            app.add_plugin(MaterialPlugin::<BarMaterial>::default())
+                .register_type::<WithBar>();
         }
 
         app.init_resource::<MeshHandles>()
@@ -38,9 +38,9 @@ impl<T: Percentage + Component> Plugin for HealthBarPlugin<T> {
 }
 
 #[derive(Component, Reflect)]
-struct WithHealthBar(Entity);
+struct WithBar(Entity);
 
-impl WithHealthBar {
+impl WithBar {
     fn get(&self) -> Entity {
         self.0
     }
@@ -49,7 +49,7 @@ impl WithHealthBar {
 #[allow(clippy::type_complexity)]
 fn spawn<T: Percentage + Component>(
     mut commands: Commands,
-    mut materials: ResMut<Assets<HealthBarMaterial>>,
+    mut materials: ResMut<Assets<BarMaterial>>,
     mut meshes: ResMut<Assets<Mesh>>,
     mut mesh_handles: ResMut<MeshHandles>,
     color_scheme: Res<ColorScheme<T>>,
@@ -105,7 +105,7 @@ fn spawn<T: Percentage + Component>(
             let default_border = BarBorder::new(0.);
             let border = border.unwrap_or(&default_border);
 
-            let material = materials.add(HealthBarMaterial {
+            let material = materials.add(BarMaterial {
                 value: percentage.value(),
                 background_color: color_scheme.background_color,
                 high_color: high,
@@ -140,33 +140,33 @@ fn spawn<T: Percentage + Component>(
 
             commands
                 .entity(entity)
-                .insert(WithHealthBar(health_bar))
+                .insert(WithBar(health_bar))
                 .add_child(health_bar);
         },
     );
 }
 
 fn update<T: Percentage + Component>(
-    mut materials: ResMut<Assets<HealthBarMaterial>>,
-    parent_query: Query<(&WithHealthBar, &T), Changed<T>>,
-    health_bar_query: Query<&Handle<HealthBarMaterial>>,
+    mut materials: ResMut<Assets<BarMaterial>>,
+    parent_query: Query<(&WithBar, &T), Changed<T>>,
+    bar_query: Query<&Handle<BarMaterial>>,
 ) {
     parent_query
         .iter()
-        .for_each(|(health_bar_child, hitpoints)| {
-            let Ok(material_handle) = health_bar_query.get(health_bar_child.get()) else { return; };
+        .for_each(|(health_bar_child, percentage)| {
+            let Ok(material_handle) = bar_query.get(health_bar_child.get()) else { return; };
             let material = materials.get_mut(material_handle).unwrap();
-            material.value = hitpoints.value();
+            material.value = percentage.value();
         });
 }
 
 fn remove<T: Percentage + Component>(
     mut commands: Commands,
     mut removals: RemovedComponents<T>,
-    parent_query: Query<&WithHealthBar>,
+    parent_query: Query<&WithBar>,
 ) {
     removals.iter().for_each(|entity| {
-        let Ok(&WithHealthBar(bar_entity)) = parent_query.get(entity) else {
+        let Ok(&WithBar(bar_entity)) = parent_query.get(entity) else {
             warn!("Tracked component {:?} was removed, but couldn't find bar to despawn.", entity);
             return
         };
