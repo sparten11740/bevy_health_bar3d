@@ -5,7 +5,7 @@
 Health Bar plugin for Bevy 3D. Despite its name, this plugin is universally applicable. It can be used to render a bar 
 for any value that can be represented as percentage.
 
-<img src="https://user-images.githubusercontent.com/2863630/236912868-490ac178-ebd5-4389-a69e-64160b3c56e5.gif" width="300" />
+<img src="https://github.com/sparten11740/bevy_health_bar3d/assets/2863630/31c50809-30f0-45fc-8639-054db7c96429" width="300" />
 
 
 ## Bevy Compatibility
