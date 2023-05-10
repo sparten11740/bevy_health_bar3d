@@ -8,7 +8,7 @@ use bevy::render::render_resource::{
 
 #[derive(AsBindGroup, Debug, Clone, TypeUuid)]
 #[uuid = "94B33B1F-CDA6-468C-9F72-176557EFD304"]
-#[bind_group_data(HealthBarMaterialKey)]
+#[bind_group_data(BarMaterialKey)]
 pub(crate) struct BarMaterial {
     #[uniform(0)]
     pub value: f32,
