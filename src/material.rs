@@ -32,12 +32,12 @@ pub(crate) struct BarMaterial {
 }
 
 #[derive(Eq, PartialEq, Hash, Clone)]
-pub struct HealthBarMaterialKey {
+pub(crate) struct BarMaterialKey {
     vertical: bool,
     border: bool,
 }
 
-impl From<&BarMaterial> for HealthBarMaterialKey {
+impl From<&BarMaterial> for BarMaterialKey {
     fn from(material: &BarMaterial) -> Self {
         Self {
             vertical: material.vertical,
