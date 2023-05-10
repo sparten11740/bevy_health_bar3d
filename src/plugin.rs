@@ -6,7 +6,7 @@ use bevy::prelude::*;
 
 use crate::configuration::{BarHeight, BarOffset, BarWidth, ForegroundColor, Percentage};
 use crate::constants::{DEFAULT_RELATIVE_HEIGHT, DEFAULT_WIDTH};
-use crate::material::HealthBarMaterial;
+use crate::material::BarMaterial;
 use crate::mesh::MeshHandles;
 use crate::prelude::{BarBorder, BarOrientation, ColorScheme};
 
@@ -24,8 +24,8 @@ impl<T: Percentage + Component> Default for HealthBarPlugin<T> {
 
 impl<T: Percentage + Component> Plugin for HealthBarPlugin<T> {
     fn build(&self, app: &mut App) {
-        if !app.is_plugin_added::<MaterialPlugin<HealthBarMaterial>>() {
-            app.add_plugin(MaterialPlugin::<HealthBarMaterial>::default())
+        if !app.is_plugin_added::<MaterialPlugin<BarMaterial>>() {
+            app.add_plugin(MaterialPlugin::<BarMaterial>::default())
                 .register_type::<WithBar>();
         }
 
@@ -49,7 +49,7 @@ impl WithBar {
 #[allow(clippy::type_complexity)]
 fn spawn<T: Percentage + Component>(
     mut commands: Commands,
-    mut materials: ResMut<Assets<HealthBarMaterial>>,
+    mut materials: ResMut<Assets<BarMaterial>>,
     mut meshes: ResMut<Assets<Mesh>>,
     mut mesh_handles: ResMut<MeshHandles>,
     color_scheme: Res<ColorScheme<T>>,
@@ -105,7 +105,7 @@ fn spawn<T: Percentage + Component>(
             let default_border = BarBorder::new(0.);
             let border = border.unwrap_or(&default_border);
 
-            let material = materials.add(HealthBarMaterial {
+            let material = materials.add(BarMaterial {
                 value: percentage.value(),
                 background_color: color_scheme.background_color,
                 high_color: high,
@@ -147,9 +147,9 @@ fn spawn<T: Percentage + Component>(
 }
 
 fn update<T: Percentage + Component>(
-    mut materials: ResMut<Assets<HealthBarMaterial>>,
+    mut materials: ResMut<Assets<BarMaterial>>,
     parent_query: Query<(&WithBar, &T), Changed<T>>,
-    bar_query: Query<&Handle<HealthBarMaterial>>,
+    bar_query: Query<&Handle<BarMaterial>>,
 ) {
     parent_query
         .iter()
