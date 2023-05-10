@@ -33,9 +33,7 @@ impl<T: Percentage + Component> Plugin for HealthBarPlugin<T> {
             .init_resource::<ColorScheme<T>>()
             .register_type::<BarWidth<T>>()
             .register_type::<BarOffset<T>>()
-            .add_system(spawn::<T>)
-            .add_system(remove::<T>)
-            .add_system(update::<T>);
+            .add_systems((spawn::<T>, remove::<T>, update::<T>));
     }
 }
 
