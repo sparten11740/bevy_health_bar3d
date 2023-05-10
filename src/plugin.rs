@@ -2,11 +2,7 @@ use std::marker::PhantomData;
 
 use bevy::log::warn;
 use bevy::pbr::{NotShadowCaster, NotShadowReceiver};
-use bevy::prelude::{
-    default, shape, Added, App, Assets, BuildChildren, Changed, Commands, Component,
-    DespawnRecursiveExt, Entity, Handle, MaterialMeshBundle, MaterialPlugin, Mesh, Name, Plugin,
-    Query, Reflect, RemovedComponents, Res, ResMut, Vec2, Vec3,
-};
+use bevy::prelude::*;
 
 use crate::configuration::{BarHeight, BarOffset, BarWidth, ForegroundColor, Percentage};
 use crate::constants::{DEFAULT_RELATIVE_HEIGHT, DEFAULT_WIDTH};
