@@ -31,7 +31,8 @@ impl<T: Percentage + Component> Default for BarBundle<T> {
     }
 }
 
-/// Component to configure the Y-offset of the bar relative to the entity its attached to
+/// Component to configure the offset of the bar relative to the entity its attached to.
+/// For horizontal bars, this is an offset along the y-axis, for vertical bars along the x-axis.
 #[derive(Component, Debug, Clone, Reflect)]
 pub struct BarOffset<T: Percentage + Component>(f32, #[reflect(ignore)] PhantomData<T>);
 
