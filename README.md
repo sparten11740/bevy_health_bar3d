@@ -79,4 +79,4 @@ and necessary to support multiple bars per entity.
 
 That's it! Updates to the values of your component will be automatically propagated through to the bar.
 
-Further examples can be found [here](./examples)
+Further examples can be found [here](https://github.com/sparten11740/bevy_health_bar3d/tree/main/examples)
