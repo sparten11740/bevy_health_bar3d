@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/sparten11740/bevy_health_bar3d/compare/v1.2.1...v1.3.0) (2023-05-10)
+
+
+### Features
+
+* despawn bar when tracked component is removed ([#11](https://github.com/sparten11740/bevy_health_bar3d/issues/11)) ([9f1bb1f](https://github.com/sparten11740/bevy_health_bar3d/commit/9f1bb1f85814b5c68f9c47e137ec82e87cbad7e9))
+
 ## [1.2.1](https://github.com/sparten11740/bevy_health_bar3d/compare/v1.2.0...v1.2.1) (2023-05-10)
 
 
