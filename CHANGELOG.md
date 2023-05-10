@@ -1,3 +1,10 @@
+## [1.2.1](https://github.com/sparten11740/bevy_health_bar3d/compare/v1.2.0...v1.2.1) (2023-05-10)
+
+
+### Bug Fixes
+
+* offset vertices to keep bar in stable position ([#9](https://github.com/sparten11740/bevy_health_bar3d/issues/9)) ([ea6bcf9](https://github.com/sparten11740/bevy_health_bar3d/commit/ea6bcf9e6a787a15ee934e74e3c8f5a5a60f828a))
+
 # [1.2.0](https://github.com/sparten11740/bevy_health_bar3d/compare/v1.1.1...v1.2.0) (2023-05-09)
 
 
