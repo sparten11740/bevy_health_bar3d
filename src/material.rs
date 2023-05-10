@@ -1,5 +1,5 @@
 use bevy::pbr::{AlphaMode, Material, MaterialPipeline, MaterialPipelineKey};
-use bevy::prelude::{Color, Mesh, Vec2};
+use bevy::prelude::{Color, Mesh, Vec2, Vec3};
 use bevy::reflect::TypeUuid;
 use bevy::render::mesh::MeshVertexBufferLayout;
 use bevy::render::render_resource::{
@@ -21,10 +21,12 @@ pub(crate) struct HealthBarMaterial {
     #[uniform(4)]
     pub low_color: Color,
     #[uniform(5)]
-    pub border_width: f32,
+    pub offset: Vec3,
     #[uniform(6)]
     pub resolution: Vec2,
     #[uniform(7)]
+    pub border_width: f32,
+    #[uniform(8)]
     pub border_color: Color,
     pub vertical: bool,
 }

@@ -4,7 +4,7 @@ use bevy::pbr::{NotShadowCaster, NotShadowReceiver};
 use bevy::prelude::{
     default, shape, Added, App, Assets, BuildChildren, Changed, Commands, Component, Entity,
     Handle, MaterialMeshBundle, MaterialPlugin, Mesh, Name, Plugin, Query, Reflect, Res, ResMut,
-    Transform, Vec2, Vec3,
+    Vec2, Vec3,
 };
 
 use crate::configuration::{BarHeight, BarOffset, BarWidth, ForegroundColor, Percentage};
@@ -95,8 +95,7 @@ fn spawn<T: Percentage + Component>(
                 )
             });
 
-            let offset = offset.map(|it| it.get()).unwrap_or(0.);
-            let transform = Transform::from_translation(offset * offset_axis);
+            let offset = offset.map(|it| it.get()).unwrap_or(0.) * offset_axis;
 
             let (high, moderate, low) = match color_scheme.foreground_color {
                 ForegroundColor::Static(color) => (color, color, color),
@@ -117,6 +116,7 @@ fn spawn<T: Percentage + Component>(
                 moderate_color: moderate,
                 low_color: low,
                 vertical,
+                offset,
                 resolution: Vec2::new(width, height),
                 border_width: border.width,
                 border_color: border.color,
@@ -134,7 +134,7 @@ fn spawn<T: Percentage + Component>(
                     MaterialMeshBundle {
                         mesh,
                         material,
-                        transform,
+                        // transform,
                         ..default()
                     },
                     NotShadowCaster,

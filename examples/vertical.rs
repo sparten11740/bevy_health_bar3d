@@ -29,6 +29,7 @@ fn main() {
         .add_plugin(WorldInspectorPlugin::new())
         .add_plugin(HealthBarPlugin::<Health>::default())
         .add_startup_system(setup)
+        .add_system(rotate_camera)
         .run();
 }
 
@@ -37,8 +38,19 @@ fn setup(
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
 ) {
+    // Ground
+    commands.spawn(PbrBundle {
+        mesh: meshes.add(Mesh::from(shape::Plane {
+            size: 5.0,
+            subdivisions: 0,
+        })),
+        material: materials.add(Color::rgb(0.3, 0.5, 0.3).into()),
+        ..Default::default()
+    });
+
     let radius = 0.15;
 
+    // Mesh with Health Bar
     commands.spawn((
         PbrBundle {
             mesh: meshes.add(
@@ -64,18 +76,39 @@ fn setup(
         },
     ));
 
+    // Light
     commands.spawn(PointLightBundle {
         transform: Transform::from_xyz(4.0, 8.0, 4.0),
         point_light: PointLight {
             intensity: 1500.0,
-            shadows_enabled: false,
+            shadows_enabled: true,
             ..Default::default()
         },
         ..Default::default()
     });
 
+    // Camera
     commands.spawn(Camera3dBundle {
         transform: Transform::from_xyz(0., 1.5, 5.0).looking_at(Vec3::Y, Vec3::Y),
         ..Default::default()
     });
+}
+
+fn rotate_camera(
+    mut camera_query: Query<&mut Transform, With<Camera3d>>,
+    mut angle: Local<f32>,
+    time: Res<Time>,
+) {
+    let mut transform = camera_query.single_mut();
+    let mut target_angle = *angle + 10. * time.delta_seconds();
+
+    if target_angle > 360. {
+        target_angle = 0.;
+    }
+
+    transform.translation.x = 5. * target_angle.to_radians().cos();
+    transform.translation.z = 5. * target_angle.to_radians().sin();
+
+    *angle = target_angle;
+    *transform = transform.looking_at(Vec3::ZERO, Vec3::Y);
 }

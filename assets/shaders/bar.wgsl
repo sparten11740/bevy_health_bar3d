@@ -11,13 +11,14 @@ var<uniform> high_color: vec4<f32>;
 var<uniform> moderate_color: vec4<f32>;
 @group(1) @binding(4)
 var<uniform> low_color: vec4<f32>;
-
-#ifdef HAS_BORDER
 @group(1) @binding(5)
-var<uniform> border_width: f32;
+var<uniform> offset: vec3<f32>;
+#ifdef HAS_BORDER
 @group(1) @binding(6)
 var<uniform> resolution: vec2<f32>;
 @group(1) @binding(7)
+var<uniform> border_width: f32;
+@group(1) @binding(8)
 var<uniform> border_color: vec4<f32>;
 #endif
 
@@ -39,8 +40,8 @@ fn vertex(vertex: Vertex) -> VertexOutput {
     let camera_right = normalize(vec3<f32>(view_proj.x.x, view_proj.y.x, view_proj.z.x));
     let camera_up = normalize(vec3<f32>(view_proj.x.y, view_proj.y.y, view_proj.z.y));
 
-    let world_space = camera_right * vertex.position.x + camera_up * vertex.position.y;
-    let position = view.view_proj * mesh.model * vec4<f32>(world_space, 1.0);
+    let world_space = camera_right * (vertex.position.x + offset.x) + camera_up * (vertex.position.y + offset.y);
+    let position = view.view_proj * mesh.model * vec4<f32>(world_space, 1.);
 
     out.uv = vertex.uv;
     out.clip_position = position;
