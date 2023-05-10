@@ -1,6 +1,6 @@
 [package]
 name = "bevy_health_bar3d"
-description = "Simple healthbar for bevy implemented as a billboard shader"
+description = "Health bar for bevy implemented as a billboard shader"
 version = "1.2.1"
 edition = "2021"
 license = "MIT OR Apache-2.0"

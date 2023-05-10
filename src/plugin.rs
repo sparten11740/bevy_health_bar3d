@@ -1,11 +1,8 @@
 use std::marker::PhantomData;
 
+use bevy::log::warn;
 use bevy::pbr::{NotShadowCaster, NotShadowReceiver};
-use bevy::prelude::{
-    default, shape, Added, App, Assets, BuildChildren, Changed, Commands, Component, Entity,
-    Handle, MaterialMeshBundle, MaterialPlugin, Mesh, Name, Plugin, Query, Reflect, Res, ResMut,
-    Vec2, Vec3,
-};
+use bevy::prelude::*;
 
 use crate::configuration::{BarHeight, BarOffset, BarWidth, ForegroundColor, Percentage};
 use crate::constants::{DEFAULT_RELATIVE_HEIGHT, DEFAULT_WIDTH};
@@ -36,8 +33,7 @@ impl<T: Percentage + Component> Plugin for HealthBarPlugin<T> {
             .init_resource::<ColorScheme<T>>()
             .register_type::<BarWidth<T>>()
             .register_type::<BarOffset<T>>()
-            .add_system(spawn::<T>)
-            .add_system(update::<T>);
+            .add_systems((spawn::<T>, remove::<T>, update::<T>));
     }
 }
 
@@ -162,4 +158,19 @@ fn update<T: Percentage + Component>(
             let material = materials.get_mut(material_handle).unwrap();
             material.value = hitpoints.value();
         });
+}
+
+fn remove<T: Percentage + Component>(
+    mut commands: Commands,
+    mut removals: RemovedComponents<T>,
+    parent_query: Query<&WithHealthBar>,
+) {
+    removals.iter().for_each(|entity| {
+        let Ok(&WithHealthBar(bar_entity)) = parent_query.get(entity) else {
+            warn!("Tracked component {:?} was removed, but couldn't find bar to despawn.", entity);
+            return
+        };
+
+        commands.entity(bar_entity).despawn_recursive()
+    });
 }
