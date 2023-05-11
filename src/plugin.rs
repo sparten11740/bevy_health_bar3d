@@ -130,7 +130,6 @@ fn spawn<T: Percentage + Component>(
                     MaterialMeshBundle {
                         mesh,
                         material,
-                        // transform,
                         ..default()
                     },
                     NotShadowCaster,
