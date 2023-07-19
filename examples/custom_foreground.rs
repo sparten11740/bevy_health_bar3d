@@ -38,10 +38,7 @@ impl Percentage for Health {
 fn main() {
     App::new()
         .register_type::<Mana>()
-        .add_plugins(DefaultPlugins)
-        .add_plugin(WorldInspectorPlugin::new())
-        .add_plugin(HealthBarPlugin::<Mana>::default())
-        .add_plugin(HealthBarPlugin::<Health>::default())
+        .add_plugins((DefaultPlugins, WorldInspectorPlugin::new(), HealthBarPlugin::<Mana>::default(), HealthBarPlugin::<Health>::default()))
         .insert_resource(
             ColorScheme::<Mana>::new().foreground_color(ForegroundColor::Static(Color::BLUE)),
         )
@@ -52,7 +49,7 @@ fn main() {
                 low: Color::PURPLE,
             },
         ))
-        .add_startup_system(setup)
+        .add_systems(Startup, setup)
         .insert_resource(Msaa::Sample4)
         .run();
 }

@@ -25,11 +25,9 @@ impl Percentage for Health {
 fn main() {
     App::new()
         .register_type::<Health>()
-        .add_plugins(DefaultPlugins)
-        .add_plugin(WorldInspectorPlugin::new())
-        .add_plugin(HealthBarPlugin::<Health>::default())
-        .add_startup_system(setup)
-        .add_system(rotate_camera)
+        .add_plugins((DefaultPlugins, WorldInspectorPlugin::new(), HealthBarPlugin::<Health>::default()))
+        .add_systems(Startup, setup)
+        .add_systems(Update, rotate_camera)
         .run();
 }
 

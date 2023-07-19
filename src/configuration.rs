@@ -1,7 +1,7 @@
 use std::convert::Infallible;
 use std::marker::PhantomData;
 
-use bevy::{prelude::*, reflect::TypePath};
+use bevy::prelude::*;
 use bevy::utils::default;
 
 use crate::constants::{
