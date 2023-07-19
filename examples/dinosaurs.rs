@@ -54,9 +54,9 @@ fn main() {
     App::new()
         .register_type::<Health>()
         .add_plugins(DefaultPlugins)
-        .add_plugin(HealthBarPlugin::<Health>::default())
-        .add_plugin(HealthBarPlugin::<Distance>::default())
-        .add_plugin(TweeningPlugin)
+        .add_plugins(HealthBarPlugin::<Health>::default())
+        .add_plugins(HealthBarPlugin::<Distance>::default())
+        .add_plugins(TweeningPlugin)
         .insert_resource(
             ColorScheme::<Distance>::new().foreground_color(ForegroundColor::Static(Color::BISQUE)),
         )
@@ -66,8 +66,8 @@ fn main() {
                 .background_color(Color::RED),
         )
         .insert_resource(Msaa::Sample4)
-        .add_startup_system(setup)
-        .add_systems((
+        .add_systems(Startup, setup)
+        .add_systems(Update, (
             move_camera,
             link_animations,
             setup_idle_animation,

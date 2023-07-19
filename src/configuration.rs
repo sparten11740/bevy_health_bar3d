@@ -1,7 +1,7 @@
 use std::convert::Infallible;
 use std::marker::PhantomData;
 
-use bevy::prelude::*;
+use bevy::{prelude::*, reflect::TypePath};
 use bevy::utils::default;
 
 use crate::constants::{
@@ -71,6 +71,16 @@ impl<T: Percentage + Component> Default for BarWidth<T> {
         Self::new(DEFAULT_WIDTH)
     }
 }
+
+// impl<T: Percentage + Component> TypePath for BarWidth<T> {
+//     fn type_path() -> &'static str {
+//         "bevy_health_bar3d::BarWidth"
+//     }
+
+//     fn short_type_path() -> &'static str {
+//         "bevy_health_bar3d::BarWidth"
+//     }
+// }
 
 /// Component to configure the border of the bar. Defaults to no border
 /// # Examples
@@ -150,7 +160,7 @@ pub enum BarOrientation<T: Percentage + Component> {
     Horizontal,
     Vertical,
 
-    _Internal(Infallible, PhantomData<T>),
+    _Internal(Infallible, PhantomData<T>)
 }
 
 /// Trait implemented by the component to be tracked by the health bar

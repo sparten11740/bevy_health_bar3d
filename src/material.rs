@@ -1,6 +1,6 @@
 use bevy::pbr::{AlphaMode, Material, MaterialPipeline, MaterialPipelineKey};
 use bevy::prelude::{Color, Mesh, Vec2, Vec3};
-use bevy::reflect::TypeUuid;
+use bevy::reflect::{TypeUuid, TypePath};
 use bevy::render::mesh::MeshVertexBufferLayout;
 use bevy::render::render_resource::{
     AsBindGroup, RenderPipelineDescriptor, ShaderRef, SpecializedMeshPipelineError,
@@ -81,5 +81,15 @@ impl Material for BarMaterial {
 
         descriptor.vertex.buffers = vec![vertex_layout];
         Ok(())
+    }
+}
+
+impl TypePath for BarMaterial {
+    fn type_path() -> &'static str {
+        "bevy_health_bar3d::BarMaterial"
+    }
+
+    fn short_type_path() -> &'static str {
+        "bevy_health_bar3d::BarMaterial"
     }
 }

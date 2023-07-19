@@ -3,6 +3,7 @@ use std::marker::PhantomData;
 use bevy::log::warn;
 use bevy::pbr::{NotShadowCaster, NotShadowReceiver};
 use bevy::prelude::*;
+use bevy::reflect::TypePath;
 
 use crate::configuration::{BarHeight, BarOffset, BarWidth, ForegroundColor, Percentage};
 use crate::constants::{DEFAULT_RELATIVE_HEIGHT, DEFAULT_WIDTH};
@@ -22,10 +23,10 @@ impl<T: Percentage + Component> Default for HealthBarPlugin<T> {
     }
 }
 
-impl<T: Percentage + Component> Plugin for HealthBarPlugin<T> {
+impl<T: Percentage + Component + TypePath> Plugin for HealthBarPlugin<T> {
     fn build(&self, app: &mut App) {
         if !app.is_plugin_added::<MaterialPlugin<BarMaterial>>() {
-            app.add_plugin(MaterialPlugin::<BarMaterial>::default())
+            app.add_plugins(MaterialPlugin::<BarMaterial>::default())
                 .register_type::<WithBar>();
         }
 
@@ -33,7 +34,7 @@ impl<T: Percentage + Component> Plugin for HealthBarPlugin<T> {
             .init_resource::<ColorScheme<T>>()
             .register_type::<BarWidth<T>>()
             .register_type::<BarOffset<T>>()
-            .add_systems((spawn::<T>, remove::<T>, update::<T>));
+            .add_systems(Update, (spawn::<T>, remove::<T>, update::<T>));
     }
 }
 
@@ -75,12 +76,14 @@ fn spawn<T: Percentage + Component>(
                 .map(|it| match it {
                     BarHeight::Relative(pct) => pct * width,
                     BarHeight::Static(height) => *height,
+                    BarHeight::_Internal(_, _) => todo!(),
                 })
                 .unwrap_or(width * DEFAULT_RELATIVE_HEIGHT);
 
             let (width, height, vertical, offset_axis) = match orientation {
                 BarOrientation::Horizontal => (width, height, false, Vec3::Y),
                 BarOrientation::Vertical => (height, width, true, Vec3::X),
+                BarOrientation::_Internal(_, _) => todo!()
             };
 
             let mesh = mesh_handles.get(width, height).cloned().unwrap_or_else(|| {
