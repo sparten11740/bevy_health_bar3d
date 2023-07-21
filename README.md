@@ -12,8 +12,9 @@ or layered cameras out of the box.
 ## Bevy Compatibility
 
 | Bevy Version | Crate Version |
-| ------------ | ------------: |
-| `0.10`       |   \>= `1.1.0` |
+|--------------|--------------:|
+| `0.11`       |   >=  `2.0.0` |
+| `0.10`       |       `1.1.0` |
 | `0.9`        |       `1.0.0` |
 
 ## Usage
