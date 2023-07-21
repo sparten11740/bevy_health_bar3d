@@ -1,12 +1,12 @@
 use bevy::pbr::{AlphaMode, Material, MaterialPipeline, MaterialPipelineKey};
-use bevy::prelude::{Color, Mesh, Vec2, Vec3};
+use bevy::prelude::{Color, Mesh, Reflect, Vec2, Vec3};
 use bevy::reflect::TypeUuid;
 use bevy::render::mesh::MeshVertexBufferLayout;
 use bevy::render::render_resource::{
     AsBindGroup, RenderPipelineDescriptor, ShaderRef, SpecializedMeshPipelineError,
 };
 
-#[derive(AsBindGroup, Debug, Clone, TypeUuid)]
+#[derive(AsBindGroup, Debug, Clone, TypeUuid, Reflect)]
 #[uuid = "94B33B1F-CDA6-468C-9F72-176557EFD304"]
 #[bind_group_data(BarMaterialKey)]
 pub(crate) struct BarMaterial {

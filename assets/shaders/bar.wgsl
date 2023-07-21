@@ -1,5 +1,5 @@
-#import bevy_pbr::mesh_view_bindings
-#import bevy_pbr::mesh_bindings
+#import bevy_pbr::mesh_view_bindings view
+#import bevy_pbr::mesh_bindings mesh
 
 @group(1) @binding(0)
 var<uniform> value: f32;
