@@ -1,10 +1,7 @@
 use bevy::app::App;
 use bevy::asset::Assets;
 use bevy::pbr::{PbrBundle, PointLight, PointLightBundle, StandardMaterial};
-use bevy::prelude::{
-    shape, Camera3d, Camera3dBundle, Color, Commands, Component, Local, Mesh, Msaa, Query, Reflect,
-    Res, ResMut, Time, Transform, Vec3, With,
-};
+use bevy::prelude::*;
 use bevy::utils::default;
 use bevy::DefaultPlugins;
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
@@ -28,10 +25,12 @@ impl Percentage for Health {
 fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
-        .add_plugin(WorldInspectorPlugin::new())
-        .add_plugin(HealthBarPlugin::<Health>::default())
-        .add_startup_system(setup)
-        .add_system(rotate_camera)
+        .add_plugins((
+            HealthBarPlugin::<Health>::default(),
+            WorldInspectorPlugin::new(),
+        ))
+        .add_systems(Startup, setup)
+        .add_systems(Update, rotate_camera)
         .insert_resource(Msaa::Sample4)
         .run();
 }
