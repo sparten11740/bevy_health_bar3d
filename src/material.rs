@@ -1,5 +1,5 @@
 use bevy::pbr::{AlphaMode, Material, MaterialPipeline, MaterialPipelineKey};
-use bevy::prelude::{Color, Mesh, Vec2, Vec3};
+use bevy::prelude::{Color, Mesh, Vec4};
 use bevy::reflect::{TypeUuid, TypePath};
 use bevy::render::mesh::MeshVertexBufferLayout;
 use bevy::render::render_resource::{
@@ -11,7 +11,7 @@ use bevy::render::render_resource::{
 #[bind_group_data(BarMaterialKey)]
 pub(crate) struct BarMaterial {
     #[uniform(0)]
-    pub value: f32,
+    pub settings: Vec4,
     #[uniform(1)]
     pub background_color: Color,
     #[uniform(2)]
@@ -21,12 +21,8 @@ pub(crate) struct BarMaterial {
     #[uniform(4)]
     pub low_color: Color,
     #[uniform(5)]
-    pub offset: Vec3,
+    pub offset: Vec4,
     #[uniform(6)]
-    pub resolution: Vec2,
-    #[uniform(7)]
-    pub border_width: f32,
-    #[uniform(8)]
     pub border_color: Color,
     pub vertical: bool,
 }
@@ -41,7 +37,7 @@ impl From<&BarMaterial> for BarMaterialKey {
     fn from(material: &BarMaterial) -> Self {
         Self {
             vertical: material.vertical,
-            border: material.border_width > 0.,
+            border: material.settings.y > 0.,
         }
     }
 }

@@ -109,15 +109,18 @@ fn spawn<T: Percentage + Component>(
             let border = border.unwrap_or(&default_border);
 
             let material = materials.add(BarMaterial {
-                value: percentage.value(),
+                // settings: Vec4 { x: percentage.value(), y: border_width, z: width, w: height },
+                // settings: Vec4(percentage.value(), border_width, width, height),
+                settings: (percentage.value(), border.width, width, height).into(),
+                // value: percentage.value(),
                 background_color: color_scheme.background_color,
                 high_color: high,
                 moderate_color: moderate,
                 low_color: low,
                 vertical,
-                offset,
-                resolution: Vec2::new(width, height),
-                border_width: border.width,
+                offset: (offset, 0.0).into(),
+                // resolution: Vec2::new(width, height),
+                // border_width: border.width,
                 border_color: border.color,
             });
 
@@ -158,7 +161,7 @@ fn update<T: Percentage + Component>(
         .for_each(|(health_bar_child, percentage)| {
             let Ok(material_handle) = bar_query.get(health_bar_child.get()) else { return; };
             let material = materials.get_mut(material_handle).unwrap();
-            material.value = percentage.value();
+            material.settings.x = percentage.value();
         });
 }
 

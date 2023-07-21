@@ -2,7 +2,7 @@
 #import bevy_pbr::mesh_bindings mesh
 
 @group(1) @binding(0)
-var<uniform> value: f32;
+var<uniform> settings: vec4<f32>;
 @group(1) @binding(1)
 var<uniform> background_color: vec4<f32>;
 @group(1) @binding(2)
@@ -12,13 +12,9 @@ var<uniform> moderate_color: vec4<f32>;
 @group(1) @binding(4)
 var<uniform> low_color: vec4<f32>;
 @group(1) @binding(5)
-var<uniform> offset: vec3<f32>;
+var<uniform> offset: vec4<f32>;
 #ifdef HAS_BORDER
 @group(1) @binding(6)
-var<uniform> resolution: vec2<f32>;
-@group(1) @binding(7)
-var<uniform> border_width: f32;
-@group(1) @binding(8)
 var<uniform> border_color: vec4<f32>;
 #endif
 
@@ -56,8 +52,8 @@ struct FragmentInput {
 @fragment
 fn fragment(in: FragmentInput) -> @location(0) vec4<f32> {
     #ifdef HAS_BORDER
-      let border_y = border_width / resolution.y;
-      let border_x = border_width / resolution.x;
+      let border_y = settings.y / settings.w;
+      let border_x = settings.y / settings.z;
 
       if in.uv.y < border_y || in.uv.y > 1. - border_y || in.uv.x < border_x || in.uv.x > 1. - border_x {
           return border_color;
@@ -65,7 +61,7 @@ fn fragment(in: FragmentInput) -> @location(0) vec4<f32> {
     #endif
 
     #ifdef IS_VERTICAL
-      let val = 1.0 - value;
+      let val = 1.0 - settings.x;
       if in.uv.y < val {
           return background_color;
       }
@@ -80,15 +76,15 @@ fn fragment(in: FragmentInput) -> @location(0) vec4<f32> {
 
       return high_color;
     #else
-      if in.uv.x > value {
+      if in.uv.x > settings.x {
           return background_color;
       }
 
-      if value < 0.4 {
+      if settings.x < 0.4 {
           return low_color;
       }
 
-      if value < 0.8 {
+      if settings.x < 0.8 {
           return moderate_color;
       }
 
