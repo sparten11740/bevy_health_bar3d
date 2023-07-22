@@ -56,8 +56,8 @@ fn main() {
         .register_type::<Distance>()
         .add_plugins((
             DefaultPlugins,
-            HealthBarPlugin::<Health>::default(),
             HealthBarPlugin::<Distance>::default(),
+            HealthBarPlugin::<Health>::default(),
             TweeningPlugin,
         ))
         .insert_resource(
@@ -223,7 +223,7 @@ fn setup_idle_animation(
 fn kill_trex(
     animations: Res<Animations>,
     mut commands: Commands,
-    mut query: Query<(&mut Health, &WithAnimationPlayer, Entity), With<Distance>>,
+    mut query: Query<(&mut Health, &WithAnimationPlayer, Entity), Without<Distance>>,
     mut players: Query<&mut AnimationPlayer>,
     time: Res<Time>,
 ) {
