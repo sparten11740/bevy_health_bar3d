@@ -1,3 +1,10 @@
+## [1.4.1](https://github.com/sparten11740/bevy_health_bar3d/compare/v1.4.0...v1.4.1) (2023-07-22)
+
+
+### Bug Fixes
+
+* update correct bar in multi-bar scenario ([#16](https://github.com/sparten11740/bevy_health_bar3d/issues/16)) ([5a622e2](https://github.com/sparten11740/bevy_health_bar3d/commit/5a622e223773b967690fa2533321b0c61b7bda09))
+
 # [1.4.0](https://github.com/sparten11740/bevy_health_bar3d/compare/v1.3.0...v1.4.0) (2023-07-22)
 
 
