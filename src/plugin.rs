@@ -148,15 +148,13 @@ fn update<T: Percentage + Component>(
     parent_query: Query<(&WithBar, &T), Changed<T>>,
     bar_query: Query<&Handle<BarMaterial>>,
 ) {
-    parent_query
-        .iter()
-        .for_each(|(health_bar_child, percentage)| {
-            let Ok(material_handle) = bar_query.get(health_bar_child.get()) else {
-                return;
-            };
-            let material = materials.get_mut(material_handle).unwrap();
-            material.value = percentage.value();
-        });
+    parent_query.iter().for_each(|(bar, percentage)| {
+        let Ok(material_handle) = bar_query.get(bar.get()) else {
+            return;
+        };
+        let material = materials.get_mut(material_handle).unwrap();
+        material.value = percentage.value();
+    });
 }
 
 fn remove<T: Percentage + Component>(
