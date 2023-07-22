@@ -12,8 +12,8 @@ or layered cameras out of the box.
 ## Bevy Compatibility
 
 | Bevy Version | Crate Version |
-|--------------|--------------:|
-| `0.11`       |   >=  `1.2.0` |
+| ------------ | ------------: |
+| `0.11`       |    >= `1.2.0` |
 | `0.10`       |       `1.1.0` |
 | `0.9`        |       `1.0.0` |
 
@@ -81,4 +81,8 @@ and necessary to support multiple bars per entity.
 
 That's it! Updates to the values of your component will be automatically propagated through to the bar.
 
-Further examples can be found [here](https://github.com/sparten11740/bevy_health_bar3d/tree/main/examples)
+## Examples
+
+Examples can be found [here](https://github.com/sparten11740/bevy_health_bar3d/tree/main/examples).
+To run an example for web, first install cargo-make (`cargo install cargo-make`) and then call
+`cargo make web <name-of-the-example`, such as `cargo make web dinosaurs`
