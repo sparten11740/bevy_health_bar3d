@@ -1,0 +1,5 @@
+[tasks.web]
+description = "Run an example for web"
+command = "cargo"
+
+args = ["run", "--package", "bevy_health_bar3d", "--target", "wasm32-unknown-unknown", "--example", "${@}"]

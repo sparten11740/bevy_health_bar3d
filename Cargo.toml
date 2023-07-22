@@ -10,7 +10,7 @@ categories = ["game-development", "rendering"]
 repository = "https://github.com/sparten11740/bevy_health_bar3d.git"
 homepage = "https://github.com/sparten11740/bevy_health_bar3d"
 authors = ["Jan Wendland"]
-exclude = ["examples"]
+include = ["/src", "CHANGELOG.md", "/assets"]
 
 [dependencies]
 bevy = { version = "0.11.0", features = ["bevy_pbr", "bevy_render"] }

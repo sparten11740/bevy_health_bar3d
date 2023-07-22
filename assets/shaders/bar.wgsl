@@ -2,7 +2,7 @@
 #import bevy_pbr::mesh_bindings mesh
 
 @group(1) @binding(0)
-var<uniform> value: f32;
+var<uniform> value_and_dimensions: vec4<f32>;
 @group(1) @binding(1)
 var<uniform> background_color: vec4<f32>;
 @group(1) @binding(2)
@@ -12,13 +12,9 @@ var<uniform> moderate_color: vec4<f32>;
 @group(1) @binding(4)
 var<uniform> low_color: vec4<f32>;
 @group(1) @binding(5)
-var<uniform> offset: vec3<f32>;
+var<uniform> offset: vec4<f32>;
 #ifdef HAS_BORDER
 @group(1) @binding(6)
-var<uniform> resolution: vec2<f32>;
-@group(1) @binding(7)
-var<uniform> border_width: f32;
-@group(1) @binding(8)
 var<uniform> border_color: vec4<f32>;
 #endif
 
@@ -55,7 +51,10 @@ struct FragmentInput {
 
 @fragment
 fn fragment(in: FragmentInput) -> @location(0) vec4<f32> {
+    let value = value_and_dimensions.x;
     #ifdef HAS_BORDER
+      let resolution = value_and_dimensions.yz;
+      let border_width = value_and_dimensions.w;
       let border_y = border_width / resolution.y;
       let border_x = border_width / resolution.x;
 
