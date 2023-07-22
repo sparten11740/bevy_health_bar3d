@@ -1,3 +1,10 @@
+## [1.4.2](https://github.com/sparten11740/bevy_health_bar3d/compare/v1.4.1...v1.4.2) (2023-07-22)
+
+
+### Bug Fixes
+
+* wgpu compatibility ([#17](https://github.com/sparten11740/bevy_health_bar3d/issues/17)) ([26fc0b7](https://github.com/sparten11740/bevy_health_bar3d/commit/26fc0b7941c336474b97d194e8cf3cc5c8b1e960))
+
 ## [1.4.1](https://github.com/sparten11740/bevy_health_bar3d/compare/v1.4.0...v1.4.1) (2023-07-22)
 
 
