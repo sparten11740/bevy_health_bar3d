@@ -39,12 +39,10 @@ impl Percentage for Health {
 
 fn main() {
     App::new()
-        .add_plugin(HealthBarPlugin::<Health>::default())
-        // ... initialize multiple times to track further component types
-        .add_plugin(HealthBarPlugin::<Mana>::default())
+        // add multiple times to track further component types
+        .add_plugins((HealthBarPlugin::<Health>::default(), HealthBarPlugin::<Mana>::default()))
         // set a different color for the Mana bar
         .insert_resource(ColorScheme::<Mana>::new().foreground_color(ForegroundColor::Static(Color::BLUE)))
-        // ... other plugins
         .run();
 }
 ```
