@@ -7,9 +7,7 @@ use bevy::DefaultPlugins;
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
 
 use bevy_health_bar3d::configuration::ForegroundColor;
-use bevy_health_bar3d::prelude::{
-    BarBundle, BarOffset, BarWidth, ColorScheme, HealthBarPlugin, Percentage,
-};
+use bevy_health_bar3d::prelude::*;
 
 #[derive(Component, Reflect)]
 struct Mana {
@@ -39,9 +37,11 @@ fn main() {
     App::new()
         .register_type::<Mana>()
         .add_plugins(DefaultPlugins)
-        .add_plugin(WorldInspectorPlugin::new())
-        .add_plugin(HealthBarPlugin::<Mana>::default())
-        .add_plugin(HealthBarPlugin::<Health>::default())
+        .add_plugins((
+            WorldInspectorPlugin::new(),
+            HealthBarPlugin::<Mana>::default(),
+            HealthBarPlugin::<Health>::default(),
+        ))
         .insert_resource(
             ColorScheme::<Mana>::new().foreground_color(ForegroundColor::Static(Color::BLUE)),
         )
@@ -52,7 +52,7 @@ fn main() {
                 low: Color::PURPLE,
             },
         ))
-        .add_startup_system(setup)
+        .add_systems(Startup, setup)
         .insert_resource(Msaa::Sample4)
         .run();
 }

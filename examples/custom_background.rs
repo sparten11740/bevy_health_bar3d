@@ -1,9 +1,7 @@
 use bevy::app::App;
 use bevy::asset::Assets;
 use bevy::pbr::{PbrBundle, PointLight, PointLightBundle, StandardMaterial};
-use bevy::prelude::{
-    shape, Camera3dBundle, Color, Commands, Component, Mesh, Msaa, Reflect, ResMut, Transform, Vec3,
-};
+use bevy::prelude::*;
 use bevy::utils::default;
 use bevy::DefaultPlugins;
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
@@ -28,10 +26,12 @@ fn main() {
     App::new()
         .register_type::<Health>()
         .add_plugins(DefaultPlugins)
-        .add_plugin(WorldInspectorPlugin::new())
-        .add_plugin(HealthBarPlugin::<Health>::default())
+        .add_plugins((
+            WorldInspectorPlugin::new(),
+            HealthBarPlugin::<Health>::default(),
+        ))
         .insert_resource(ColorScheme::<Health>::new().background_color(Color::RED))
-        .add_startup_system(setup)
+        .add_systems(Startup, setup)
         .insert_resource(Msaa::Sample4)
         .run();
 }

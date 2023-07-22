@@ -53,10 +53,13 @@ impl Percentage for Distance {
 fn main() {
     App::new()
         .register_type::<Health>()
-        .add_plugins(DefaultPlugins)
-        .add_plugin(HealthBarPlugin::<Health>::default())
-        .add_plugin(HealthBarPlugin::<Distance>::default())
-        .add_plugin(TweeningPlugin)
+        .register_type::<Distance>()
+        .add_plugins((
+            DefaultPlugins,
+            HealthBarPlugin::<Distance>::default(),
+            HealthBarPlugin::<Health>::default(),
+            TweeningPlugin,
+        ))
         .insert_resource(
             ColorScheme::<Distance>::new().foreground_color(ForegroundColor::Static(Color::BISQUE)),
         )
@@ -66,15 +69,18 @@ fn main() {
                 .background_color(Color::RED),
         )
         .insert_resource(Msaa::Sample4)
-        .add_startup_system(setup)
-        .add_systems((
-            move_camera,
-            link_animations,
-            setup_idle_animation,
-            setup_walking_animation,
-            move_trex,
-            kill_trex,
-        ))
+        .add_systems(Startup, setup)
+        .add_systems(
+            Update,
+            (
+                move_camera,
+                link_animations,
+                setup_idle_animation,
+                setup_walking_animation,
+                move_trex,
+                kill_trex,
+            ),
+        )
         .run();
 }
 

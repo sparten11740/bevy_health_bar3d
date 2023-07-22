@@ -25,15 +25,13 @@ impl<T: Percentage + Component> Default for HealthBarPlugin<T> {
 impl<T: Percentage + Component> Plugin for HealthBarPlugin<T> {
     fn build(&self, app: &mut App) {
         if !app.is_plugin_added::<MaterialPlugin<BarMaterial>>() {
-            app.add_plugin(MaterialPlugin::<BarMaterial>::default())
+            app.add_plugins(MaterialPlugin::<BarMaterial>::default())
                 .register_type::<WithBar>();
         }
 
         app.init_resource::<MeshHandles>()
             .init_resource::<ColorScheme<T>>()
-            .register_type::<BarWidth<T>>()
-            .register_type::<BarOffset<T>>()
-            .add_systems((spawn::<T>, remove::<T>, update::<T>));
+            .add_systems(Update, (spawn::<T>, remove::<T>, update::<T>));
     }
 }
 
@@ -150,13 +148,13 @@ fn update<T: Percentage + Component>(
     parent_query: Query<(&WithBar, &T), Changed<T>>,
     bar_query: Query<&Handle<BarMaterial>>,
 ) {
-    parent_query
-        .iter()
-        .for_each(|(health_bar_child, percentage)| {
-            let Ok(material_handle) = bar_query.get(health_bar_child.get()) else { return; };
-            let material = materials.get_mut(material_handle).unwrap();
-            material.value = percentage.value();
-        });
+    parent_query.iter().for_each(|(bar, percentage)| {
+        let Ok(material_handle) = bar_query.get(bar.get()) else {
+            return;
+        };
+        let material = materials.get_mut(material_handle).unwrap();
+        material.value = percentage.value();
+    });
 }
 
 fn remove<T: Percentage + Component>(
@@ -166,8 +164,11 @@ fn remove<T: Percentage + Component>(
 ) {
     removals.iter().for_each(|entity| {
         let Ok(&WithBar(bar_entity)) = parent_query.get(entity) else {
-            warn!("Tracked component {:?} was removed, but couldn't find bar to despawn.", entity);
-            return
+            warn!(
+                "Tracked component {:?} was removed, but couldn't find bar to despawn.",
+                entity
+            );
+            return;
         };
 
         commands.entity(bar_entity).despawn_recursive()
