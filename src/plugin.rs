@@ -103,15 +103,13 @@ fn spawn<T: Percentage + Component>(
             let border = border.unwrap_or(&default_border);
 
             let material = materials.add(BarMaterial {
-                value: percentage.value(),
+                value_and_dimensions: (percentage.value(), width, height, border.width).into(),
                 background_color: color_scheme.background_color,
                 high_color: high,
                 moderate_color: moderate,
                 low_color: low,
                 vertical,
-                offset,
-                resolution: Vec2::new(width, height),
-                border_width: border.width,
+                offset: offset.extend(0.),
                 border_color: border.color,
             });
 
@@ -152,7 +150,7 @@ fn update<T: Percentage + Component>(
             return;
         };
         let material = materials.get_mut(material_handle).unwrap();
-        material.value = percentage.value();
+        material.value_and_dimensions.x = percentage.value();
     });
 }
 
