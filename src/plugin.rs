@@ -25,8 +25,7 @@ impl<T: Percentage + Component> Default for HealthBarPlugin<T> {
 impl<T: Percentage + Component> Plugin for HealthBarPlugin<T> {
     fn build(&self, app: &mut App) {
         if !app.is_plugin_added::<MaterialPlugin<BarMaterial>>() {
-            app.add_plugins(MaterialPlugin::<BarMaterial>::default())
-                .register_type::<WithBar>();
+            app.add_plugins(MaterialPlugin::<BarMaterial>::default());
         }
 
         app.init_resource::<MeshHandles>()
@@ -36,9 +35,9 @@ impl<T: Percentage + Component> Plugin for HealthBarPlugin<T> {
 }
 
 #[derive(Component, Reflect)]
-struct WithBar(Entity);
+struct WithBar<T: Percentage + Component>(Entity, #[reflect(ignore)] PhantomData<T>);
 
-impl WithBar {
+impl<T: Percentage + Component> WithBar<T> {
     fn get(&self) -> Entity {
         self.0
     }
@@ -137,7 +136,7 @@ fn spawn<T: Percentage + Component>(
 
             commands
                 .entity(entity)
-                .insert(WithBar(health_bar))
+                .insert(WithBar(health_bar, PhantomData::<T>))
                 .add_child(health_bar);
         },
     );
@@ -145,7 +144,7 @@ fn spawn<T: Percentage + Component>(
 
 fn update<T: Percentage + Component>(
     mut materials: ResMut<Assets<BarMaterial>>,
-    parent_query: Query<(&WithBar, &T), Changed<T>>,
+    parent_query: Query<(&WithBar<T>, &T), Changed<T>>,
     bar_query: Query<&Handle<BarMaterial>>,
 ) {
     parent_query.iter().for_each(|(bar, percentage)| {
@@ -160,10 +159,10 @@ fn update<T: Percentage + Component>(
 fn remove<T: Percentage + Component>(
     mut commands: Commands,
     mut removals: RemovedComponents<T>,
-    parent_query: Query<&WithBar>,
+    parent_query: Query<&WithBar<T>>,
 ) {
     removals.iter().for_each(|entity| {
-        let Ok(&WithBar(bar_entity)) = parent_query.get(entity) else {
+        let Ok(&WithBar(bar_entity, _)) = parent_query.get(entity) else {
             warn!(
                 "Tracked component {:?} was removed, but couldn't find bar to despawn.",
                 entity
