@@ -1,3 +1,4 @@
+use crate::constants::BAR_SHADER_HANDLE;
 use bevy::math::Vec4;
 use bevy::pbr::{AlphaMode, Material, MaterialPipeline, MaterialPipelineKey};
 use bevy::prelude::{Color, Mesh, Reflect};
@@ -45,11 +46,11 @@ impl From<&BarMaterial> for BarMaterialKey {
 
 impl Material for BarMaterial {
     fn vertex_shader() -> ShaderRef {
-        "shaders/bar.wgsl".into()
+        BAR_SHADER_HANDLE.typed().into()
     }
 
     fn fragment_shader() -> ShaderRef {
-        "shaders/bar.wgsl".into()
+        BAR_SHADER_HANDLE.typed().into()
     }
 
     fn alpha_mode(&self) -> AlphaMode {
