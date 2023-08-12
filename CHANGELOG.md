@@ -1,3 +1,10 @@
+## [1.4.4](https://github.com/sparten11740/bevy_health_bar3d/compare/v1.4.3...v1.4.4) (2023-08-12)
+
+
+### Bug Fixes
+
+* don't warn on missing entity ([#20](https://github.com/sparten11740/bevy_health_bar3d/issues/20)) ([6ab9da4](https://github.com/sparten11740/bevy_health_bar3d/commit/6ab9da4978fe5b1348cf0acc4816829d872b00cd))
+
 ## [1.4.3](https://github.com/sparten11740/bevy_health_bar3d/compare/v1.4.2...v1.4.3) (2023-08-12)
 
 
