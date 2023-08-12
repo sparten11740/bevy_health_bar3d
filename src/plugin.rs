@@ -1,7 +1,6 @@
-use bevy::asset::load_internal_asset;
 use std::marker::PhantomData;
 
-use bevy::log::warn;
+use bevy::asset::load_internal_asset;
 use bevy::pbr::{NotShadowCaster, NotShadowReceiver};
 use bevy::prelude::*;
 
@@ -169,10 +168,6 @@ fn remove<T: Percentage + Component>(
 ) {
     removals.iter().for_each(|entity| {
         let Ok(&WithBar(bar_entity, _)) = parent_query.get(entity) else {
-            warn!(
-                "Tracked component {:?} was removed, but couldn't find bar to despawn.",
-                entity
-            );
             return;
         };
 
