@@ -1,3 +1,4 @@
+use bevy::asset::load_internal_asset;
 use std::marker::PhantomData;
 
 use bevy::log::warn;
@@ -5,7 +6,7 @@ use bevy::pbr::{NotShadowCaster, NotShadowReceiver};
 use bevy::prelude::*;
 
 use crate::configuration::{BarHeight, BarOffset, BarWidth, ForegroundColor, Percentage};
-use crate::constants::{DEFAULT_RELATIVE_HEIGHT, DEFAULT_WIDTH};
+use crate::constants::{BAR_SHADER_HANDLE, DEFAULT_RELATIVE_HEIGHT, DEFAULT_WIDTH};
 use crate::material::BarMaterial;
 use crate::mesh::MeshHandles;
 use crate::prelude::{BarBorder, BarOrientation, ColorScheme};
@@ -26,6 +27,13 @@ impl<T: Percentage + Component> Plugin for HealthBarPlugin<T> {
     fn build(&self, app: &mut App) {
         if !app.is_plugin_added::<MaterialPlugin<BarMaterial>>() {
             app.add_plugins(MaterialPlugin::<BarMaterial>::default());
+
+            load_internal_asset!(
+                app,
+                BAR_SHADER_HANDLE,
+                "../assets/shaders/bar.wgsl",
+                Shader::from_wgsl
+            );
         }
 
         app.init_resource::<MeshHandles>()
