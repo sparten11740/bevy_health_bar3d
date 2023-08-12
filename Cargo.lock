@@ -639,7 +639,7 @@ dependencies = [
 
 [[package]]
 name = "bevy_health_bar3d"
-version = "1.4.2"
+version = "1.4.3"
 dependencies = [
  "bevy",
  "bevy-inspector-egui",

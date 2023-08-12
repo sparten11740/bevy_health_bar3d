@@ -1,3 +1,10 @@
+## [1.4.3](https://github.com/sparten11740/bevy_health_bar3d/compare/v1.4.2...v1.4.3) (2023-08-12)
+
+
+### Bug Fixes
+
+* load shader as internal asset ([#19](https://github.com/sparten11740/bevy_health_bar3d/issues/19)) ([0c61f1b](https://github.com/sparten11740/bevy_health_bar3d/commit/0c61f1b4699f47c8d505417df81616b1dfa533b1))
+
 ## [1.4.2](https://github.com/sparten11740/bevy_health_bar3d/compare/v1.4.1...v1.4.2) (2023-07-22)
 
 
