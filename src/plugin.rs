@@ -1,7 +1,6 @@
-use bevy::asset::load_internal_asset;
 use std::marker::PhantomData;
 
-use bevy::log::warn;
+use bevy::asset::load_internal_asset;
 use bevy::pbr::{NotShadowCaster, NotShadowReceiver};
 use bevy::prelude::*;
 
