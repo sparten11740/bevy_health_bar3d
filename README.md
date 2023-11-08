@@ -26,7 +26,7 @@ to the plugin on instantiation:
 ```rust
 use bevy_health_bar3d::prelude::{HealthBarPlugin, Percentage};
 
-#[derive(Component)]
+#[derive(Component, Reflect)]
 struct Health {
     max: f32,
     current: f32,
@@ -58,7 +58,11 @@ fn setup(
 ) {
     commands.spawn((
         PbrBundle {
-            mesh: meshes.add(Mesh::from(shape::Icosphere { radius, ..default() })),
+            mesh: meshes.add(
+                TryInto::<Mesh>::try_into(shape::Icosphere {
+                    radius,
+                    ..default()
+                })),
             // ...
         },
         Health {
@@ -68,7 +72,7 @@ fn setup(
         BarBundle::<Health> {
             width: BarWidth::new(mesh_width),
             offset: BarOffset::new(mesh_height),
-            orientation: BarOrientation::Vertical, // defaults is horizontal
+            orientation: BarOrientation::Vertical, // default is horizontal
             ..default()
         },
     ));
