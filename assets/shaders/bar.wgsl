@@ -1,5 +1,7 @@
-#import bevy_pbr::mesh_view_bindings view
-#import bevy_pbr::mesh_bindings mesh
+#import bevy_pbr::{
+    mesh_view_bindings::view,
+    mesh_functions::get_model_matrix
+}
 
 @group(1) @binding(0)
 var<uniform> value_and_dimensions: vec4<f32>;
@@ -19,6 +21,7 @@ var<uniform> border_color: vec4<f32>;
 #endif
 
 struct Vertex {
+    @builtin(instance_index) instance_index: u32,
     @location(0) position: vec3<f32>,
     @location(1) uv: vec2<f32>,
 };
@@ -37,7 +40,7 @@ fn vertex(vertex: Vertex) -> VertexOutput {
     let camera_up = normalize(vec3<f32>(view_proj.x.y, view_proj.y.y, view_proj.z.y));
 
     let world_space = camera_right * (vertex.position.x + offset.x) + camera_up * (vertex.position.y + offset.y);
-    let position = view.view_proj * mesh.model * vec4<f32>(world_space, 1.);
+    let position = view.view_proj * get_model_matrix(vertex.instance_index) * vec4<f32>(world_space, 1.);
 
     out.uv = vertex.uv;
     out.clip_position = position;
