@@ -30,6 +30,7 @@ jobs:
             @semantic-release/git@^10.0.1
             @semantic-release/github@^8.0.7
             @semantic-release-cargo/semantic-release-cargo@^2.1.77
+            conventional-changelog-conventionalcommits@^5.0.0
         env:
           GITHUB_TOKEN: ${{ secrets.GH_AUTOMATION_PAT }}
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
