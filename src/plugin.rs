@@ -10,11 +10,11 @@ use crate::material::BarMaterial;
 use crate::mesh::MeshHandles;
 use crate::prelude::{BarBorder, BarOrientation, ColorScheme};
 
-pub struct HealthBarPlugin<T: Percentage + Component> {
+pub struct HealthBarPlugin<T: Percentage + Component + TypePath> {
     phantom: PhantomData<T>,
 }
 
-impl<T: Percentage + Component> Default for HealthBarPlugin<T> {
+impl<T: Percentage + Component + TypePath> Default for HealthBarPlugin<T> {
     fn default() -> Self {
         Self {
             phantom: Default::default(),
@@ -22,7 +22,7 @@ impl<T: Percentage + Component> Default for HealthBarPlugin<T> {
     }
 }
 
-impl<T: Percentage + Component> Plugin for HealthBarPlugin<T> {
+impl<T: Percentage + Component + TypePath> Plugin for HealthBarPlugin<T> {
     fn build(&self, app: &mut App) {
         if !app.is_plugin_added::<MaterialPlugin<BarMaterial>>() {
             app.add_plugins(MaterialPlugin::<BarMaterial>::default());
@@ -51,7 +51,7 @@ impl<T: Percentage + Component> WithBar<T> {
 }
 
 #[allow(clippy::type_complexity)]
-fn spawn<T: Percentage + Component>(
+fn spawn<T: Percentage + Component + TypePath>(
     mut commands: Commands,
     mut materials: ResMut<Assets<BarMaterial>>,
     mut meshes: ResMut<Assets<Mesh>>,
@@ -122,13 +122,7 @@ fn spawn<T: Percentage + Component>(
 
             let health_bar = commands
                 .spawn((
-                    Name::new(format!(
-                        "{}Bar",
-                        std::any::type_name::<T>()
-                            .split("::")
-                            .last()
-                            .unwrap_or("Unknown")
-                    )),
+                    Name::new(format!("{}Bar", T::type_path())),
                     MaterialMeshBundle {
                         mesh,
                         material,
@@ -166,7 +160,7 @@ fn remove<T: Percentage + Component>(
     mut removals: RemovedComponents<T>,
     parent_query: Query<&WithBar<T>>,
 ) {
-    removals.iter().for_each(|entity| {
+    removals.read().for_each(|entity| {
         let Ok(&WithBar(bar_entity, _)) = parent_query.get(entity) else {
             return;
         };

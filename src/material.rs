@@ -1,15 +1,13 @@
 use crate::constants::BAR_SHADER_HANDLE;
 use bevy::math::Vec4;
 use bevy::pbr::{AlphaMode, Material, MaterialPipeline, MaterialPipelineKey};
-use bevy::prelude::{Color, Mesh, Reflect};
-use bevy::reflect::TypeUuid;
+use bevy::prelude::*;
 use bevy::render::mesh::MeshVertexBufferLayout;
 use bevy::render::render_resource::{
     AsBindGroup, RenderPipelineDescriptor, ShaderRef, SpecializedMeshPipelineError,
 };
 
-#[derive(AsBindGroup, Debug, Clone, TypeUuid, Reflect)]
-#[uuid = "94B33B1F-CDA6-468C-9F72-176557EFD304"]
+#[derive(Asset, AsBindGroup, Debug, Clone, Reflect)]
 #[bind_group_data(BarMaterialKey)]
 pub(crate) struct BarMaterial {
     #[uniform(0)]
@@ -46,11 +44,11 @@ impl From<&BarMaterial> for BarMaterialKey {
 
 impl Material for BarMaterial {
     fn vertex_shader() -> ShaderRef {
-        BAR_SHADER_HANDLE.typed().into()
+        BAR_SHADER_HANDLE.into()
     }
 
     fn fragment_shader() -> ShaderRef {
-        BAR_SHADER_HANDLE.typed().into()
+        BAR_SHADER_HANDLE.into()
     }
 
     fn alpha_mode(&self) -> AlphaMode {
