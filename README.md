@@ -12,8 +12,9 @@ or layered cameras out of the box.
 ## Bevy Compatibility
 
 | Bevy Version | Crate Version |
-| ------------ | ------------: |
-| `0.11`       |    >= `1.2.0` |
+|--------------|--------------:|
+| `0.12`       |    >= `2.0.0` |
+| `0.11`       |       `1.2.0` |
 | `0.10`       |       `1.1.0` |
 | `0.9`        |       `1.0.0` |
 
@@ -25,7 +26,7 @@ to the plugin on instantiation:
 ```rust
 use bevy_health_bar3d::prelude::{HealthBarPlugin, Percentage};
 
-#[derive(Component)]
+#[derive(Component, Reflect)]
 struct Health {
     max: f32,
     current: f32,
@@ -57,7 +58,11 @@ fn setup(
 ) {
     commands.spawn((
         PbrBundle {
-            mesh: meshes.add(Mesh::from(shape::Icosphere { radius, ..default() })),
+            mesh: meshes.add(
+                TryInto::<Mesh>::try_into(shape::Icosphere {
+                    radius,
+                    ..default()
+                })),
             // ...
         },
         Health {
@@ -67,7 +72,7 @@ fn setup(
         BarBundle::<Health> {
             width: BarWidth::new(mesh_width),
             offset: BarOffset::new(mesh_height),
-            orientation: BarOrientation::Vertical, // defaults is horizontal
+            orientation: BarOrientation::Vertical, // default is horizontal
             ..default()
         },
     ));

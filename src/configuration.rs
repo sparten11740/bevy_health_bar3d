@@ -11,7 +11,7 @@ use crate::constants::{
 
 /// Bundle to customize multiple aspects at the same time
 #[derive(Bundle)]
-pub struct BarBundle<T: Percentage + Component> {
+pub struct BarBundle<T: Percentage + Component + TypePath> {
     pub offset: BarOffset<T>,
     pub width: BarWidth<T>,
     pub height: BarHeight<T>,
@@ -19,7 +19,7 @@ pub struct BarBundle<T: Percentage + Component> {
     pub border: BarBorder<T>,
 }
 
-impl<T: Percentage + Component> Default for BarBundle<T> {
+impl<T: Percentage + Component + TypePath> Default for BarBundle<T> {
     fn default() -> Self {
         Self {
             offset: BarOffset::default(),
@@ -34,9 +34,9 @@ impl<T: Percentage + Component> Default for BarBundle<T> {
 /// Component to configure the offset of the bar relative to the entity its attached to.
 /// For horizontal bars, this is an offset along the y-axis, for vertical bars along the x-axis.
 #[derive(Component, Debug, Clone, Reflect)]
-pub struct BarOffset<T: Percentage + Component>(f32, #[reflect(ignore)] PhantomData<T>);
+pub struct BarOffset<T: Percentage + Component + TypePath>(f32, #[reflect(ignore)] PhantomData<T>);
 
-impl<T: Percentage + Component> BarOffset<T> {
+impl<T: Percentage + Component + TypePath> BarOffset<T> {
     pub fn new(offset: f32) -> Self {
         Self(offset, PhantomData)
     }
@@ -46,7 +46,7 @@ impl<T: Percentage + Component> BarOffset<T> {
     }
 }
 
-impl<T: Percentage + Component> Default for BarOffset<T> {
+impl<T: Percentage + Component + TypePath> Default for BarOffset<T> {
     fn default() -> Self {
         Self::new(0.)
     }
@@ -54,9 +54,9 @@ impl<T: Percentage + Component> Default for BarOffset<T> {
 
 /// Component to configure the width of the bar
 #[derive(Component, Debug, Clone, Reflect)]
-pub struct BarWidth<T: Percentage + Component>(f32, #[reflect(ignore)] PhantomData<T>);
+pub struct BarWidth<T: Percentage + Component + TypePath>(f32, #[reflect(ignore)] PhantomData<T>);
 
-impl<T: Percentage + Component> BarWidth<T> {
+impl<T: Percentage + Component + TypePath> BarWidth<T> {
     pub fn new(width: f32) -> Self {
         Self(width, PhantomData)
     }
@@ -66,7 +66,7 @@ impl<T: Percentage + Component> BarWidth<T> {
     }
 }
 
-impl<T: Percentage + Component> Default for BarWidth<T> {
+impl<T: Percentage + Component + TypePath> Default for BarWidth<T> {
     fn default() -> Self {
         Self::new(DEFAULT_WIDTH)
     }
@@ -81,13 +81,14 @@ impl<T: Percentage + Component> Default for BarWidth<T> {
 /// commands.entity(entity).insert(BarBorder::<Health>::new(0.2).color(Color::PURPLE)); // configures the bar height to be 20% of its width
 /// ```
 #[derive(Component, Debug, Clone, Reflect)]
-pub struct BarBorder<T: Percentage + Component> {
+pub struct BarBorder<T: Percentage + Component + TypePath> {
     pub width: f32,
     pub color: Color,
+    #[reflect(ignore)]
     phantom_data: PhantomData<T>,
 }
 
-impl<T: Percentage + Component> BarBorder<T> {
+impl<T: Percentage + Component + TypePath> BarBorder<T> {
     pub fn new(width: f32) -> Self {
         Self {
             width,
@@ -102,7 +103,7 @@ impl<T: Percentage + Component> BarBorder<T> {
     }
 }
 
-impl<T: Percentage + Component> Default for BarBorder<T> {
+impl<T: Percentage + Component + TypePath> Default for BarBorder<T> {
     fn default() -> Self {
         Self {
             width: 0.,
@@ -121,7 +122,7 @@ impl<T: Percentage + Component> Default for BarBorder<T> {
 /// commands.entity(entity).insert(BarHeight::<Health>::new(0.2)); // configures the bar height to be 20% of its width
 /// ```
 #[derive(Component, Debug, Clone)]
-pub enum BarHeight<T: Percentage + Component> {
+pub enum BarHeight<T: Percentage + Component + TypePath> {
     /// Bar height relative to its width
     Relative(f32),
     /// Static bar width
@@ -130,7 +131,7 @@ pub enum BarHeight<T: Percentage + Component> {
     _Internal(Infallible, PhantomData<T>),
 }
 
-impl<T: Percentage + Component> Default for BarHeight<T> {
+impl<T: Percentage + Component + TypePath> Default for BarHeight<T> {
     fn default() -> Self {
         Self::Relative(DEFAULT_RELATIVE_HEIGHT)
     }
@@ -145,7 +146,7 @@ impl<T: Percentage + Component> Default for BarHeight<T> {
 /// commands.entity(entity).insert(BarOrientation::<Health>::Vertical);
 /// ```
 #[derive(Component, Debug, Clone, PartialEq, Eq, Default)]
-pub enum BarOrientation<T: Percentage + Component> {
+pub enum BarOrientation<T: Percentage + Component + TypePath> {
     #[default]
     Horizontal,
     Vertical,
@@ -163,7 +164,7 @@ pub trait Percentage {
 /// The tri-color spectrum defines three colors: high, moderate, and low.
 /// The high color is applied when the tracked component's value is more than or equal to 80%,
 /// moderate when it's between 40% and 80%, and low when it is less than 40%.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Reflect)]
 pub enum ForegroundColor {
     Static(Color),
     TriSpectrum {
@@ -174,14 +175,15 @@ pub enum ForegroundColor {
 }
 
 /// Resource to customize the appearance of bars per tracked component type.
-#[derive(Resource, Debug, Clone)]
-pub struct ColorScheme<T: Percentage + Component> {
+#[derive(Resource, Debug, Clone, Reflect)]
+pub struct ColorScheme<T: Percentage + Component + TypePath> {
     pub foreground_color: ForegroundColor,
     pub background_color: Color,
+    #[reflect(ignore)]
     phantom_data: PhantomData<T>,
 }
 
-impl<T: Percentage + Component> ColorScheme<T> {
+impl<T: Percentage + Component + TypePath> ColorScheme<T> {
     /// Returns a default initialized ColorScheme for the given component type
     ///
     /// # Examples
@@ -222,7 +224,7 @@ impl<T: Percentage + Component> ColorScheme<T> {
     }
 }
 
-impl<T: Percentage + Component> Default for ColorScheme<T> {
+impl<T: Percentage + Component + TypePath> Default for ColorScheme<T> {
     fn default() -> Self {
         Self {
             foreground_color: ForegroundColor::TriSpectrum {
