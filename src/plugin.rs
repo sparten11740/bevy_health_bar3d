@@ -37,6 +37,7 @@ impl<T: Percentage + Component + TypePath> Plugin for HealthBarPlugin<T> {
 
         app.init_resource::<MeshHandles>()
             .init_resource::<ColorScheme<T>>()
+            .add_systems(PostUpdate, reset_rotation)
             .add_systems(Update, (spawn::<T>, remove::<T>, update::<T>));
     }
 }
@@ -167,4 +168,15 @@ fn remove<T: Percentage + Component>(
 
         commands.entity(bar_entity).despawn_recursive()
     });
+}
+
+fn reset_rotation(
+    mut bar_query: Query<(&Parent, &mut Transform), With<Handle<BarMaterial>>>,
+    q_transform: Query<&Transform, Without<Handle<BarMaterial>>>,
+) {
+    for (parent, mut transform) in bar_query.iter_mut() {
+        if let Ok(parent_transform) = q_transform.get(parent.get()) {
+            transform.rotation = parent_transform.rotation.inverse();
+        }
+    }
 }
