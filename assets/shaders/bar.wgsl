@@ -39,7 +39,7 @@ fn vertex(vertex: Vertex) -> VertexOutput {
     let camera_right = normalize(vec3<f32>(view_proj.x.x, view_proj.y.x, view_proj.z.x));
     let camera_up = normalize(vec3<f32>(view_proj.x.y, view_proj.y.y, view_proj.z.y));
 
-    let world_space = camera_right * (vertex.position.x + offset.x) + camera_up * (vertex.position.y + offset.y);
+    let world_space = camera_right * (vertex.position.x + offset.x) + (camera_up * vertex.position.y) + vec3(0.0, offset.y, 0.0);
     let position = view.view_proj * get_model_matrix(vertex.instance_index) * vec4<f32>(world_space, 1.);
 
     out.uv = vertex.uv;
