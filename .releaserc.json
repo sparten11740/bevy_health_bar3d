@@ -13,7 +13,7 @@
     [
       "@semantic-release/git",
       {
-        "assets": ["CHANGELOG.md", "Cargo.toml", "Cargo.lock"]
+        "assets": ["CHANGELOG.md", "Cargo.toml"]
       }
     ],
     "@semantic-release/github"
