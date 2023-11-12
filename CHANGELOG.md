@@ -1,3 +1,10 @@
+## [2.0.1](https://github.com/sparten11740/bevy_health_bar3d/compare/v2.0.0...v2.0.1) (2023-11-12)
+
+
+### Bug Fixes
+
+* make bar face camera with rotation applied ([#26](https://github.com/sparten11740/bevy_health_bar3d/issues/26)) ([82555fd](https://github.com/sparten11740/bevy_health_bar3d/commit/82555fdad2061fba7b7520e24eecb91a7aeef3c2))
+
 # [2.0.0](https://github.com/sparten11740/bevy_health_bar3d/compare/v1.4.4...v2.0.0) (2023-11-08)
 
 ## [1.4.4](https://github.com/sparten11740/bevy_health_bar3d/compare/v1.4.3...v1.4.4) (2023-08-12)
