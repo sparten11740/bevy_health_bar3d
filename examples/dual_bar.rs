@@ -8,7 +8,7 @@ use bevy_inspector_egui::quick::WorldInspectorPlugin;
 
 use bevy_health_bar3d::configuration::ForegroundColor;
 use bevy_health_bar3d::prelude::{
-    BarBundle, BarHeight, BarOffset, BarWidth, ColorScheme, HealthBarPlugin, Percentage,
+    BarHeight, BarSettings, ColorScheme, HealthBarPlugin, Percentage,
 };
 
 #[derive(Component, Reflect)]
@@ -83,9 +83,9 @@ fn setup(
                 max: 10.,
                 current: value,
             },
-            BarBundle::<Health> {
-                offset: BarOffset::new(offset),
-                width: BarWidth::new(bar_width),
+            BarSettings::<Health> {
+                offset: offset,
+                width: bar_width,
                 height: BarHeight::Static(bar_height),
                 ..default()
             },
@@ -93,9 +93,9 @@ fn setup(
                 max: 10.,
                 current: values[2 - i],
             },
-            BarBundle::<Mana> {
-                offset: BarOffset::new(offset + bar_height + bar_height / 5.),
-                width: BarWidth::new(bar_width),
+            BarSettings::<Mana> {
+                offset: offset + bar_height + bar_height / 5.,
+                width: bar_width,
                 height: BarHeight::Static(bar_height),
                 ..default()
             },

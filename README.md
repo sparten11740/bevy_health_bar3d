@@ -48,7 +48,7 @@ fn main() {
 }
 ```
 
-Spawn a mesh, the component to be tracked, and a `BarBundle` to configure the look & feel of your bar.
+Spawn a mesh, the component to be tracked, and a `BarSettings` component to configure the look & feel of your bar.
 
 ```rust
 fn setup(
@@ -69,9 +69,9 @@ fn setup(
             max: 10.,
             current: 2.,
         },
-        BarBundle::<Health> {
-            width: BarWidth::new(mesh_width),
-            offset: BarOffset::new(mesh_height),
+        BarSettings::<Health> {
+            width: 5.,
+            offset: 2.,
             orientation: BarOrientation::Vertical, // default is horizontal
             ..default()
         },
