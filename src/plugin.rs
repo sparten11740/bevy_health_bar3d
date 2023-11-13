@@ -4,11 +4,11 @@ use bevy::asset::load_internal_asset;
 use bevy::pbr::{NotShadowCaster, NotShadowReceiver};
 use bevy::prelude::*;
 
-use crate::configuration::{BarHeight, BarOffset, BarWidth, ForegroundColor, Percentage};
-use crate::constants::{BAR_SHADER_HANDLE, DEFAULT_RELATIVE_HEIGHT, DEFAULT_WIDTH};
+use crate::configuration::{BarHeight, ForegroundColor, Percentage};
+use crate::constants::BAR_SHADER_HANDLE;
 use crate::material::BarMaterial;
 use crate::mesh::MeshHandles;
-use crate::prelude::{BarBorder, BarOrientation, ColorScheme};
+use crate::prelude::{BarOrientation, BarSettings, ColorScheme};
 
 pub struct HealthBarPlugin<T: Percentage + Component + TypePath> {
     phantom: PhantomData<T>,
@@ -37,6 +37,7 @@ impl<T: Percentage + Component + TypePath> Plugin for HealthBarPlugin<T> {
 
         app.init_resource::<MeshHandles>()
             .init_resource::<ColorScheme<T>>()
+            .register_type::<BarSettings<T>>()
             .add_systems(PostUpdate, reset_rotation)
             .add_systems(Update, (spawn::<T>, remove::<T>, update::<T>));
     }
@@ -58,34 +59,29 @@ fn spawn<T: Percentage + Component + TypePath>(
     mut meshes: ResMut<Assets<Mesh>>,
     mut mesh_handles: ResMut<MeshHandles>,
     color_scheme: Res<ColorScheme<T>>,
-    query: Query<
-        (
-            Entity,
-            &T,
-            Option<&BarOffset<T>>,
-            Option<&BarWidth<T>>,
-            Option<&BarHeight<T>>,
-            Option<&BarOrientation<T>>,
-            Option<&BarBorder<T>>,
-        ),
-        Added<T>,
-    >,
+    query: Query<(Entity, &T, &BarSettings<T>), Added<T>>,
 ) {
     query.iter().for_each(
-        |(entity, percentage, offset, width, height, orientation, border)| {
-            let width = width.map(|it| it.get()).unwrap_or(DEFAULT_WIDTH);
-            let orientation = orientation.unwrap_or(&BarOrientation::Horizontal);
-
-            let height = height
-                .map(|it| match it {
-                    BarHeight::Relative(pct) => pct * width,
-                    BarHeight::Static(height) => *height,
-                })
-                .unwrap_or(width * DEFAULT_RELATIVE_HEIGHT);
+        |(
+            entity,
+            percentage,
+            BarSettings {
+                width,
+                height,
+                offset,
+                border,
+                orientation,
+                ..
+            },
+        )| {
+            let height = match height {
+                BarHeight::Relative(pct) => pct * width,
+                BarHeight::Static(height) => *height,
+            };
 
             let (width, height, vertical, offset_axis) = match orientation {
-                BarOrientation::Horizontal => (width, height, false, Vec3::Y),
-                BarOrientation::Vertical => (height, width, true, Vec3::X),
+                BarOrientation::Horizontal => (*width, height, false, Vec3::Y),
+                BarOrientation::Vertical => (height, *width, true, Vec3::X),
             };
 
             let mesh = mesh_handles.get(width, height).cloned().unwrap_or_else(|| {
@@ -96,7 +92,7 @@ fn spawn<T: Percentage + Component + TypePath>(
                 )
             });
 
-            let offset = offset.map(|it| it.get()).unwrap_or(0.) * offset_axis;
+            let offset = *offset * offset_axis;
 
             let (high, moderate, low) = match color_scheme.foreground_color {
                 ForegroundColor::Static(color) => (color, color, color),
@@ -106,9 +102,6 @@ fn spawn<T: Percentage + Component + TypePath>(
                     low,
                 } => (high, moderate, low),
             };
-
-            let default_border = BarBorder::new(0.);
-            let border = border.unwrap_or(&default_border);
 
             let material = materials.add(BarMaterial {
                 value_and_dimensions: (percentage.value(), width, height, border.width).into(),

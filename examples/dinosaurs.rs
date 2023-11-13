@@ -13,8 +13,7 @@ use bevy_tweening::lens::{TransformPositionLens, TransformRotationLens};
 use bevy_tweening::{Animator, EaseFunction, Tracks, Tween, TweeningPlugin};
 
 use bevy_health_bar3d::prelude::{
-    BarBundle, BarHeight, BarOffset, BarWidth, ColorScheme, ForegroundColor, HealthBarPlugin,
-    Percentage,
+    BarHeight, BarSettings, ColorScheme, ForegroundColor, HealthBarPlugin, Percentage,
 };
 
 #[derive(Component, Reflect)]
@@ -132,16 +131,16 @@ fn setup(
             max: 10.,
             current: 8.,
         },
-        BarBundle::<Distance> {
-            offset: BarOffset::new(15.),
+        BarSettings::<Distance> {
+            offset: 15.,
             height: BarHeight::Static(1.),
-            width: BarWidth::new(10.),
+            width: 10.,
             ..default()
         },
-        BarBundle::<Health> {
-            offset: BarOffset::new(17.),
+        BarSettings::<Health> {
+            offset: 17.,
             height: BarHeight::Static(1.),
-            width: BarWidth::new(10.),
+            width: 10.,
             ..default()
         },
     ));
@@ -153,10 +152,10 @@ fn setup(
             max: 10.,
             current: 10.,
         },
-        BarBundle::<Health> {
-            offset: BarOffset::new(17.),
+        BarSettings::<Health> {
+            offset: 17.,
             height: BarHeight::Static(1.),
-            width: BarWidth::new(10.),
+            width: 10.,
             ..default()
         },
     ));

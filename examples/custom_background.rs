@@ -6,9 +6,7 @@ use bevy::utils::default;
 use bevy::DefaultPlugins;
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
 
-use bevy_health_bar3d::prelude::{
-    BarBundle, BarOffset, BarWidth, ColorScheme, HealthBarPlugin, Percentage,
-};
+use bevy_health_bar3d::prelude::{BarSettings, ColorScheme, HealthBarPlugin, Percentage};
 
 #[derive(Component, Reflect)]
 struct Health {
@@ -69,9 +67,9 @@ fn setup(
             max: 10.,
             current: 8.,
         },
-        BarBundle::<Health> {
-            offset: BarOffset::new(radius * 1.5),
-            width: BarWidth::new(radius * 2.),
+        BarSettings::<Health> {
+            offset: radius * 1.5,
+            width: radius * 2.,
             ..default()
         },
     ));

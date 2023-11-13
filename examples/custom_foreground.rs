@@ -83,9 +83,9 @@ fn setup(
                 max: 10.,
                 current: value,
             },
-            BarBundle::<Mana> {
-                offset: BarOffset::new(radius * 1.5),
-                width: BarWidth::new(radius * 2.),
+            BarSettings::<Mana> {
+                offset: radius * 1.5,
+                width: radius * 2.,
                 ..default()
             },
         ));
@@ -107,9 +107,9 @@ fn setup(
                 max: 10.,
                 current: value,
             },
-            BarBundle::<Health> {
-                offset: BarOffset::new(radius * 1.5),
-                width: BarWidth::new(radius * 2.),
+            BarSettings::<Health> {
+                offset: radius * 1.5,
+                width: radius * 2.,
                 ..default()
             },
         ));

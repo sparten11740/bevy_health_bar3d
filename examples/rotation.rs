@@ -11,9 +11,7 @@ use bevy::utils::default;
 use bevy::DefaultPlugins;
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
 
-use bevy_health_bar3d::prelude::{
-    BarBundle, BarHeight, BarOffset, BarWidth, HealthBarPlugin, Percentage,
-};
+use bevy_health_bar3d::prelude::{BarHeight, BarSettings, HealthBarPlugin, Percentage};
 
 #[derive(Component, Reflect)]
 struct Health {
@@ -83,10 +81,10 @@ fn setup(
             max: 10.,
             current: 8.,
         },
-        BarBundle::<Health> {
-            offset: BarOffset::new(18.),
+        BarSettings::<Health> {
+            offset: 18.,
             height: BarHeight::Static(1.),
-            width: BarWidth::new(10.),
+            width: 10.,
             ..default()
         },
         Jim,
@@ -108,11 +106,11 @@ fn setup(
             max: 10.,
             current: 3.,
         },
-        BarBundle::<Health> {
+        BarSettings::<Health> {
             // Have to locate it higher than Jim's so there is no clipping during rotation
-            offset: BarOffset::new(21.),
+            offset: 21.,
             height: BarHeight::Static(1.),
-            width: BarWidth::new(10.),
+            width: 10.,
             ..default()
         },
         Tom,
