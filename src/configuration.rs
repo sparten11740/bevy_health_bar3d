@@ -23,6 +23,40 @@ pub struct BarSettings<T: Percentage + Component + TypePath> {
     pub phantom_data: PhantomData<T>,
 }
 
+impl<T: Percentage + Component + TypePath> BarSettings<T> {
+    fn absolute_height(&self) -> f32 {
+        match self.height {
+            BarHeight::Relative(pct) => pct * self.width,
+            BarHeight::Static(height) => height,
+        }
+    }
+
+    pub fn normalized_height(&self) -> f32 {
+        match self.orientation {
+            BarOrientation::Horizontal => self.absolute_height(),
+            BarOrientation::Vertical => self.width,
+        }
+    }
+
+    pub fn normalized_width(&self) -> f32 {
+        match self.orientation {
+            BarOrientation::Horizontal => self.width,
+            BarOrientation::Vertical => self.absolute_height(),
+        }
+    }
+
+    fn offset_axis(&self) -> Vec3 {
+        match self.orientation {
+            BarOrientation::Horizontal => Vec3::Y,
+            BarOrientation::Vertical => Vec3::X,
+        }
+    }
+
+    pub fn normalized_offset(&self) -> Vec3 {
+        self.offset * self.offset_axis()
+    }
+}
+
 impl<T: Percentage + Component + TypePath> Default for BarSettings<T> {
     fn default() -> Self {
         Self {
