@@ -132,29 +132,43 @@ fn update<T: Percentage + Component + TypePath>(
 
 #[allow(clippy::type_complexity)]
 fn update_settings<T: Percentage + Component + TypePath>(
+    mut commands: Commands,
     mut materials: ResMut<Assets<BarMaterial>>,
+    mut meshes: ResMut<Assets<Mesh>>,
+    mut mesh_handles: ResMut<MeshHandles>,
     parent_query: Query<(&WithBar<T>, &BarSettings<T>), Changed<BarSettings<T>>>,
-    bar_query: Query<&Handle<BarMaterial>>,
+    bar_query: Query<(Entity, &Handle<BarMaterial>, &Handle<Mesh>)>,
 ) {
     parent_query.iter().for_each(|(bar, settings)| {
-        let Ok(material_handle) = bar_query.get(bar.get()) else {
+        let Ok((entity, material_handle, mesh_handle)) = bar_query.get(bar.get()) else {
             return;
         };
 
         let material = materials.get_mut(material_handle).unwrap();
         let offset = settings.normalized_offset().extend(0.);
+        let width = settings.normalized_width();
+        let height = settings.normalized_height();
 
-        if material.offset != offset {
-            material.offset = offset
+        let mesh_for_settings_dimensions = mesh_handles.get(width, height).cloned();
+        let mesh_changed = mesh_for_settings_dimensions
+            .clone()
+            .map_or(true, |handle| handle != *mesh_handle);
+
+        if mesh_changed {
+            let new_mesh = mesh_for_settings_dimensions.unwrap_or(mesh_handles.insert(
+                width,
+                height,
+                meshes.add(Mesh::from(shape::Quad::new(Vec2::new(width, height)))),
+            ));
+            commands.entity(entity).insert(new_mesh);
+            material.value_and_dimensions.y = width;
+            material.value_and_dimensions.z = height;
         }
 
-        if material.border_color != settings.border.color {
-            material.border_color = settings.border.color
-        }
-
-        if material.value_and_dimensions.w != settings.border.width {
-            material.value_and_dimensions.w = settings.border.width
-        }
+        material.offset = offset;
+        material.border_color = settings.border.color;
+        material.value_and_dimensions.w = settings.border.width;
+        material.vertical = settings.orientation == BarOrientation::Vertical;
     });
 }
 
