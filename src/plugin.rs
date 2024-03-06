@@ -181,7 +181,9 @@ fn remove<T: Percentage + Component>(
         let Ok(&WithBar(bar_entity, _)) = parent_query.get(entity) else {
             return;
         };
-
+        if commands.get_entity(bar_entity).is_none(){
+            return;
+        }
         commands.entity(bar_entity).despawn_recursive()
     });
 }
