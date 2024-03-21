@@ -182,6 +182,10 @@ fn remove<T: Percentage + Component>(
             return;
         };
 
+        if commands.get_entity(bar_entity).is_none() {
+            return;
+        }
+
         commands.entity(bar_entity).despawn_recursive()
     });
 }
