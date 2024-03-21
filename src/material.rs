@@ -1,17 +1,18 @@
-use crate::constants::BAR_SHADER_HANDLE;
-use bevy::math::Vec4;
-use bevy::pbr::{AlphaMode, Material, MaterialPipeline, MaterialPipelineKey};
+use bevy::pbr::{MaterialPipeline, MaterialPipelineKey};
 use bevy::prelude::*;
 use bevy::render::mesh::MeshVertexBufferLayout;
 use bevy::render::render_resource::{
     AsBindGroup, RenderPipelineDescriptor, ShaderRef, SpecializedMeshPipelineError,
 };
 
+use crate::constants::BAR_SHADER_HANDLE;
+
 #[derive(Asset, AsBindGroup, Debug, Clone, Reflect)]
 #[bind_group_data(BarMaterialKey)]
 pub(crate) struct BarMaterial {
     #[uniform(0)]
-    pub value_and_dimensions: Vec4, // (value, width, height, border_width) vec4 to be 16byte aligned
+    pub value_and_dimensions: Vec4,
+    // (value, width, height, border_width) vec4 to be 16byte aligned
     #[uniform(1)]
     pub background_color: Color,
     #[uniform(2)]

@@ -1,9 +1,5 @@
-use bevy::app::App;
-use bevy::asset::Assets;
 use bevy::pbr::*;
 use bevy::prelude::*;
-use bevy::utils::default;
-use bevy::DefaultPlugins;
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
 
 use bevy_health_bar3d::prelude::{BarSettings, HealthBarPlugin, Percentage};
@@ -40,11 +36,8 @@ fn setup(
     mut materials: ResMut<Assets<StandardMaterial>>,
 ) {
     commands.spawn(PbrBundle {
-        mesh: meshes.add(Mesh::from(shape::Plane {
-            size: 5.0,
-            subdivisions: 0,
-        })),
-        material: materials.add(Color::rgb(0.3, 0.5, 0.3).into()),
+        mesh: meshes.add(Plane3d::default().mesh().size(5.0, 5.0)),
+        material: materials.add(Color::rgb(0.3, 0.5, 0.3)),
         ..Default::default()
     });
 
@@ -52,14 +45,8 @@ fn setup(
 
     commands.spawn((
         PbrBundle {
-            mesh: meshes.add(
-                TryInto::<Mesh>::try_into(shape::Icosphere {
-                    radius,
-                    ..default()
-                })
-                .unwrap(),
-            ),
-            material: materials.add(Color::rgb(1., 0.2, 0.2).into()),
+            mesh: meshes.add(Sphere { radius }),
+            material: materials.add(Color::rgb(1., 0.2, 0.2)),
             transform: Transform::from_xyz(0.0, 1., 0.0),
             ..Default::default()
         },
@@ -76,14 +63,8 @@ fn setup(
 
     commands.spawn((
         PbrBundle {
-            mesh: meshes.add(
-                TryInto::<Mesh>::try_into(shape::Icosphere {
-                    radius,
-                    ..default()
-                })
-                .unwrap(),
-            ),
-            material: materials.add(Color::rgb(1., 0.2, 0.2).into()),
+            mesh: meshes.add(Sphere { radius }),
+            material: materials.add(Color::rgb(1., 0.2, 0.2)),
             transform: Transform::from_xyz(0.0 + 3. * radius, 0.5, 0.0),
             ..Default::default()
         },
