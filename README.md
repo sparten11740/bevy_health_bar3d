@@ -60,11 +60,7 @@ fn setup(
 ) {
     commands.spawn((
         PbrBundle {
-            mesh: meshes.add(
-                TryInto::<Mesh>::try_into(shape::Icosphere {
-                    radius,
-                    ..default()
-                })),
+            mesh: meshes.add(Sphere { radius }),
             // ...
         },
         Health {
