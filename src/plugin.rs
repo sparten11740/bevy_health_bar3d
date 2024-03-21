@@ -72,7 +72,7 @@ fn spawn<T: Percentage + Component + TypePath>(
             mesh_handles.insert(
                 width,
                 height,
-                meshes.add(Mesh::from(shape::Quad::new(Vec2::new(width, height)))),
+                meshes.add(Mesh::from(Rectangle::new(width, height))),
             )
         });
 
@@ -158,7 +158,7 @@ fn update_settings<T: Percentage + Component + TypePath>(
             let new_mesh = mesh_for_settings_dimensions.unwrap_or(mesh_handles.insert(
                 width,
                 height,
-                meshes.add(Mesh::from(shape::Quad::new(Vec2::new(width, height)))),
+                meshes.add(Mesh::from(Rectangle::new(width, height))),
             ));
             commands.entity(entity).insert(new_mesh);
             material.value_and_dimensions.y = width;
@@ -181,6 +181,10 @@ fn remove<T: Percentage + Component>(
         let Ok(&WithBar(bar_entity, _)) = parent_query.get(entity) else {
             return;
         };
+
+        if commands.get_entity(bar_entity).is_none() {
+            return;
+        }
 
         commands.entity(bar_entity).despawn_recursive()
     });

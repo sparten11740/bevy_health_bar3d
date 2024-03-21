@@ -1,7 +1,6 @@
 use std::marker::PhantomData;
 
 use bevy::prelude::*;
-use bevy::utils::default;
 
 use crate::constants::{
     DEFAULT_BACKGROUND_COLOR, DEFAULT_BORDER_COLOR, DEFAULT_HIGH_COLOR, DEFAULT_LOW_COLOR,

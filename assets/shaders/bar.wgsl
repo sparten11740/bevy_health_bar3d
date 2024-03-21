@@ -3,20 +3,20 @@
     mesh_functions::get_model_matrix
 }
 
-@group(1) @binding(0)
+@group(2) @binding(0)
 var<uniform> value_and_dimensions: vec4<f32>;
-@group(1) @binding(1)
+@group(2) @binding(1)
 var<uniform> background_color: vec4<f32>;
-@group(1) @binding(2)
+@group(2) @binding(2)
 var<uniform> high_color: vec4<f32>;
-@group(1) @binding(3)
+@group(2) @binding(3)
 var<uniform> moderate_color: vec4<f32>;
-@group(1) @binding(4)
+@group(2) @binding(4)
 var<uniform> low_color: vec4<f32>;
-@group(1) @binding(5)
+@group(2) @binding(5)
 var<uniform> offset: vec4<f32>;
 #ifdef HAS_BORDER
-@group(1) @binding(6)
+@group(2) @binding(6)
 var<uniform> border_color: vec4<f32>;
 #endif
 

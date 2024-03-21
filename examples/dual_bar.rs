@@ -1,9 +1,4 @@
-use bevy::app::App;
-use bevy::asset::Assets;
-use bevy::pbr::{PbrBundle, PointLight, PointLightBundle, StandardMaterial};
 use bevy::prelude::*;
-use bevy::utils::default;
-use bevy::DefaultPlugins;
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
 
 use bevy_health_bar3d::configuration::ForegroundColor;
@@ -68,14 +63,8 @@ fn setup(
     values.into_iter().enumerate().for_each(|(i, value)| {
         commands.spawn((
             PbrBundle {
-                mesh: meshes.add(
-                    TryInto::<Mesh>::try_into(shape::Icosphere {
-                        radius,
-                        ..default()
-                    })
-                    .unwrap(),
-                ),
-                material: materials.add(Color::rgb(1., 0.2, 0.2).into()),
+                mesh: meshes.add(Sphere { radius }),
+                material: materials.add(Color::rgb(1., 0.2, 0.2)),
                 transform: Transform::from_xyz(2. * radius, 0.4 + i as f32 / 2., 0.0),
                 ..Default::default()
             },
@@ -84,7 +73,7 @@ fn setup(
                 current: value,
             },
             BarSettings::<Health> {
-                offset: offset,
+                offset,
                 width: bar_width,
                 height: BarHeight::Static(bar_height),
                 ..default()

@@ -3,12 +3,8 @@
 use std::f32::consts::PI;
 use std::time::Duration;
 
-use bevy::app::App;
-use bevy::asset::Assets;
 use bevy::pbr::*;
 use bevy::prelude::*;
-use bevy::utils::default;
-use bevy::DefaultPlugins;
 use bevy_tweening::lens::{TransformPositionLens, TransformRotationLens};
 use bevy_tweening::{Animator, EaseFunction, Tracks, Tween, TweeningPlugin};
 
@@ -102,11 +98,8 @@ fn setup(
 
     // Ground
     commands.spawn(PbrBundle {
-        mesh: meshes.add(Mesh::from(shape::Plane {
-            size: 1000.0,
-            subdivisions: 0,
-        })),
-        material: materials.add(Color::rgb(0.3, 0.5, 0.3).into()),
+        mesh: meshes.add(Plane3d::default().mesh().size(1000.0, 1000.0)),
+        material: materials.add(Color::rgb(0.3, 0.5, 0.3)),
         ..Default::default()
     });
 
@@ -275,7 +268,7 @@ fn move_camera(
     mut commands: Commands,
     mut camera_query: Query<(Entity, &Transform), (With<Camera3d>, Without<Moving>)>,
 ) {
-    camera_query.for_each_mut(|(entity, transform)| {
+    camera_query.iter_mut().for_each(|(entity, transform)| {
         commands.entity(entity).insert(Moving);
 
         let Vec3 { x, y, z } = transform.translation;
