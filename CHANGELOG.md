@@ -1,3 +1,10 @@
+## [3.2.1](https://github.com/sparten11740/bevy_health_bar3d/compare/v3.2.0...v3.2.1) (2024-05-02)
+
+
+### Bug Fixes
+
+* remove obsolete `exhaustive_patterns` feature ([#33](https://github.com/sparten11740/bevy_health_bar3d/issues/33)) ([d82097c](https://github.com/sparten11740/bevy_health_bar3d/commit/d82097c80f6b592e48bcd74b2ab6c50f57989c26))
+
 ## [3.2.0](https://github.com/sparten11740/bevy_health_bar3d/compare/v3.1.0...v3.2.0) (2024-03-21)
 
 
