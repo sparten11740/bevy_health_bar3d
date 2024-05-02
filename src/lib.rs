@@ -1,5 +1,3 @@
-#![feature(exhaustive_patterns)]
-
 pub mod configuration;
 pub mod constants;
 mod material;
