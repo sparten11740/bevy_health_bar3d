@@ -1,3 +1,4 @@
+use bevy::color::palettes::basic::RED;
 use bevy::prelude::*;
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
 
@@ -23,7 +24,7 @@ fn main() {
             WorldInspectorPlugin::new(),
             HealthBarPlugin::<Health>::default(),
         ))
-        .insert_resource(ColorScheme::<Health>::new().background_color(Color::RED))
+        .insert_resource(ColorScheme::<Health>::new().background_color(RED.into()))
         .add_systems(Startup, setup)
         .insert_resource(Msaa::Sample4)
         .run();
@@ -36,7 +37,7 @@ fn setup(
 ) {
     commands.spawn(PbrBundle {
         mesh: meshes.add(Plane3d::default().mesh().size(5.0, 5.0)),
-        material: materials.add(Color::rgb(0.3, 0.5, 0.3)),
+        material: materials.add(Color::srgba(0.3, 0.5, 0.3, 1.)),
         ..Default::default()
     });
 
@@ -45,7 +46,7 @@ fn setup(
     commands.spawn((
         PbrBundle {
             mesh: meshes.add(Sphere { radius }),
-            material: materials.add(Color::rgb(1., 0.2, 0.2)),
+            material: materials.add(Color::srgba(1., 0.2, 0.2, 1.)),
             transform: Transform::from_xyz(0.0, 1., 0.0),
             ..Default::default()
         },

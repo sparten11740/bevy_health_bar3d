@@ -1,6 +1,6 @@
 use bevy::pbr::{MaterialPipeline, MaterialPipelineKey};
 use bevy::prelude::*;
-use bevy::render::mesh::MeshVertexBufferLayout;
+use bevy::render::mesh::*;
 use bevy::render::render_resource::{
     AsBindGroup, RenderPipelineDescriptor, ShaderRef, SpecializedMeshPipelineError,
 };
@@ -14,17 +14,17 @@ pub(crate) struct BarMaterial {
     pub value_and_dimensions: Vec4,
     // (value, width, height, border_width) vec4 to be 16byte aligned
     #[uniform(1)]
-    pub background_color: Color,
+    pub background_color: LinearRgba,
     #[uniform(2)]
-    pub high_color: Color,
+    pub high_color: LinearRgba,
     #[uniform(3)]
-    pub moderate_color: Color,
+    pub moderate_color: LinearRgba,
     #[uniform(4)]
-    pub low_color: Color,
+    pub low_color: LinearRgba,
     #[uniform(5)]
     pub offset: Vec4,
     #[uniform(6)]
-    pub border_color: Color,
+    pub border_color: LinearRgba,
     pub vertical: bool,
 }
 
@@ -59,10 +59,10 @@ impl Material for BarMaterial {
     fn specialize(
         _pipeline: &MaterialPipeline<Self>,
         descriptor: &mut RenderPipelineDescriptor,
-        layout: &MeshVertexBufferLayout,
+        layout: &MeshVertexBufferLayoutRef,
         key: MaterialPipelineKey<Self>,
     ) -> Result<(), SpecializedMeshPipelineError> {
-        let vertex_layout = layout.get_layout(&[
+        let vertex_layout = layout.0.get_layout(&[
             Mesh::ATTRIBUTE_POSITION.at_shader_location(0),
             Mesh::ATTRIBUTE_UV_0.at_shader_location(1),
         ])?;

@@ -1,3 +1,4 @@
+use bevy::color::palettes::basic::BLUE;
 use bevy::prelude::*;
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
 
@@ -41,7 +42,7 @@ fn main() {
             HealthBarPlugin::<Health>::default(),
         ))
         .insert_resource(
-            ColorScheme::<Mana>::new().foreground_color(ForegroundColor::Static(Color::BLUE)),
+            ColorScheme::<Mana>::new().foreground_color(ForegroundColor::Static(BLUE.into())),
         )
         .add_systems(Startup, setup)
         .insert_resource(Msaa::Sample4)
@@ -64,7 +65,7 @@ fn setup(
         commands.spawn((
             PbrBundle {
                 mesh: meshes.add(Sphere { radius }),
-                material: materials.add(Color::rgb(1., 0.2, 0.2)),
+                material: materials.add(Color::srgba(1., 0.2, 0.2, 1.)),
                 transform: Transform::from_xyz(2. * radius, 0.4 + i as f32 / 2., 0.0),
                 ..Default::default()
             },

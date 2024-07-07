@@ -2,7 +2,7 @@ name: Checks
 
 on:
   push:
-    branches: ["main"]
+    branches: [ "main" ]
   pull_request:
 
 env:
@@ -35,5 +35,7 @@ jobs:
         run: sudo apt-get install libasound2-dev libudev-dev pkg-config
       - name: Lint
         run: cargo clippy -- -Dwarnings
+      - name: Build (examples)
+        run: cargo build --examples
       - name: Check format
         run: cargo fmt --all -- --check

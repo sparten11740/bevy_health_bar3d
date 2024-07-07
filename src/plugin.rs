@@ -87,13 +87,13 @@ fn spawn<T: Percentage + Component + TypePath>(
 
         let material = materials.add(BarMaterial {
             value_and_dimensions: (percentage.value(), width, height, settings.border.width).into(),
-            background_color: color_scheme.background_color,
-            high_color: high,
-            moderate_color: moderate,
-            low_color: low,
+            background_color: color_scheme.background_color.into(),
+            high_color: high.into(),
+            moderate_color: moderate.into(),
+            low_color: low.into(),
             vertical: settings.orientation == BarOrientation::Vertical,
             offset: settings.normalized_offset().extend(0.),
-            border_color: settings.border.color,
+            border_color: settings.border.color.into(),
         });
 
         let health_bar = commands
@@ -166,7 +166,7 @@ fn update_settings<T: Percentage + Component + TypePath>(
         }
 
         material.offset = offset;
-        material.border_color = settings.border.color;
+        material.border_color = settings.border.color.into();
         material.value_and_dimensions.w = settings.border.width;
         material.vertical = settings.orientation == BarOrientation::Vertical;
     });
