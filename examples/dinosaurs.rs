@@ -1,12 +1,13 @@
 //! Example with multiple tracked components, moving meshes, changing component values, and a moving camera.
 
-use std::f32::consts::PI;
-use std::time::Duration;
-
+use bevy::animation::RepeatAnimation;
+use bevy::color::palettes::css::*;
 use bevy::pbr::*;
 use bevy::prelude::*;
 use bevy_tweening::lens::{TransformPositionLens, TransformRotationLens};
 use bevy_tweening::{Animator, EaseFunction, Tracks, Tween, TweeningPlugin};
+use std::f32::consts::PI;
+use std::time::Duration;
 
 use bevy_health_bar3d::prelude::{
     BarHeight, BarSettings, ColorScheme, ForegroundColor, HealthBarPlugin, Percentage,
@@ -56,37 +57,33 @@ fn main() {
             TweeningPlugin,
         ))
         .insert_resource(
-            ColorScheme::<Distance>::new().foreground_color(ForegroundColor::Static(Color::BISQUE)),
+            ColorScheme::<Distance>::new().foreground_color(ForegroundColor::Static(BISQUE.into())),
         )
         .insert_resource(
             ColorScheme::<Health>::new()
-                .foreground_color(ForegroundColor::Static(Color::GREEN))
-                .background_color(Color::RED),
+                .foreground_color(ForegroundColor::Static(GREEN.into()))
+                .background_color(RED.into()),
         )
         .insert_resource(Msaa::Sample4)
-        .add_systems(Startup, setup)
+        .add_systems(Startup, (setup, setup_animations))
         .add_systems(
             Update,
-            (
-                move_camera,
-                link_animations,
-                setup_idle_animation,
-                setup_walking_animation,
-                move_trex,
-                kill_trex,
-            ),
+            (start_animations, move_camera, move_trex, kill_trex),
         )
         .run();
 }
 
 #[derive(Resource)]
 struct Animations {
-    walk: Handle<AnimationClip>,
-    idle: Handle<AnimationClip>,
-    die: Handle<AnimationClip>,
+    animations: Vec<AnimationNodeIndex>,
+    graph: Handle<AnimationGraph>,
 }
 
 const TREX_GLTF: &str = "../examples/assets/models/trex.gltf";
+
+fn gltf_path(id: &str) -> String {
+    format!("{TREX_GLTF}#{id}")
+}
 
 fn setup(
     mut commands: Commands,
@@ -94,20 +91,11 @@ fn setup(
     mut materials: ResMut<Assets<StandardMaterial>>,
     asset_server: Res<AssetServer>,
 ) {
-    let gltf_path = |id: &str| format!("{TREX_GLTF}#{id}");
-
     // Ground
     commands.spawn(PbrBundle {
         mesh: meshes.add(Plane3d::default().mesh().size(1000.0, 1000.0)),
-        material: materials.add(Color::rgb(0.3, 0.5, 0.3)),
+        material: materials.add(Color::srgba(0.3, 0.5, 0.3, 1.)),
         ..Default::default()
-    });
-
-    // Animations
-    commands.insert_resource(Animations {
-        walk: asset_server.load(gltf_path("Animation5")),
-        idle: asset_server.load(gltf_path("Animation2")),
-        die: asset_server.load(gltf_path("Animation1")),
     });
 
     let scene = asset_server.load(gltf_path("Scene0"));
@@ -174,7 +162,7 @@ fn setup(
             ..Default::default()
         },
         FogSettings {
-            color: Color::rgba(1., 1., 1., 1.),
+            color: Color::srgba(1., 1., 1., 1.),
             falloff: FogFalloff::Linear {
                 start: 200.,
                 end: 400.,
@@ -184,40 +172,41 @@ fn setup(
     ));
 }
 
-fn setup_walking_animation(
-    animations: Res<Animations>,
-    dinos: Query<&WithAnimationPlayer, (With<Distance>, Added<WithAnimationPlayer>)>,
-    mut players: Query<&mut AnimationPlayer>,
+fn setup_animations(
+    asset_server: Res<AssetServer>,
+    mut commands: Commands,
+    mut graphs: ResMut<Assets<AnimationGraph>>,
 ) {
-    for &WithAnimationPlayer(entity) in dinos.iter() {
-        players
-            .get_mut(entity)
-            .unwrap()
-            .play(animations.walk.clone())
-            .repeat();
-    }
-}
+    let walk_animation = asset_server.load(gltf_path("Animation5"));
+    let idle_animation = asset_server.load(gltf_path("Animation2"));
+    let die_animation = asset_server.load(gltf_path("Animation1"));
 
-fn setup_idle_animation(
-    animations: Res<Animations>,
-    dinos: Query<&WithAnimationPlayer, (Without<Distance>, Added<WithAnimationPlayer>)>,
-    mut players: Query<&mut AnimationPlayer>,
-) {
-    for &WithAnimationPlayer(entity) in dinos.iter() {
-        players
-            .get_mut(entity)
-            .unwrap()
-            .play(animations.idle.clone())
-            .repeat();
-    }
+    let mut graph = AnimationGraph::new();
+    let animations = graph
+        .add_clips(
+            [
+                idle_animation.clone(),
+                walk_animation.clone(),
+                die_animation.clone(),
+            ],
+            1.0,
+            graph.root,
+        )
+        .collect();
+
+    let graph = graphs.add(graph);
+    commands.insert_resource(Animations {
+        animations,
+        graph: graph.clone(),
+    });
 }
 
 fn kill_trex(
     animations: Res<Animations>,
+    time: Res<Time>,
     mut commands: Commands,
     mut query: Query<(&mut Health, &WithAnimationPlayer, Entity), Without<Distance>>,
-    mut players: Query<&mut AnimationPlayer>,
-    time: Res<Time>,
+    mut players: Query<(&mut AnimationPlayer, &mut AnimationTransitions)>,
 ) {
     query
         .iter_mut()
@@ -228,19 +217,27 @@ fn kill_trex(
 
             if health.current <= 0.01 {
                 commands.entity(entity).remove::<Health>();
-                players
+
+                let (mut player, mut transitions) = players
                     .get_mut(with_animation_player.0)
-                    .unwrap()
-                    .play_with_transition(animations.die.clone(), Duration::from_millis(120));
+                    .expect("Animation player not found");
+
+                transitions
+                    .play(
+                        &mut player,
+                        animations.animations[2],
+                        Duration::from_millis(120),
+                    )
+                    .set_repeat(RepeatAnimation::Never);
             }
         })
 }
 
 fn move_trex(
     animations: Res<Animations>,
-    mut players: Query<&mut AnimationPlayer>,
-    mut query: Query<(&mut Transform, &mut Distance, &WithAnimationPlayer)>,
     time: Res<Time>,
+    mut players: Query<(&mut AnimationPlayer, &mut AnimationTransitions)>,
+    mut query: Query<(&mut Transform, &mut Distance, &WithAnimationPlayer)>,
 ) {
     query
         .iter_mut()
@@ -250,11 +247,19 @@ fn move_trex(
             transform.translation.z += delta_z;
             distance.current -= delta_z;
 
-            if distance.current <= 1. {
-                players
+            if distance.current <= 0. {
+                let (mut player, mut transitions) = players
                     .get_mut(with_animation_player.0)
-                    .unwrap()
-                    .play_with_transition(animations.idle.clone(), Duration::from_millis(120))
+                    .expect("Animation player not found");
+
+                player.stop(animations.animations[1]);
+
+                transitions
+                    .play(
+                        &mut player,
+                        animations.animations[0],
+                        Duration::from_millis(120),
+                    )
                     .repeat();
             }
         })
@@ -310,13 +315,16 @@ fn get_root(mut entity: Entity, parent_query: &Query<&Parent>) -> Entity {
     entity
 }
 
-pub fn link_animations(
-    player_query: Query<Entity, Added<AnimationPlayer>>,
+#[allow(clippy::type_complexity)]
+fn start_animations(
     parent_query: Query<&Parent>,
+    distance_query: Query<&Distance>,
     animations_entity_link_query: Query<&WithAnimationPlayer>,
+    animations: Res<Animations>,
     mut commands: Commands,
+    mut player_query: Query<(Entity, &mut AnimationPlayer), Added<AnimationPlayer>>,
 ) {
-    for entity in player_query.iter() {
+    for (entity, mut player) in player_query.iter_mut() {
         let root = get_root(entity, &parent_query);
         if animations_entity_link_query.get(root).is_ok() {
             warn!("Problem with multiple animationsplayers for the same top parent");
@@ -324,5 +332,17 @@ pub fn link_animations(
         }
 
         commands.entity(root).insert(WithAnimationPlayer(entity));
+
+        let index = if distance_query.contains(root) { 1 } else { 0 };
+        let mut transitions = AnimationTransitions::new();
+
+        transitions
+            .play(&mut player, animations.animations[index], Duration::ZERO)
+            .repeat();
+
+        commands
+            .entity(entity)
+            .insert(animations.graph.clone())
+            .insert(transitions);
     }
 }

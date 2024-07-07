@@ -39,7 +39,7 @@ fn setup(
     commands.spawn((
         PbrBundle {
             mesh: meshes.add(Sphere { radius }),
-            material: materials.add(Color::rgb(1., 0.2, 0.2)),
+            material: materials.add(Color::srgba(1., 0.2, 0.2, 1.)),
             transform: Transform::from_xyz(0., 1., 0.0),
             ..Default::default()
         },

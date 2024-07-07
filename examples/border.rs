@@ -1,3 +1,4 @@
+use bevy::color::palettes::css::PURPLE;
 use bevy::prelude::*;
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
 
@@ -36,7 +37,7 @@ fn setup(
     // Ground
     commands.spawn(PbrBundle {
         mesh: meshes.add(Plane3d::default().mesh().size(5.0, 5.0)),
-        material: materials.add(Color::rgb(0.3, 0.5, 0.3)),
+        material: materials.add(Color::srgba(0.3, 0.5, 0.3, 1.)),
         ..Default::default()
     });
 
@@ -52,7 +53,7 @@ fn setup(
         commands.spawn((
             PbrBundle {
                 mesh: meshes.add(Sphere { radius }),
-                material: materials.add(Color::rgb(1., 0.2, 0.2)),
+                material: materials.add(Color::srgba(1., 0.2, 0.2, 1.)),
                 transform: Transform::from_xyz(2. * radius, 0.4 + i as f32 / 2., 0.0),
                 ..Default::default()
             },
@@ -65,7 +66,7 @@ fn setup(
                 width: bar_width,
                 height: BarHeight::Static(bar_height),
                 // here is where the border is defined
-                border: BarBorder::new(bar_height / 4.).color(Color::PURPLE),
+                border: BarBorder::new(bar_height / 4.).color(PURPLE.into()),
                 ..default()
             },
         ));

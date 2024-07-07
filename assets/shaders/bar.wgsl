@@ -1,6 +1,6 @@
 #import bevy_pbr::{
     mesh_view_bindings::view,
-    mesh_functions::get_model_matrix
+    mesh_functions::get_world_from_local
 }
 
 @group(2) @binding(0)
@@ -35,12 +35,12 @@ struct VertexOutput {
 fn vertex(vertex: Vertex) -> VertexOutput {
     var out: VertexOutput;
 
-    let view_proj = view.view_proj;
-    let camera_right = normalize(vec3<f32>(view_proj.x.x, view_proj.y.x, view_proj.z.x));
-    let camera_up = normalize(vec3<f32>(view_proj.x.y, view_proj.y.y, view_proj.z.y));
+    let clip_from_world = view.clip_from_world;
+    let camera_right = normalize(vec3<f32>(clip_from_world.x.x, clip_from_world.y.x, clip_from_world.z.x));
+    let camera_up = normalize(vec3<f32>(clip_from_world.x.y, clip_from_world.y.y, clip_from_world.z.y));
 
     let world_space = camera_right * (vertex.position.x + offset.x) + camera_up * (vertex.position.y + offset.y);
-    let position = view.view_proj * get_model_matrix(vertex.instance_index) * vec4<f32>(world_space, 1.);
+    let position = view.clip_from_world * get_world_from_local(vertex.instance_index) * vec4<f32>(world_space, 1.);
 
     out.uv = vertex.uv;
     out.clip_position = position;

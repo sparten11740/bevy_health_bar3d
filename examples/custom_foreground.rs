@@ -1,3 +1,5 @@
+use bevy::color::palettes::basic::*;
+use bevy::color::palettes::css::*;
 use bevy::prelude::*;
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
 
@@ -37,13 +39,13 @@ fn main() {
             HealthBarPlugin::<Health>::default(),
         ))
         .insert_resource(
-            ColorScheme::<Mana>::new().foreground_color(ForegroundColor::Static(Color::BLUE)),
+            ColorScheme::<Mana>::new().foreground_color(ForegroundColor::Static(BLUE.into())),
         )
         .insert_resource(ColorScheme::<Health>::new().foreground_color(
             ForegroundColor::TriSpectrum {
-                high: Color::LIME_GREEN,
-                moderate: Color::ORANGE_RED,
-                low: Color::PURPLE,
+                high: LIMEGREEN.into(),
+                moderate: ORANGE_RED.into(),
+                low: PURPLE.into(),
             },
         ))
         .add_systems(Startup, setup)
@@ -63,7 +65,7 @@ fn setup(
         commands.spawn((
             PbrBundle {
                 mesh: meshes.add(Sphere { radius }),
-                material: materials.add(Color::rgb(1., 0.2, 0.2)),
+                material: materials.add(Color::srgba(1., 0.2, 0.2, 1.)),
                 transform: Transform::from_xyz(-2. * radius, 0.4 + i as f32 / 2., 0.0),
                 ..Default::default()
             },
@@ -81,7 +83,7 @@ fn setup(
         commands.spawn((
             PbrBundle {
                 mesh: meshes.add(Sphere { radius }),
-                material: materials.add(Color::rgb(1., 0.2, 0.2)),
+                material: materials.add(Color::srgba(1., 0.2, 0.2, 1.)),
                 transform: Transform::from_xyz(2. * radius, 0.4 + i as f32 / 2., 0.0),
                 ..Default::default()
             },

@@ -36,7 +36,7 @@ fn setup(
 ) {
     commands.spawn(PbrBundle {
         mesh: meshes.add(Plane3d::default().mesh().size(5.0, 5.0)),
-        material: materials.add(Color::rgb(0.3, 0.5, 0.3)),
+        material: materials.add(Color::srgba(0.3, 0.5, 0.3, 1.)),
         ..Default::default()
     });
 
@@ -45,7 +45,7 @@ fn setup(
     commands.spawn((
         PbrBundle {
             mesh: meshes.add(Sphere { radius }),
-            material: materials.add(Color::rgb(1., 0.2, 0.2)),
+            material: materials.add(Color::srgba(1., 0.2, 0.2, 1.)),
             transform: Transform::from_xyz(0.0, 1., 0.0),
             ..Default::default()
         },
@@ -63,7 +63,7 @@ fn setup(
     commands.spawn((
         PbrBundle {
             mesh: meshes.add(Sphere { radius }),
-            material: materials.add(Color::rgb(1., 0.2, 0.2)),
+            material: materials.add(Color::srgba(1., 0.2, 0.2, 1.)),
             transform: Transform::from_xyz(0.0 + 3. * radius, 0.5, 0.0),
             ..Default::default()
         },
