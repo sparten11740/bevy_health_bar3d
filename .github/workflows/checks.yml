@@ -13,13 +13,25 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  lint:
-    name: Lint
+  check:
+    name: ${{ matrix.name }}
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - name: Lint
+            cmd: |
+              cargo clippy -- -Dwarnings
+              cargo fmt --all -- --check
+          - name: Build
+            cmd: |
+              cargo build
+              cargo build --examples
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/cache@v3
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v4
         with:
+          save-always: true
           path: |
             ~/.cargo/bin/
             ~/.cargo/registry/index/
@@ -33,9 +45,5 @@ jobs:
           components: clippy, rustfmt
       - name: Install system libs
         run: sudo apt-get install libasound2-dev libudev-dev pkg-config
-      - name: Lint
-        run: cargo clippy -- -Dwarnings
-      - name: Build (examples)
-        run: cargo build --examples
-      - name: Check format
-        run: cargo fmt --all -- --check
+      - name: ${{ matrix.name }}
+        run: ${{ matrix.cmd }}
