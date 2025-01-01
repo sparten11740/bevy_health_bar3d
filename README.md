@@ -11,7 +11,7 @@ with configurable thickness and color. Works with split-screens or layered camer
 ## Bevy Compatibility
 
 | Bevy Version | Crate Version |
-| ------------ | ------------: |
+|--------------|--------------:|
 | `0.15`       |    >= `3.4.0` |
 | `0.14`       |       `3.3.0` |
 | `0.13`       |       `3.2.0` |
@@ -74,7 +74,7 @@ fn setup(
 }
 ```
 
-Note the generic parameter of `BarBundle`. It is used to associate the configuration with the component it is tracking
+Note the generic parameter of `BarSettings`. It is used to associate the configuration with the component it is tracking
 and necessary to support multiple bars per entity.
 
 That's it! Updates to the values of your component will be automatically propagated through to the bar.
