@@ -26,7 +26,6 @@ fn main() {
         ))
         .insert_resource(ColorScheme::<Health>::new().background_color(RED.into()))
         .add_systems(Startup, setup)
-        .insert_resource(Msaa::Sample4)
         .run();
 }
 
@@ -35,21 +34,18 @@ fn setup(
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
 ) {
-    commands.spawn(PbrBundle {
-        mesh: meshes.add(Plane3d::default().mesh().size(5.0, 5.0)),
-        material: materials.add(Color::srgba(0.3, 0.5, 0.3, 1.)),
-        ..Default::default()
-    });
+    // Ground
+    commands.spawn((
+        Mesh3d(meshes.add(Plane3d::default().mesh().size(5.0, 5.0))),
+        MeshMaterial3d(materials.add(Color::srgba(0.3, 0.5, 0.3, 1.))),
+    ));
 
     let radius = 0.2;
 
     commands.spawn((
-        PbrBundle {
-            mesh: meshes.add(Sphere { radius }),
-            material: materials.add(Color::srgba(1., 0.2, 0.2, 1.)),
-            transform: Transform::from_xyz(0.0, 1., 0.0),
-            ..Default::default()
-        },
+        Mesh3d(meshes.add(Sphere { radius })),
+        MeshMaterial3d(materials.add(Color::srgba(1., 0.2, 0.2, 1.))),
+        Transform::from_xyz(0.0, 1., 0.0),
         Health {
             max: 10.,
             current: 8.,
@@ -61,18 +57,20 @@ fn setup(
         },
     ));
 
-    commands.spawn(PointLightBundle {
-        transform: Transform::from_xyz(4.0, 8.0, 4.0),
-        point_light: PointLight {
+    // Light
+    commands.spawn((
+        PointLight {
             intensity: 1500.0,
             shadows_enabled: true,
             ..Default::default()
         },
-        ..Default::default()
-    });
+        Transform::from_xyz(4.0, 8.0, 4.0),
+    ));
 
-    commands.spawn(Camera3dBundle {
-        transform: Transform::from_xyz(0., 2.5, 5.0).looking_at(Vec3::ZERO, Vec3::Y),
-        ..Default::default()
-    });
+    // Camera
+    commands.spawn((
+        Camera3d::default(),
+        Msaa::Sample4,
+        Transform::from_xyz(0., 2.5, 5.0).looking_at(Vec3::ZERO, Vec3::Y),
+    ));
 }

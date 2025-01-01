@@ -34,22 +34,18 @@ fn setup(
     mut materials: ResMut<Assets<StandardMaterial>>,
 ) {
     // Ground
-    commands.spawn(PbrBundle {
-        mesh: meshes.add(Plane3d::default().mesh().size(5.0, 5.0)),
-        material: materials.add(Color::srgba(0.3, 0.5, 0.3, 1.)),
-        ..Default::default()
-    });
+    commands.spawn((
+        Mesh3d(meshes.add(Plane3d::default().mesh().size(5.0, 5.0))),
+        MeshMaterial3d(materials.add(Color::srgba(0.3, 0.5, 0.3, 1.))),
+    ));
 
     let radius = 0.15;
 
     // Mesh with Health Bar
     commands.spawn((
-        PbrBundle {
-            mesh: meshes.add(Sphere { radius }),
-            material: materials.add(Color::srgba(1., 0.2, 0.2, 1.)),
-            transform: Transform::from_xyz(0., 1., 0.0),
-            ..Default::default()
-        },
+        Mesh3d(meshes.add(Sphere { radius })),
+        MeshMaterial3d(materials.add(Color::srgba(1., 0.2, 0.2, 1.))),
+        Transform::from_xyz(0., 1., 0.0),
         Health {
             max: 10.,
             current: 8.,
@@ -63,21 +59,21 @@ fn setup(
     ));
 
     // Light
-    commands.spawn(PointLightBundle {
-        transform: Transform::from_xyz(4.0, 8.0, 4.0),
-        point_light: PointLight {
+    commands.spawn((
+        PointLight {
             intensity: 1500.0,
             shadows_enabled: true,
             ..Default::default()
         },
-        ..Default::default()
-    });
+        Transform::from_xyz(4.0, 8.0, 4.0),
+    ));
 
     // Camera
-    commands.spawn(Camera3dBundle {
-        transform: Transform::from_xyz(0., 1.5, 5.0).looking_at(Vec3::Y, Vec3::Y),
-        ..Default::default()
-    });
+    commands.spawn((
+        Camera3d::default(),
+        Msaa::Sample4,
+        Transform::from_xyz(0., 1.5, 5.0).looking_at(Vec3::Y, Vec3::Y),
+    ));
 }
 
 fn rotate_camera(
@@ -86,7 +82,7 @@ fn rotate_camera(
     time: Res<Time>,
 ) {
     let mut transform = camera_query.single_mut();
-    let mut target_angle = *angle + 10. * time.delta_seconds();
+    let mut target_angle = *angle + 10. * time.delta_secs();
 
     if target_angle > 360. {
         target_angle = 0.;

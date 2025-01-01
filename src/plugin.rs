@@ -68,7 +68,7 @@ fn spawn<T: Percentage + Component + TypePath>(
         let width = settings.normalized_width();
         let height = settings.normalized_height();
 
-        let mesh = mesh_handles.get(width, height).cloned().unwrap_or_else(|| {
+        let mesh = mesh_handles.get(width, height).unwrap_or_else(|| {
             mesh_handles.insert(
                 width,
                 height,
@@ -99,11 +99,8 @@ fn spawn<T: Percentage + Component + TypePath>(
         let health_bar = commands
             .spawn((
                 Name::new(format!("{}Bar", T::type_path())),
-                MaterialMeshBundle {
-                    mesh,
-                    material,
-                    ..default()
-                },
+                Mesh3d(mesh.0),
+                MeshMaterial3d(material),
                 NotShadowCaster,
                 NotShadowReceiver,
             ))
@@ -119,7 +116,7 @@ fn spawn<T: Percentage + Component + TypePath>(
 fn update<T: Percentage + Component + TypePath>(
     mut materials: ResMut<Assets<BarMaterial>>,
     parent_query: Query<(&WithBar<T>, &T), Changed<T>>,
-    bar_query: Query<&Handle<BarMaterial>>,
+    bar_query: Query<&MeshMaterial3d<BarMaterial>>,
 ) {
     parent_query.iter().for_each(|(bar, percentage)| {
         let Ok(material_handle) = bar_query.get(bar.get()) else {
@@ -137,7 +134,7 @@ fn update_settings<T: Percentage + Component + TypePath>(
     mut meshes: ResMut<Assets<Mesh>>,
     mut mesh_handles: ResMut<MeshHandles>,
     parent_query: Query<(&WithBar<T>, &BarSettings<T>), Changed<BarSettings<T>>>,
-    bar_query: Query<(Entity, &Handle<BarMaterial>, &Handle<Mesh>)>,
+    bar_query: Query<(Entity, &MeshMaterial3d<BarMaterial>, &Mesh3d)>,
 ) {
     parent_query.iter().for_each(|(bar, settings)| {
         let Ok((entity, material_handle, mesh_handle)) = bar_query.get(bar.get()) else {
@@ -149,10 +146,8 @@ fn update_settings<T: Percentage + Component + TypePath>(
         let width = settings.normalized_width();
         let height = settings.normalized_height();
 
-        let mesh_for_settings_dimensions = mesh_handles.get(width, height).cloned();
-        let mesh_changed = mesh_for_settings_dimensions
-            .clone()
-            .map_or(true, |handle| handle != *mesh_handle);
+        let mesh_for_settings_dimensions = mesh_handles.get(width, height);
+        let mesh_changed = mesh_for_settings_dimensions == Some(mesh_handle.clone());
 
         if mesh_changed {
             let new_mesh = mesh_for_settings_dimensions.unwrap_or(mesh_handles.insert(
@@ -191,8 +186,8 @@ fn remove<T: Percentage + Component>(
 }
 
 fn reset_rotation(
-    mut bar_query: Query<(&Parent, &mut Transform), With<Handle<BarMaterial>>>,
-    q_transform: Query<&Transform, Without<Handle<BarMaterial>>>,
+    mut bar_query: Query<(&Parent, &mut Transform), With<MeshMaterial3d<BarMaterial>>>,
+    q_transform: Query<&Transform, Without<MeshMaterial3d<BarMaterial>>>,
 ) {
     for (parent, mut transform) in bar_query.iter_mut() {
         if let Ok(parent_transform) = q_transform.get(parent.get()) {
