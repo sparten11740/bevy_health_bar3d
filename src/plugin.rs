@@ -7,7 +7,7 @@ use bevy::prelude::*;
 use crate::configuration::{ForegroundColor, Percentage};
 use crate::constants::BAR_SHADER_HANDLE;
 use crate::material::BarMaterial;
-use crate::mesh::{MeshHandle, MeshHandles};
+use crate::mesh::MeshHandles;
 use crate::prelude::{BarOrientation, BarSettings, ColorScheme};
 
 pub struct HealthBarPlugin<T: Percentage + Component + TypePath> {
@@ -134,7 +134,7 @@ fn update_settings<T: Percentage + Component + TypePath>(
     mut meshes: ResMut<Assets<Mesh>>,
     mut mesh_handles: ResMut<MeshHandles>,
     parent_query: Query<(&WithBar<T>, &BarSettings<T>), Changed<BarSettings<T>>>,
-    bar_query: Query<(Entity, &MeshMaterial3d<BarMaterial>, &MeshHandle)>,
+    bar_query: Query<(Entity, &MeshMaterial3d<BarMaterial>, &Mesh3d)>,
 ) {
     parent_query.iter().for_each(|(bar, settings)| {
         let Ok((entity, material_handle, mesh_handle)) = bar_query.get(bar.get()) else {
@@ -147,9 +147,7 @@ fn update_settings<T: Percentage + Component + TypePath>(
         let height = settings.normalized_height();
 
         let mesh_for_settings_dimensions = mesh_handles.get(width, height);
-        let mesh_changed = mesh_for_settings_dimensions
-            .clone()
-            .map_or(true, |handle| handle != *mesh_handle);
+        let mesh_changed = mesh_for_settings_dimensions == Some(mesh_handle.clone());
 
         if mesh_changed {
             let new_mesh = mesh_for_settings_dimensions.unwrap_or(mesh_handles.insert(
