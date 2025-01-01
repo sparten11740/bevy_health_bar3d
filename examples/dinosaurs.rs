@@ -5,7 +5,7 @@ use bevy::color::palettes::css::*;
 use bevy::pbr::*;
 use bevy::prelude::*;
 use bevy_tweening::lens::{TransformPositionLens, TransformRotationLens};
-use bevy_tweening::{Animator, EaseFunction, Tracks, Tween, TweeningPlugin};
+use bevy_tweening::{Animator, Tracks, Tween, TweeningPlugin};
 use std::f32::consts::PI;
 use std::time::Duration;
 
@@ -64,7 +64,6 @@ fn main() {
                 .foreground_color(ForegroundColor::Static(GREEN.into()))
                 .background_color(RED.into()),
         )
-        .insert_resource(Msaa::Sample4)
         .add_systems(Startup, (setup, setup_animations))
         .add_systems(
             Update,
@@ -92,21 +91,17 @@ fn setup(
     asset_server: Res<AssetServer>,
 ) {
     // Ground
-    commands.spawn(PbrBundle {
-        mesh: meshes.add(Plane3d::default().mesh().size(1000.0, 1000.0)),
-        material: materials.add(Color::srgba(0.3, 0.5, 0.3, 1.)),
-        ..Default::default()
-    });
+    commands.spawn((
+        Mesh3d(meshes.add(Plane3d::default().mesh().size(1000.0, 1000.0))),
+        MeshMaterial3d(materials.add(Color::srgba(0.3, 0.5, 0.3, 1.))),
+    ));
 
     let scene = asset_server.load(gltf_path("Scene0"));
 
     // T-Rex 1
     commands.spawn((
-        SceneBundle {
-            scene: scene.clone(),
-            transform: Transform::from_xyz(25., 0., -50.),
-            ..default()
-        },
+        SceneRoot(scene.clone()),
+        Transform::from_xyz(25., 0., -50.),
         Distance::new(80.),
         Health {
             max: 10.,
@@ -128,7 +123,7 @@ fn setup(
 
     // T-Rex 2
     commands.spawn((
-        SceneBundle { scene, ..default() },
+        SceneRoot(scene.clone()),
         Health {
             max: 10.,
             current: 10.,
@@ -142,26 +137,24 @@ fn setup(
     ));
 
     // Sunlight
-    commands.spawn(DirectionalLightBundle {
-        directional_light: DirectionalLight {
+    commands.spawn((
+        DirectionalLight {
             shadows_enabled: true,
             ..default()
         },
-        transform: Transform {
+        Transform {
             translation: Vec3::new(0.0, 50.0, 20.0),
             rotation: Quat::from_rotation_x(-PI / 4.),
             ..default()
         },
-        ..default()
-    });
+    ));
 
     // Camera
     commands.spawn((
-        Camera3dBundle {
-            transform: Transform::from_xyz(100., 90., 100.0).looking_at(Vec3::ZERO, Vec3::Y),
-            ..Default::default()
-        },
-        FogSettings {
+        Camera3d::default(),
+        Transform::from_xyz(100., 90., 100.0).looking_at(Vec3::ZERO, Vec3::Y),
+        Msaa::Sample4,
+        DistanceFog {
             color: Color::srgba(1., 1., 1., 1.),
             falloff: FogFalloff::Linear {
                 start: 200.,
@@ -212,7 +205,7 @@ fn kill_trex(
         .iter_mut()
         .filter(|(health, _, _)| health.current > 0.)
         .for_each(|(mut health, with_animation_player, entity)| {
-            let delta_z = time.delta_seconds();
+            let delta_z = time.delta_secs();
             health.current -= delta_z;
 
             if health.current <= 0.01 {
@@ -243,7 +236,7 @@ fn move_trex(
         .iter_mut()
         .filter(|(_, distance, _)| distance.current > 0.)
         .for_each(|(mut transform, mut distance, with_animation_player)| {
-            let delta_z = time.delta_seconds() * 10.;
+            let delta_z = time.delta_secs() * 10.;
             transform.translation.z += delta_z;
             distance.current -= delta_z;
 
@@ -342,7 +335,7 @@ fn start_animations(
 
         commands
             .entity(entity)
-            .insert(animations.graph.clone())
+            .insert(AnimationGraphHandle(animations.graph.clone()))
             .insert(transitions);
     }
 }
