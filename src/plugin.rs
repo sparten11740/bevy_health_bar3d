@@ -10,6 +10,9 @@ use crate::material::BarMaterial;
 use crate::mesh::MeshHandles;
 use crate::prelude::{BarOrientation, BarSettings, ColorScheme};
 
+#[derive(Component, Reflect, Default)]
+pub struct InhibitBar<T: Percentage + Component>(#[reflect(ignore)] PhantomData<T>);
+
 pub struct HealthBarPlugin<T: Percentage + Component + TypePath> {
     phantom: PhantomData<T>,
 }
@@ -38,6 +41,7 @@ impl<T: Percentage + Component + TypePath> Plugin for HealthBarPlugin<T> {
         app.init_resource::<MeshHandles>()
             .init_resource::<ColorScheme<T>>()
             .register_type::<BarSettings<T>>()
+            .register_type::<InhibitBar<T>>()
             .add_systems(PostUpdate, reset_rotation)
             .add_systems(
                 Update,
@@ -62,7 +66,7 @@ fn spawn<T: Percentage + Component + TypePath>(
     mut meshes: ResMut<Assets<Mesh>>,
     mut mesh_handles: ResMut<MeshHandles>,
     color_scheme: Res<ColorScheme<T>>,
-    query: Query<(Entity, &T, &BarSettings<T>), Added<T>>,
+    query: Query<(Entity, &T, &BarSettings<T>), (Added<T>, Without<InhibitBar<T>>)>,
 ) {
     query.iter().for_each(|(entity, percentage, settings)| {
         let width = settings.normalized_width();
