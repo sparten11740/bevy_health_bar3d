@@ -67,6 +67,7 @@ fn setup(
         ));
     });
 
+    // Light
     commands.spawn((
         PointLight {
             intensity: 1500.0,
@@ -76,8 +77,10 @@ fn setup(
         Transform::from_xyz(4.0, 8.0, 4.0),
     ));
 
+    // Camera
     commands.spawn((
         Camera3d::default(),
+        Msaa::Sample4,
         Transform::from_xyz(0., 1.5, 4.0).looking_at(Vec3::Y, Vec3::Y),
     ));
 }
