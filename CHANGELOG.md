@@ -1,3 +1,10 @@
+## [3.4.0](https://github.com/sparten11740/bevy_health_bar3d/compare/v3.3.0...v3.4.0) (2025-01-01)
+
+
+### Features
+
+* support bevy 0.15.0 ([#38](https://github.com/sparten11740/bevy_health_bar3d/issues/38)) ([22a05de](https://github.com/sparten11740/bevy_health_bar3d/commit/22a05de44d0453e1b4338f71209732e5cc2919f9))
+
 ## [3.3.0](https://github.com/sparten11740/bevy_health_bar3d/compare/v3.2.1...v3.3.0) (2024-07-07)
 
 
