@@ -157,7 +157,13 @@ impl<T: Percentage + Component + TypePath> ColorScheme<T> {
     ///
     /// # Examples
     ///
-    /// ```
+    /// ```rust
+    /// # use bevy::prelude::*;
+    /// # use bevy_health_bar3d::prelude::{Percentage};
+    /// # #[derive(Component, Reflect)]
+    /// # struct Health { max: f32, current: f32  }
+    /// # impl Percentage for Health { fn value(&self) -> f32 { self.current / self.max } }
+    /// 
     /// use bevy_health_bar3d::prelude::ColorScheme;
     /// let color_scheme = ColorScheme::<Health>::new();
     /// ```
@@ -178,13 +184,21 @@ impl<T: Percentage + Component + TypePath> ColorScheme<T> {
     /// # Examples
     ///
     /// ```
-    /// use bevy::prelude::Color;
+    /// # use bevy::prelude::*;
+    /// # use bevy_health_bar3d::prelude::{Percentage};
+    /// # #[derive(Component, Reflect)] 
+    /// # struct Health { max: f32, current: f32  }
+    /// # impl Percentage for Health { fn value(&self) -> f32 { self.current / self.max } }
+    /// # #[derive(Component, Reflect)] 
+    /// # struct Mana { max: f32, current: f32  }
+    /// # impl Percentage for Mana { fn value(&self) -> f32 { self.current / self.max } }        
+    /// use bevy::color::palettes::css::*;
     /// use bevy_health_bar3d::prelude::{ColorScheme, ForegroundColor};
-    /// let mana_scheme = ColorScheme::<Mana>::new().foreground_color(ForegroundColor::Static(Color::BLUE));
+    /// let mana_scheme = ColorScheme::<Mana>::new().foreground_color(ForegroundColor::Static(BLUE.into()));
     /// let health_scheme = ColorScheme::<Health>::new().foreground_color(ForegroundColor::TriSpectrum {
-    ///     high: Color::GREEN,
-    ///     moderate: Color::ORANGE,
-    ///     low: Color::RED
+    ///     high: GREEN.into(),
+    ///     moderate: ORANGE.into(),
+    ///     low: RED.into()
     /// });
     /// ```
     pub fn foreground_color(mut self, color: ForegroundColor) -> Self {

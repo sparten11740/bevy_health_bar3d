@@ -5,16 +5,8 @@ use bevy_inspector_egui::quick::WorldInspectorPlugin;
 use bevy_health_bar3d::prelude::{BarSettings, HealthBarPlugin, Percentage};
 
 #[derive(Component, Reflect)]
-struct Health {
-    max: f32,
-    current: f32,
-}
-
-impl Percentage for Health {
-    fn value(&self) -> f32 {
-        self.current / self.max
-    }
-}
+struct Health { max: f32, current: f32  }
+impl Percentage for Health { fn value(&self) -> f32 { self.current / self.max } }
 
 fn main() {
     App::new()
@@ -91,11 +83,10 @@ fn setup(
 }
 
 fn rotate_camera(
-    mut camera_query: Query<&mut Transform, With<Camera3d>>,
+    mut transform: Single<&mut Transform, With<Camera3d>>,
     mut angle: Local<f32>,
     time: Res<Time>,
 ) {
-    let mut transform = camera_query.single_mut();
     let mut target_angle = *angle + 10. * time.delta_secs();
 
     if target_angle > 360. {
@@ -106,5 +97,5 @@ fn rotate_camera(
     transform.translation.z = 5. * target_angle.to_radians().sin();
 
     *angle = target_angle;
-    *transform = transform.looking_at(Vec3::ZERO, Vec3::Y);
+    transform.look_at(Vec3::ZERO, Vec3::Y);
 }

@@ -177,20 +177,20 @@ fn remove<T: Percentage + Component>(
             return;
         };
 
-        if commands.get_entity(bar_entity).is_none() {
+        if commands.get_entity(bar_entity).is_ok() {
             return;
         }
 
-        commands.entity(bar_entity).despawn_recursive()
+        commands.entity(bar_entity).despawn()
     });
 }
 
 fn reset_rotation(
-    mut bar_query: Query<(&Parent, &mut Transform), With<MeshMaterial3d<BarMaterial>>>,
+    mut bar_query: Query<(&ChildOf, &mut Transform), With<MeshMaterial3d<BarMaterial>>>,
     q_transform: Query<&Transform, Without<MeshMaterial3d<BarMaterial>>>,
 ) {
-    for (parent, mut transform) in bar_query.iter_mut() {
-        if let Ok(parent_transform) = q_transform.get(parent.get()) {
+    for (child_of, mut transform) in bar_query.iter_mut() {
+        if let Ok(parent_transform) = q_transform.get(child_of.parent) {
             transform.rotation = parent_transform.rotation.inverse();
         }
     }

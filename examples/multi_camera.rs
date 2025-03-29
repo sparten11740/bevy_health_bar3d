@@ -106,11 +106,10 @@ fn setup(
 struct Rotate;
 
 fn rotate_camera(
-    mut camera_query: Query<&mut Transform, With<Rotate>>,
+    mut transform: Single<&mut Transform, With<Rotate>>,
     mut angle: Local<f32>,
     time: Res<Time>,
 ) {
-    let mut transform = camera_query.single_mut();
     let mut target_angle = *angle + 10. * time.delta_secs();
 
     if target_angle > 360. {
@@ -121,5 +120,5 @@ fn rotate_camera(
     transform.translation.z = 5. * target_angle.to_radians().sin();
 
     *angle = target_angle;
-    *transform = transform.looking_at(Vec3::ZERO, Vec3::Y);
+    transform.look_at(Vec3::ZERO, Vec3::Y);
 }
