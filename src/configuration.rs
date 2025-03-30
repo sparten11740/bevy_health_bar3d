@@ -163,7 +163,7 @@ impl<T: Percentage + Component + TypePath> ColorScheme<T> {
     /// # #[derive(Component, Reflect)]
     /// # struct Health { max: f32, current: f32  }
     /// # impl Percentage for Health { fn value(&self) -> f32 { self.current / self.max } }
-    /// 
+    ///
     /// use bevy_health_bar3d::prelude::ColorScheme;
     /// let color_scheme = ColorScheme::<Health>::new();
     /// ```
@@ -186,10 +186,10 @@ impl<T: Percentage + Component + TypePath> ColorScheme<T> {
     /// ```
     /// # use bevy::prelude::*;
     /// # use bevy_health_bar3d::prelude::{Percentage};
-    /// # #[derive(Component, Reflect)] 
+    /// # #[derive(Component, Reflect)]
     /// # struct Health { max: f32, current: f32  }
     /// # impl Percentage for Health { fn value(&self) -> f32 { self.current / self.max } }
-    /// # #[derive(Component, Reflect)] 
+    /// # #[derive(Component, Reflect)]
     /// # struct Mana { max: f32, current: f32  }
     /// # impl Percentage for Mana { fn value(&self) -> f32 { self.current / self.max } }        
     /// use bevy::color::palettes::css::*;

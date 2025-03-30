@@ -167,22 +167,17 @@ fn update_settings<T: Percentage + Component + TypePath>(
     });
 }
 
-
-
 fn remove<T: Percentage + Component>(
     mut commands: Commands,
     mut removals: RemovedComponents<T>,
     parent_query: Query<&WithBar<T>>,
 ) {
     removals.read().for_each(|entity| {
-
         let Ok(&WithBar(bar_entity, _)) = parent_query.get(entity) else {
-            info!("---------- No Bar {:?}", entity);
             return;
         };
 
         if commands.get_entity(bar_entity).is_err() {
-            info!("---------- No Bar Entity {:?}", entity);
             return;
         }
 

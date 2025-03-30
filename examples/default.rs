@@ -5,8 +5,15 @@ use bevy_inspector_egui::quick::WorldInspectorPlugin;
 use bevy_health_bar3d::prelude::{BarSettings, HealthBarPlugin, Percentage};
 
 #[derive(Component, Reflect)]
-struct Health { max: f32, current: f32  }
-impl Percentage for Health { fn value(&self) -> f32 { self.current / self.max } }
+struct Health {
+    max: f32,
+    current: f32,
+}
+impl Percentage for Health {
+    fn value(&self) -> f32 {
+        self.current / self.max
+    }
+}
 
 fn main() {
     App::new()
