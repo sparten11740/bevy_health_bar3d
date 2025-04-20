@@ -1,6 +1,7 @@
 use bevy::color::palettes::basic::*;
 use bevy::color::palettes::css::*;
 use bevy::prelude::*;
+use bevy_inspector_egui::bevy_egui::EguiPlugin;
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
 
 use bevy_health_bar3d::prelude::*;
@@ -34,6 +35,7 @@ fn main() {
         .register_type::<Mana>()
         .add_plugins(DefaultPlugins)
         .add_plugins((
+            EguiPlugin { enable_multipass_for_primary_context: true },
             WorldInspectorPlugin::new(),
             HealthBarPlugin::<Mana>::default(),
             HealthBarPlugin::<Health>::default(),

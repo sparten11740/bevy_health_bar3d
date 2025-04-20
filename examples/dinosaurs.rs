@@ -4,6 +4,7 @@ use bevy::animation::RepeatAnimation;
 use bevy::color::palettes::css::*;
 use bevy::pbr::*;
 use bevy::prelude::*;
+use bevy_inspector_egui::bevy_egui::EguiPlugin;
 use bevy_tweening::lens::{TransformPositionLens, TransformRotationLens};
 use bevy_tweening::{Animator, Tracks, Tween, TweeningPlugin};
 use std::f32::consts::PI;
@@ -52,6 +53,7 @@ fn main() {
         .register_type::<Distance>()
         .add_plugins((
             DefaultPlugins,
+            EguiPlugin { enable_multipass_for_primary_context: true },
             HealthBarPlugin::<Distance>::default(),
             HealthBarPlugin::<Health>::default(),
             TweeningPlugin,
@@ -303,7 +305,7 @@ pub struct WithAnimationPlayer(pub Entity);
 
 fn get_root(mut entity: Entity, parent_query: &Query<&ChildOf>) -> Entity {
     while let Ok(child_of) = parent_query.get(entity) {
-        entity = child_of.parent;
+        entity = child_of.0;
     }
     entity
 }

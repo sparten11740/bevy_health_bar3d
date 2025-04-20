@@ -190,7 +190,7 @@ fn reset_rotation(
     q_transform: Query<&Transform, Without<MeshMaterial3d<BarMaterial>>>,
 ) {
     for (child_of, mut transform) in bar_query.iter_mut() {
-        if let Ok(parent_transform) = q_transform.get(child_of.parent) {
+        if let Ok(parent_transform) = q_transform.get(child_of.0) {
             transform.rotation = parent_transform.rotation.inverse();
         }
     }

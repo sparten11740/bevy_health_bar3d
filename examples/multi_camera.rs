@@ -1,6 +1,7 @@
 use bevy::pbr::*;
 use bevy::prelude::*;
 use bevy_health_bar3d::prelude::{BarSettings, HealthBarPlugin, Percentage};
+use bevy_inspector_egui::bevy_egui::EguiPlugin;
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
 
 #[derive(Component, Reflect)]
@@ -20,6 +21,7 @@ fn main() {
         .register_type::<Health>()
         .add_plugins((
             DefaultPlugins,
+            EguiPlugin { enable_multipass_for_primary_context: true },
             WorldInspectorPlugin::new(),
             HealthBarPlugin::<Health>::default(),
         ))

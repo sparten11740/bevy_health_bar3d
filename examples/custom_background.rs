@@ -1,6 +1,6 @@
 use bevy::color::palettes::basic::RED;
 use bevy::prelude::*;
-use bevy_inspector_egui::quick::WorldInspectorPlugin;
+use bevy_inspector_egui::{bevy_egui::EguiPlugin, quick::WorldInspectorPlugin};
 
 use bevy_health_bar3d::prelude::{BarSettings, ColorScheme, HealthBarPlugin, Percentage};
 
@@ -21,6 +21,7 @@ fn main() {
         .register_type::<Health>()
         .add_plugins(DefaultPlugins)
         .add_plugins((
+            EguiPlugin { enable_multipass_for_primary_context: true },
             WorldInspectorPlugin::new(),
             HealthBarPlugin::<Health>::default(),
         ))
