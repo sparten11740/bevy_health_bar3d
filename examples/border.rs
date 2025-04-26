@@ -18,11 +18,11 @@ impl Percentage for Health {
 
 fn main() {
     App::new()
-        .add_plugins(DefaultPlugins)
         .add_plugins((
+            DefaultPlugins,
             EguiPlugin { enable_multipass_for_primary_context: true },
-            HealthBarPlugin::<Health>::default(),
             WorldInspectorPlugin::new(),
+            HealthBarPlugin::<Health>::default(),
         ))
         .add_systems(Startup, setup)
         .add_systems(Update, rotate_camera)
