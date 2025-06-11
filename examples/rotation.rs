@@ -44,7 +44,7 @@ fn main() {
         .run();
 }
 
-const TREX_GLTF: &str = "../examples/assets/models/trex.gltf";
+const TREX_GLTF: &str = "models/trex.gltf";
 
 fn setup(
     mut commands: Commands,

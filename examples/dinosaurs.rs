@@ -78,7 +78,7 @@ struct Animations {
     graph: Handle<AnimationGraph>,
 }
 
-const TREX_GLTF: &str = "../examples/assets/models/trex.gltf";
+const TREX_GLTF: &str = "models/trex.gltf";
 
 fn gltf_path(id: &str) -> String {
     format!("{TREX_GLTF}#{id}")
