@@ -11,8 +11,9 @@ with configurable thickness and color. Works with split-screens or layered camer
 ## Bevy Compatibility
 
 | Bevy Version | Crate Version |
-|--------------|--------------:|
-| `0.15`       |    >= `3.4.0` |
+| ------------ | ------------: |
+| `0.16`       |    >= `3.5.0` |
+| `0.15`       |       `3.4.0` |
 | `0.14`       |       `3.3.0` |
 | `0.13`       |       `3.2.0` |
 | `0.12`       |       `2.0.0` |
@@ -27,6 +28,7 @@ to the plugin on instantiation:
 
 ```rust
 use bevy_health_bar3d::prelude::{HealthBarPlugin, Percentage};
+use bevy::color::palettes::basic::*;
 
 #[derive(Component, Reflect)]
 struct Health {
@@ -45,7 +47,7 @@ fn main() {
         // add multiple times to track further component types
         .add_plugins((HealthBarPlugin::<Health>::default(), HealthBarPlugin::<Mana>::default()))
         // set a different color for the Mana bar
-        .insert_resource(ColorScheme::<Mana>::new().foreground_color(ForegroundColor::Static(Color::BLUE)))
+        .insert_resource(ColorScheme::<Mana>::new().foreground_color(ForegroundColor::Static(BLUE.into())))
         .run();
 }
 ```
