@@ -1,4 +1,5 @@
 use bevy::prelude::*;
+use bevy_inspector_egui::bevy_egui::EguiPlugin;
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
 
 use bevy_health_bar3d::prelude::{BarOrientation, BarSettings, HealthBarPlugin, Percentage};
@@ -20,6 +21,9 @@ fn main() {
         .register_type::<Health>()
         .add_plugins((
             DefaultPlugins,
+            EguiPlugin {
+                enable_multipass_for_primary_context: true,
+            },
             WorldInspectorPlugin::new(),
             HealthBarPlugin::<Health>::default(),
         ))
@@ -77,11 +81,10 @@ fn setup(
 }
 
 fn rotate_camera(
-    mut camera_query: Query<&mut Transform, With<Camera3d>>,
+    mut transform: Single<&mut Transform, With<Camera3d>>,
     mut angle: Local<f32>,
     time: Res<Time>,
 ) {
-    let mut transform = camera_query.single_mut();
     let mut target_angle = *angle + 10. * time.delta_secs();
 
     if target_angle > 360. {
@@ -92,5 +95,5 @@ fn rotate_camera(
     transform.translation.z = 5. * target_angle.to_radians().sin();
 
     *angle = target_angle;
-    *transform = transform.looking_at(Vec3::ZERO, Vec3::Y);
+    transform.look_at(Vec3::ZERO, Vec3::Y);
 }

@@ -17,6 +17,7 @@ jobs:
     name: ${{ matrix.name }}
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         include:
           - name: Lint
@@ -44,6 +45,8 @@ jobs:
         with:
           components: clippy, rustfmt
       - name: Install system libs
-        run: sudo apt-get install libasound2-dev libudev-dev pkg-config
+        run: |
+          sudo apt-get update
+          sudo apt-get install libasound2-dev libudev-dev pkg-config
       - name: ${{ matrix.name }}
         run: ${{ matrix.cmd }}

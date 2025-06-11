@@ -36,8 +36,8 @@ fn vertex(vertex: Vertex) -> VertexOutput {
     var out: VertexOutput;
 
     let clip_from_world = view.clip_from_world;
-    let camera_right = normalize(vec3<f32>(clip_from_world.x.x, clip_from_world.y.x, clip_from_world.z.x));
-    let camera_up = normalize(vec3<f32>(clip_from_world.x.y, clip_from_world.y.y, clip_from_world.z.y));
+    let camera_right = normalize(vec3<f32>(clip_from_world[0].x, clip_from_world[1].x, clip_from_world[2].x));
+    let camera_up = normalize(vec3<f32>(clip_from_world[0].y, clip_from_world[1].y, clip_from_world[2].y));
 
     let world_space = camera_right * (vertex.position.x + offset.x) + camera_up * (vertex.position.y + offset.y);
     let position = view.clip_from_world * get_world_from_local(vertex.instance_index) * vec4<f32>(world_space, 1.);

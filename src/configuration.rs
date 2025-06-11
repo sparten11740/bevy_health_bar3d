@@ -180,11 +180,11 @@ impl<T: Percentage + Component + TypePath> ColorScheme<T> {
     /// ```
     /// use bevy::prelude::Color;
     /// use bevy_health_bar3d::prelude::{ColorScheme, ForegroundColor};
-    /// let mana_scheme = ColorScheme::<Mana>::new().foreground_color(ForegroundColor::Static(Color::BLUE));
+    /// let mana_scheme = ColorScheme::<Mana>::new().foreground_color(ForegroundColor::Static(BLUE.into()));
     /// let health_scheme = ColorScheme::<Health>::new().foreground_color(ForegroundColor::TriSpectrum {
-    ///     high: Color::GREEN,
-    ///     moderate: Color::ORANGE,
-    ///     low: Color::RED
+    ///     high: GREEN.into(),
+    ///     moderate: YELLOW.into(),
+    ///     low: RED.into(),
     /// });
     /// ```
     pub fn foreground_color(mut self, color: ForegroundColor) -> Self {
