@@ -301,16 +301,16 @@ fn move_camera(
 #[derive(Component)]
 pub struct WithAnimationPlayer(pub Entity);
 
-fn get_root(mut entity: Entity, parent_query: &Query<&Parent>) -> Entity {
-    while let Ok(parent) = parent_query.get(entity) {
-        entity = parent.get()
+fn get_root(mut entity: Entity, parent_query: &Query<&ChildOf>) -> Entity {
+    while let Ok(child_of) = parent_query.get(entity) {
+        entity = child_of.parent()
     }
     entity
 }
 
 #[allow(clippy::type_complexity)]
 fn start_animations(
-    parent_query: Query<&Parent>,
+    parent_query: Query<&ChildOf>,
     distance_query: Query<&Distance>,
     animations_entity_link_query: Query<&WithAnimationPlayer>,
     animations: Res<Animations>,
