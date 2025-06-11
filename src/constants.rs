@@ -1,3 +1,4 @@
+use bevy::asset::weak_handle;
 use bevy::prelude::*;
 
 pub const DEFAULT_BACKGROUND_COLOR: Color = Color::srgba(0., 0., 0., 0.75);
@@ -9,4 +10,5 @@ pub const DEFAULT_LOW_COLOR: Color = Color::srgba(1., 0., 0., 0.95);
 pub const DEFAULT_WIDTH: f32 = 1.2;
 pub const DEFAULT_RELATIVE_HEIGHT: f32 = 0.1666;
 
-pub(crate) const BAR_SHADER_HANDLE: Handle<Shader> = Handle::weak_from_u128(11079857277321826659);
+pub(crate) const BAR_SHADER_HANDLE: Handle<Shader> =
+    weak_handle!("c41a3557-a08d-4e56-b2aa-708e27acaeaa");
