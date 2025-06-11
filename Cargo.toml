@@ -13,10 +13,10 @@ authors = ["Jan Wendland"]
 include = ["/src", "CHANGELOG.md", "/assets/shaders", "LICENSE-APACHE", "LICENSE-MIT"]
 
 [dependencies]
-bevy = { version = "0.16.0", default-features = false, features = ["bevy_pbr", "bevy_render"] }
+bevy = { version = "0.16.1", default-features = false, features = ["bevy_pbr", "bevy_render"] }
 ordered-float = "3.9.2"
 
 [dev-dependencies]
-bevy = "0.16.0"
+bevy = "0.16.1"
 bevy-inspector-egui = "0.31.0"
 bevy_tweening = "0.13.0"
