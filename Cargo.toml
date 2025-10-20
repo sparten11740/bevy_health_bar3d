@@ -14,7 +14,7 @@ include = ["/src", "CHANGELOG.md", "/assets/shaders", "LICENSE-APACHE", "LICENSE
 
 [dependencies]
 bevy = { version = "0.16.1", default-features = false, features = ["bevy_pbr", "bevy_render"] }
-ordered-float = "3.9.2"
+ordered-float = "4.6.0"
 
 [dev-dependencies]
 bevy = "0.16.1"
