@@ -1,5 +1,7 @@
 {
-  "branches": ["main"],
+  "branches": [
+    "main"
+  ],
   "plugins": [
     [
       "@semantic-release/commit-analyzer",
@@ -8,12 +10,10 @@
         "releaseRules": [
           {
             "type": "refactor",
-            "scope": "*",
             "release": "patch"
           },
           {
             "type": "docs",
-            "scope": "*",
             "release": "patch"
           }
         ]
@@ -44,7 +44,10 @@
     [
       "@semantic-release/git",
       {
-        "assets": ["CHANGELOG.md", "Cargo.toml"]
+        "assets": [
+          "CHANGELOG.md",
+          "Cargo.toml"
+        ]
       }
     ],
     "@semantic-release/github"
