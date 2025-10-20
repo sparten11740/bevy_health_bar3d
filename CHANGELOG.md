@@ -1,3 +1,10 @@
+## [3.5.1](https://github.com/sparten11740/bevy_health_bar3d/compare/v3.5.0...v3.5.1) (2025-10-20)
+
+### Code Refactors
+
+* release on refactor and docs typed commits ([6e7bef1](https://github.com/sparten11740/bevy_health_bar3d/commit/6e7bef145a40e8676e10be656bcd16132a37e87b))
+* update ordered-floats to version in bevy dependency tree ([#42](https://github.com/sparten11740/bevy_health_bar3d/issues/42)) ([1e98579](https://github.com/sparten11740/bevy_health_bar3d/commit/1e98579036aa315594d0d2865c51b4d9a2a36beb))
+
 ## [3.5.0](https://github.com/sparten11740/bevy_health_bar3d/compare/v3.4.0...v3.5.0) (2025-06-11)
 
 
