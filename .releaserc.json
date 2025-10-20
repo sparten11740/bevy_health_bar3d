@@ -4,13 +4,39 @@
     [
       "@semantic-release/commit-analyzer",
       {
-        "preset": "conventionalcommits"
+        "preset": "conventionalcommits",
+        "releaseRules": [
+          {
+            "type": "refactor",
+            "scope": "*",
+            "release": "patch"
+          },
+          {
+            "type": "docs",
+            "scope": "*",
+            "release": "patch"
+          }
+        ]
       }
     ],
     [
       "@semantic-release/release-notes-generator",
       {
-        "preset": "conventionalcommits"
+        "preset": "conventionalcommits",
+        "presetConfig": {
+          "types": [
+            {
+              "type": "refactor",
+              "section": "Code Refactors",
+              "hidden": false
+            },
+            {
+              "type": "docs",
+              "section": "Documentation",
+              "hidden": false
+            }
+          ]
+        }
       }
     ],
     "@semantic-release/changelog",
