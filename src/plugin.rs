@@ -9,11 +9,11 @@ use crate::prelude::{BarOrientation, BarSettings, ColorScheme};
 
 // 3D-specific imports and type aliases
 #[cfg(feature = "3d")]
-use bevy::pbr::{MaterialPlugin, NotShadowCaster, NotShadowReceiver};
-#[cfg(feature = "3d")]
 use crate::constants::BAR_SHADER_HANDLE;
 #[cfg(feature = "3d")]
 use crate::material::BarMaterial;
+#[cfg(feature = "3d")]
+use bevy::pbr::{MaterialPlugin, NotShadowCaster, NotShadowReceiver};
 #[cfg(feature = "3d")]
 type Material = BarMaterial;
 #[cfg(feature = "3d")]
@@ -23,11 +23,11 @@ type MaterialComponent = MeshMaterial3d<BarMaterial>;
 
 // 2D-specific imports and type aliases
 #[cfg(feature = "2d")]
-use bevy::sprite::Material2dPlugin;
-#[cfg(feature = "2d")]
 use crate::constants::BAR_SHADER_2D_HANDLE;
 #[cfg(feature = "2d")]
 use crate::material2d::BarMaterial2d;
+#[cfg(feature = "2d")]
+use bevy::sprite::Material2dPlugin;
 #[cfg(feature = "2d")]
 type Material = BarMaterial2d;
 #[cfg(feature = "2d")]
@@ -53,7 +53,12 @@ impl<T: Percentage + Component + TypePath> Plugin for HealthBarPlugin<T> {
         {
             if !app.is_plugin_added::<MaterialPlugin<BarMaterial>>() {
                 app.add_plugins(MaterialPlugin::<BarMaterial>::default());
-                load_internal_asset!(app, BAR_SHADER_HANDLE, "../assets/shaders/bar.wgsl", Shader::from_wgsl);
+                load_internal_asset!(
+                    app,
+                    BAR_SHADER_HANDLE,
+                    "../assets/shaders/bar.wgsl",
+                    Shader::from_wgsl
+                );
             }
         }
 
@@ -61,14 +66,19 @@ impl<T: Percentage + Component + TypePath> Plugin for HealthBarPlugin<T> {
         {
             if !app.is_plugin_added::<Material2dPlugin<BarMaterial2d>>() {
                 app.add_plugins(Material2dPlugin::<BarMaterial2d>::default());
-                load_internal_asset!(app, BAR_SHADER_2D_HANDLE, "../assets/shaders/bar2d.wgsl", Shader::from_wgsl);
+                load_internal_asset!(
+                    app,
+                    BAR_SHADER_2D_HANDLE,
+                    "../assets/shaders/bar2d.wgsl",
+                    Shader::from_wgsl
+                );
             }
         }
 
         app.init_resource::<MeshHandles>()
             .init_resource::<ColorScheme<T>>()
             .register_type::<BarSettings<T>>()
-            .add_systems(PostUpdate, reset_rotation::<T>)
+            .add_systems(PostUpdate, reset_rotation)
             .add_systems(
                 Update,
                 (spawn::<T>, remove::<T>, update::<T>, update_settings::<T>),
@@ -187,14 +197,17 @@ fn update_settings<T: Percentage + Component + TypePath>(
         let height = settings.normalized_height();
 
         let mesh_for_settings_dimensions = mesh_handles.get(width, height);
-        let mesh_changed = mesh_for_settings_dimensions.as_ref().map(|m| &m.0) != Some(&mesh_handle.0);
+        let mesh_changed =
+            mesh_for_settings_dimensions.as_ref().map(|m| &m.0) != Some(&mesh_handle.0);
 
         if mesh_changed {
-            let new_mesh = mesh_for_settings_dimensions.unwrap_or_else(|| mesh_handles.insert(
-                width,
-                height,
-                meshes.add(Mesh::from(Rectangle::new(width, height))),
-            ));
+            let new_mesh = mesh_for_settings_dimensions.unwrap_or_else(|| {
+                mesh_handles.insert(
+                    width,
+                    height,
+                    meshes.add(Mesh::from(Rectangle::new(width, height))),
+                )
+            });
 
             #[cfg(feature = "3d")]
             commands.entity(entity).insert(Mesh3d(new_mesh.0));
@@ -231,7 +244,7 @@ fn remove<T: Percentage + Component>(
     });
 }
 
-fn reset_rotation<T: Percentage + Component>(
+fn reset_rotation(
     mut bar_query: Query<(&ChildOf, &mut Transform), With<MaterialComponent>>,
     q_transform: Query<&Transform, Without<MaterialComponent>>,
 ) {
@@ -241,4 +254,3 @@ fn reset_rotation<T: Percentage + Component>(
         }
     }
 }
-
