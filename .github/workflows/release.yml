@@ -22,7 +22,9 @@ jobs:
           persist-credentials: false
       - uses: dtolnay/rust-toolchain@nightly
       - name: Install system libs
-        run: sudo apt-get install libasound2-dev libudev-dev pkg-config
+        run: |
+          sudo apt-get update
+          sudo apt-get install libasound2-dev libudev-dev pkg-config
       - uses: cycjimmy/semantic-release-action@v4
         with:
           semantic_version: 25.0.1
