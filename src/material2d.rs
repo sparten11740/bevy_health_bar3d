@@ -75,4 +75,3 @@ impl Material2d for BarMaterial2d {
         Ok(())
     }
 }
-
