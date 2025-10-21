@@ -2,7 +2,6 @@
 
 use bevy::color::palettes::css::*;
 use bevy::prelude::*;
-//use bevy::sprite::SpriteBundle;
 use bevy_health_bar3d::prelude::{
     BarHeight, BarSettings, ColorScheme, ForegroundColor, HealthBarPlugin, Percentage,
 };
@@ -33,7 +32,7 @@ fn main() {
         .run();
 }
 
-fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
+fn setup(mut commands: Commands) {
     // Camera
     commands.spawn((Camera2d, Transform::from_xyz(0.0, 0.0, 1000.0)));
 
@@ -46,9 +45,12 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
                 ..default()
             },
             Transform::from_xyz(i as f32 * 150.0 - 150.0, 0.0, 0.0),
-            Health { max: 10.0, current: 10.0 - i as f32 * 3.0 },
+            Health {
+                max: 10.0,
+                current: 10.0 - i as f32 * 3.0,
+            },
             BarSettings::<Health> {
-                //offset: -1.,
+                offset: -18.,
                 height: BarHeight::Static(4.0),
                 width: 40.0,
                 ..default()
