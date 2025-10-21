@@ -13,10 +13,14 @@ authors = ["Jan Wendland"]
 include = ["/src", "CHANGELOG.md", "/assets/shaders", "LICENSE-APACHE", "LICENSE-MIT"]
 
 [dependencies]
-bevy = { version = "0.16.1", default-features = false, features = ["bevy_pbr", "bevy_render"] }
+bevy = { version = "0.16.1", default-features = false, features = ["bevy_render"] }
 ordered-float = "4.6.0"
 
 [dev-dependencies]
 bevy = "0.16.1"
 bevy-inspector-egui = "0.31.0"
 bevy_tweening = "0.13.0"
+[features]
+default = ["2d"]
+2d = ["bevy/bevy_sprite"]
+3d = ["bevy/bevy_pbr"]
