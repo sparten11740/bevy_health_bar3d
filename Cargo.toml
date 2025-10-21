@@ -21,6 +21,6 @@ bevy = "0.16.1"
 bevy-inspector-egui = "0.31.0"
 bevy_tweening = "0.13.0"
 [features]
-default = ["2d"]
+default = ["3d"]
 2d = ["bevy/bevy_sprite"]
 3d = ["bevy/bevy_pbr"]
