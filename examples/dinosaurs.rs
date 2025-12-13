@@ -5,7 +5,9 @@ use bevy::color::palettes::css::*;
 use bevy::pbr::*;
 use bevy::prelude::*;
 use bevy_tweening::lens::{TransformPositionLens, TransformRotationLens};
-use bevy_tweening::{Animator, Tracks, Tween, TweeningPlugin};
+use bevy_tweening::Sequence;
+use bevy_tweening::TweenAnim;
+use bevy_tweening::{Tween, TweeningPlugin};
 use std::f32::consts::PI;
 use std::time::Duration;
 
@@ -291,10 +293,12 @@ fn move_camera(
             },
         );
 
-        commands.entity(entity).insert(Animator::new(Tracks::new([
-            translation_tween,
-            rotation_tween,
-        ])));
+        commands
+            .entity(entity)
+            .insert(TweenAnim::new(Sequence::new([
+                translation_tween,
+                rotation_tween,
+            ])));
     });
 }
 

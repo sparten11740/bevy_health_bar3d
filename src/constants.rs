@@ -1,4 +1,4 @@
-use bevy::asset::weak_handle;
+use bevy::asset::uuid_handle;
 use bevy::prelude::*;
 
 pub const DEFAULT_BACKGROUND_COLOR: Color = Color::srgba(0., 0., 0., 0.75);
@@ -12,8 +12,8 @@ pub const DEFAULT_RELATIVE_HEIGHT: f32 = 0.1666;
 
 #[cfg(feature = "3d")]
 pub(crate) const BAR_SHADER_HANDLE: Handle<Shader> =
-    weak_handle!("c41a3557-a08d-4e56-b2aa-708e27acaeaa");
+    uuid_handle!("c41a3557-a08d-4e56-b2aa-708e27acaeaa");
 
 #[cfg(feature = "2d")]
 pub(crate) const BAR_SHADER_2D_HANDLE: Handle<Shader> =
-    weak_handle!("d52b4668-b19e-5f67-c3bb-819f38bcbfbb");
+    uuid_handle!("d52b4668-b19e-5f67-c3bb-819f38bcbfbb");

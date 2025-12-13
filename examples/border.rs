@@ -22,9 +22,7 @@ fn main() {
         .add_plugins((
             DefaultPlugins,
             HealthBarPlugin::<Health>::default(),
-            EguiPlugin {
-                enable_multipass_for_primary_context: true,
-            },
+            EguiPlugin::default(),
             WorldInspectorPlugin::new(),
         ))
         .add_systems(Startup, setup)
