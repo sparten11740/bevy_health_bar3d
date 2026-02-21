@@ -1,3 +1,5 @@
+## [3.7.0](https://github.com/sparten11740/bevy_health_bar3d/compare/v3.6.0...v3.7.0) (2026-02-21)
+
 ## [3.6.0](https://github.com/sparten11740/bevy_health_bar3d/compare/v3.5.1...v3.6.0) (2025-10-21)
 
 ## [3.5.1](https://github.com/sparten11740/bevy_health_bar3d/compare/v3.5.0...v3.5.1) (2025-10-20)

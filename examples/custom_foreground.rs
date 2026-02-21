@@ -35,9 +35,7 @@ fn main() {
         .register_type::<Mana>()
         .add_plugins((
             DefaultPlugins,
-            EguiPlugin {
-                enable_multipass_for_primary_context: true,
-            },
+            EguiPlugin::default(),
             WorldInspectorPlugin::new(),
             HealthBarPlugin::<Mana>::default(),
             HealthBarPlugin::<Health>::default(),
