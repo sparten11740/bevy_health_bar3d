@@ -97,8 +97,6 @@ impl<T: Percentage + Component> WithBar<T> {
     }
 }
 
-/// Resolves the effective foreground and background colors for a bar, giving
-/// per-entity overrides in `BarSettings` precedence over the global `ColorScheme`.
 fn resolve_colors<T: Percentage + Component + TypePath>(
     settings: &BarSettings<T>,
     color_scheme: &ColorScheme<T>,
