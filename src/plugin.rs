@@ -1,6 +1,8 @@
 use std::marker::PhantomData;
 
 use bevy::asset::load_internal_asset;
+#[cfg(feature = "3d")]
+use bevy::light::{NotShadowCaster, NotShadowReceiver};
 use bevy::prelude::*;
 
 use crate::configuration::{ForegroundColor, Percentage};
@@ -13,7 +15,7 @@ use crate::constants::BAR_SHADER_HANDLE;
 #[cfg(feature = "3d")]
 use crate::material::BarMaterial;
 #[cfg(feature = "3d")]
-use bevy::pbr::{MaterialPlugin, NotShadowCaster, NotShadowReceiver};
+use bevy::pbr::MaterialPlugin;
 #[cfg(feature = "3d")]
 type Material = BarMaterial;
 #[cfg(feature = "3d")]
@@ -27,7 +29,7 @@ use crate::constants::BAR_SHADER_2D_HANDLE;
 #[cfg(feature = "2d")]
 use crate::material2d::BarMaterial2d;
 #[cfg(feature = "2d")]
-use bevy::sprite::Material2dPlugin;
+use bevy::sprite_render::Material2dPlugin;
 #[cfg(feature = "2d")]
 type Material = BarMaterial2d;
 #[cfg(feature = "2d")]

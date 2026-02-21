@@ -1,9 +1,10 @@
+use bevy::mesh::MeshVertexBufferLayoutRef;
 use bevy::prelude::*;
-use bevy::render::mesh::*;
 use bevy::render::render_resource::{
-    AsBindGroup, RenderPipelineDescriptor, ShaderRef, SpecializedMeshPipelineError,
+    AsBindGroup, RenderPipelineDescriptor, SpecializedMeshPipelineError,
 };
-use bevy::sprite::{Material2d, Material2dKey};
+use bevy::shader::ShaderRef;
+use bevy::sprite_render::{Material2d, Material2dKey};
 
 use crate::constants::BAR_SHADER_2D_HANDLE;
 
