@@ -81,6 +81,34 @@ fn setup(
 Note the generic parameter of `BarSettings`. It is used to associate the configuration with the component it is tracking
 and necessary to support multiple bars per entity.
 
+## Per-Entity Color Overrides
+
+Colors can also be set per entity directly in `BarSettings`, which takes precedence over the global `ColorScheme` resource. This is useful when entities share the same tracked component type but need different bar colors — for example, ally and enemy health bars:
+
+```rust
+// Ally – static blue bar
+commands.spawn((
+    Health { max: 10., current: 8. },
+    BarSettings::<Health> {
+        foreground_color: Some(ForegroundColor::Static(Color::srgb(0.2, 0.6, 1.0))),
+        background_color: Some(Color::srgb(0.05, 0.05, 0.2)),
+        ..default()
+    },
+));
+
+// Enemy – static red bar, same Health component, no generics needed
+commands.spawn((
+    Health { max: 10., current: 4. },
+    BarSettings::<Health> {
+        foreground_color: Some(ForegroundColor::Static(Color::srgb(1.0, 0.15, 0.15))),
+        background_color: Some(Color::srgb(0.2, 0.05, 0.05)),
+        ..default()
+    },
+));
+```
+
+See the `ally_enemy` example for a complete demonstration.
+
 That's it! Updates to the values of your component will be automatically propagated through to the bar.
 
 ## Rendering Modes
