@@ -13,6 +13,7 @@ the box.
 
 | Bevy Version | Crate Version |
 | ------------ | ------------: |
+| `0.18`       |    >= `3.9.0` |
 | `0.17`       |    >= `3.7.0` |
 | `0.16`       |       `3.5.0` |
 | `0.15`       |       `3.4.0` |
@@ -125,14 +126,14 @@ This plugin supports both 2D sprite-based and 3D billboard-based rendering throu
 
 ```toml
 [dependencies]
-bevy_health_bar3d = "3.6.0"
+bevy_health_bar3d = "3.9.0"
 ```
 
 Or explicitly
 
 ```toml
 [dependencies]
-bevy_health_bar3d = { version = "3.6.0", features = ["3d"] }
+bevy_health_bar3d = { version = "3.9.0", features = ["3d"] }
 ```
 
 Use with 3D entities like meshes, and the health bar will automatically face the camera.
@@ -143,7 +144,7 @@ Use with 3D entities like meshes, and the health bar will automatically face the
 
 ```toml
 [dependencies]
-bevy_health_bar3d = { version = "3.6.0", default-features = false, features = ["2d"] }
+bevy_health_bar3d = { version = "3.9.0", default-features = false, features = ["2d"] }
 ```
 
 Use with 2D sprites and entities. See the bar2d example for a complete demonstration.
