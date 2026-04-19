@@ -18,6 +18,12 @@ pub struct BarSettings<T: Percentage + Component + TypePath> {
     pub height: BarHeight,
     pub border: BarBorder,
     pub orientation: BarOrientation,
+    /// Optional foreground color override for this entity.
+    /// If set, takes precedence over the [`ColorScheme`] resource configured for the component type.
+    pub foreground_color: Option<ForegroundColor>,
+    /// Optional background color override for this entity.
+    /// If set, takes precedence over the [`ColorScheme`] resource configured for the component type.
+    pub background_color: Option<Color>,
     #[reflect(ignore)]
     pub phantom_data: PhantomData<T>,
 }
@@ -64,6 +70,8 @@ impl<T: Percentage + Component + TypePath> Default for BarSettings<T> {
             height: default(),
             border: default(),
             orientation: default(),
+            foreground_color: None,
+            background_color: None,
             phantom_data: default(),
         }
     }

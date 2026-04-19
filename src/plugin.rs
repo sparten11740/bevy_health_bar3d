@@ -97,6 +97,30 @@ impl<T: Percentage + Component> WithBar<T> {
     }
 }
 
+fn resolve_colors<T: Percentage + Component + TypePath>(
+    settings: &BarSettings<T>,
+    color_scheme: &ColorScheme<T>,
+) -> (Color, Color, Color, Color) {
+    let foreground = settings
+        .foreground_color
+        .as_ref()
+        .unwrap_or(&color_scheme.foreground_color);
+    let background = settings
+        .background_color
+        .unwrap_or(color_scheme.background_color);
+
+    let (high, moderate, low) = match foreground {
+        ForegroundColor::Static(color) => (*color, *color, *color),
+        ForegroundColor::TriSpectrum {
+            high,
+            moderate,
+            low,
+        } => (*high, *moderate, *low),
+    };
+
+    (background, high, moderate, low)
+}
+
 #[allow(clippy::type_complexity)]
 fn spawn<T: Percentage + Component + TypePath>(
     mut commands: Commands,
@@ -118,18 +142,11 @@ fn spawn<T: Percentage + Component + TypePath>(
             )
         });
 
-        let (high, moderate, low) = match color_scheme.foreground_color {
-            ForegroundColor::Static(color) => (color, color, color),
-            ForegroundColor::TriSpectrum {
-                high,
-                moderate,
-                low,
-            } => (high, moderate, low),
-        };
+        let (background, high, moderate, low) = resolve_colors(settings, &color_scheme);
 
         let material = materials.add(Material {
             value_and_dimensions: (percentage.value(), width, height, settings.border.width).into(),
-            background_color: color_scheme.background_color.into(),
+            background_color: background.into(),
             high_color: high.into(),
             moderate_color: moderate.into(),
             low_color: low.into(),
@@ -185,6 +202,7 @@ fn update_settings<T: Percentage + Component + TypePath>(
     mut materials: ResMut<Assets<Material>>,
     mut meshes: ResMut<Assets<Mesh>>,
     mut mesh_handles: ResMut<MeshHandles>,
+    color_scheme: Res<ColorScheme<T>>,
     parent_query: Query<(&WithBar<T>, &BarSettings<T>), Changed<BarSettings<T>>>,
     bar_query: Query<(Entity, &MaterialComponent, &MeshComponent)>,
 ) {
@@ -225,6 +243,12 @@ fn update_settings<T: Percentage + Component + TypePath>(
         material.border_color = settings.border.color.into();
         material.value_and_dimensions.w = settings.border.width;
         material.vertical = settings.orientation == BarOrientation::Vertical;
+
+        let (background, high, moderate, low) = resolve_colors(settings, &color_scheme);
+        material.background_color = background.into();
+        material.high_color = high.into();
+        material.moderate_color = moderate.into();
+        material.low_color = low.into();
     });
 }
 

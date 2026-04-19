@@ -47,6 +47,6 @@ jobs:
       - name: Install system libs
         run: |
           sudo apt-get update
-          sudo apt-get install libasound2-dev libudev-dev pkg-config
+          sudo apt-get install libasound2-dev libudev-dev libwayland-dev pkg-config
       - name: ${{ matrix.name }}
         run: ${{ matrix.cmd }}
