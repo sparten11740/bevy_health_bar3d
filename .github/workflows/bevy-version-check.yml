@@ -12,6 +12,7 @@ on:
 
 permissions:
   issues: write
+  contents: read
 
 jobs:
   check-bevy-version:
