@@ -7,6 +7,8 @@ use bevy::prelude::*;
 
 use crate::configuration::{ForegroundColor, Percentage};
 use crate::mesh::MeshHandles;
+#[cfg(feature = "3d")]
+use crate::prelude::BarOffsetMode;
 use crate::prelude::{BarOrientation, BarSettings, ColorScheme};
 
 // 3D-specific imports and type aliases
@@ -153,6 +155,8 @@ fn spawn<T: Percentage + Component + TypePath>(
             vertical: settings.orientation == BarOrientation::Vertical,
             offset: settings.normalized_offset().extend(0.),
             border_color: settings.border.color.into(),
+            #[cfg(feature = "3d")]
+            world_space_offset: settings.offset_mode == BarOffsetMode::WorldSpace,
         });
 
         #[cfg(feature = "3d")]
@@ -243,6 +247,10 @@ fn update_settings<T: Percentage + Component + TypePath>(
         material.border_color = settings.border.color.into();
         material.value_and_dimensions.w = settings.border.width;
         material.vertical = settings.orientation == BarOrientation::Vertical;
+        #[cfg(feature = "3d")]
+        {
+            material.world_space_offset = settings.offset_mode == BarOffsetMode::WorldSpace;
+        }
 
         let (background, high, moderate, low) = resolve_colors(settings, &color_scheme);
         material.background_color = background.into();

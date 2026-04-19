@@ -39,7 +39,12 @@ fn vertex(vertex: Vertex) -> VertexOutput {
     let camera_right = normalize(vec3<f32>(clip_from_world[0].x, clip_from_world[1].x, clip_from_world[2].x));
     let camera_up = normalize(vec3<f32>(clip_from_world[0].y, clip_from_world[1].y, clip_from_world[2].y));
 
+#ifdef WORLD_SPACE_OFFSET
+    let billboard = camera_right * vertex.position.x + camera_up * vertex.position.y;
+    let world_space = billboard + offset.xyz;
+#else
     let world_space = camera_right * (vertex.position.x + offset.x) + camera_up * (vertex.position.y + offset.y);
+#endif
     let position = view.clip_from_world * get_world_from_local(vertex.instance_index) * vec4<f32>(world_space, 1.);
 
     out.uv = vertex.uv;
