@@ -111,11 +111,12 @@ jobs:
           - [ ] Update the compatibility table in \`README.md\`
 
           _This issue was opened automatically by the [Bevy version check workflow](${{ github.server_url }}/${{ github.repository }}/actions/workflows/bevy-version-check.yml)._
+
+          @github-copilot work on this
           EOF
           )
 
           gh issue create \
             --repo "${{ github.repository }}" \
             --title "Update to Bevy $LATEST_MINOR" \
-            --body "$BODY" \
-            --assignee "app/copilot-swe-agent"
+            --body "$BODY"
