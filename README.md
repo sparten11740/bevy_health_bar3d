@@ -11,6 +11,9 @@ the box.
 
 ## Bevy Compatibility
 
+<details>
+<summary>Version table</summary>
+
 | Bevy Version | Crate Version |
 | ------------ | ------------: |
 | `0.18`       |    >= `3.9.0` |
@@ -23,6 +26,8 @@ the box.
 | `0.11`       |       `1.2.0` |
 | `0.10`       |       `1.1.0` |
 | `0.9`        |       `1.0.0` |
+
+</details>
 
 ## Usage
 
