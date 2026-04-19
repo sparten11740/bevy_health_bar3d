@@ -1,0 +1,122 @@
+name: Bevy Version Check
+
+on:
+  schedule:
+    - cron: "0 */6 * * *"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry run — detect version and check for duplicates, but skip issue creation"
+        type: boolean
+        default: false
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  check-bevy-version:
+    name: Check for new Bevy version
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+
+      - name: Fetch latest stable Bevy version from crates.io
+        id: latest
+        run: |
+          RESPONSE=$(curl -sf \
+            -H "User-Agent: bevy_health_bar3d-version-check (github.com/sparten11740/bevy_health_bar3d)" \
+            https://crates.io/api/v1/crates/bevy)
+          LATEST=$(echo "$RESPONSE" | jq -r '.crate.max_stable_version')
+          echo "version=$LATEST" >> "$GITHUB_OUTPUT"
+          echo "Latest Bevy on crates.io: $LATEST"
+
+      - name: Parse current Bevy version from Cargo.toml
+        id: current
+        run: |
+          CURRENT=$(grep -E '^bevy\s*=' Cargo.toml \
+            | grep -oP '"\K[0-9]+\.[0-9]+\.[0-9]+(?=")' \
+            | head -1)
+          echo "version=$CURRENT" >> "$GITHUB_OUTPUT"
+          echo "Current Bevy in Cargo.toml: $CURRENT"
+
+      - name: Compare versions
+        id: compare
+        run: |
+          LATEST="${{ steps.latest.outputs.version }}"
+          CURRENT="${{ steps.current.outputs.version }}"
+
+          LATEST_MM=$(echo "$LATEST" | cut -d. -f1,2)
+          CURRENT_MM=$(echo "$CURRENT" | cut -d. -f1,2)
+
+          echo "Comparing $CURRENT_MM (current) vs $LATEST_MM (latest)"
+
+          # sort -V: version-aware sort; if the highest is latest and they differ, it's newer
+          HIGHER=$(printf '%s\n' "$CURRENT_MM" "$LATEST_MM" | sort -V | tail -1)
+
+          if [ "$HIGHER" = "$LATEST_MM" ] && [ "$LATEST_MM" != "$CURRENT_MM" ]; then
+            echo "New Bevy minor/major available: $LATEST_MM (pinned to $CURRENT_MM)"
+            echo "new_version_available=true" >> "$GITHUB_OUTPUT"
+            echo "latest_minor=$LATEST_MM" >> "$GITHUB_OUTPUT"
+            echo "latest_version=$LATEST" >> "$GITHUB_OUTPUT"
+          else
+            echo "Already up to date ($CURRENT_MM). Nothing to do."
+            echo "new_version_available=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Check for existing open issue
+        id: dedup
+        if: steps.compare.outputs.new_version_available == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          LATEST_MINOR="${{ steps.compare.outputs.latest_minor }}"
+
+          COUNT=$(gh issue list \
+            --repo "${{ github.repository }}" \
+            --state open \
+            --search "\"Bevy $LATEST_MINOR\"" \
+            --json number \
+            --jq 'length')
+
+          if [ "$COUNT" -gt 0 ]; then
+            echo "An open issue for Bevy $LATEST_MINOR already exists. Skipping."
+            echo "issue_exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "No existing issue found. Will create one."
+            echo "issue_exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Create issue and assign to Copilot
+        if: |
+          steps.compare.outputs.new_version_available == 'true' &&
+          steps.dedup.outputs.issue_exists == 'false' &&
+          github.event.inputs.dry_run != 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          LATEST="${{ steps.compare.outputs.latest_version }}"
+          LATEST_MINOR="${{ steps.compare.outputs.latest_minor }}"
+          CURRENT="${{ steps.current.outputs.version }}"
+
+          BODY=$(cat <<EOF
+          Bevy $LATEST has been released. This crate currently depends on $CURRENT.
+
+          ## Tasks
+
+          - [ ] Update \`bevy\` version in \`Cargo.toml\` and \`Cargo.lock\`
+          - [ ] Fix any breaking API changes
+          - [ ] Verify all examples build (\`cargo build --examples\`)
+          - [ ] Update the compatibility table in \`README.md\`
+
+          _This issue was opened automatically by the [Bevy version check workflow](${{ github.server_url }}/${{ github.repository }}/actions/workflows/bevy-version-check.yml)._
+
+          @github-copilot work on this
+          EOF
+          )
+
+          gh issue create \
+            --repo "${{ github.repository }}" \
+            --title "Update to Bevy $LATEST_MINOR" \
+            --body "$BODY"
