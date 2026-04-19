@@ -27,12 +27,14 @@ pub(crate) struct BarMaterial {
     #[uniform(6)]
     pub border_color: LinearRgba,
     pub vertical: bool,
+    pub world_space_offset: bool,
 }
 
 #[derive(Eq, PartialEq, Hash, Clone)]
 pub(crate) struct BarMaterialKey {
     vertical: bool,
     border: bool,
+    world_space_offset: bool,
 }
 
 impl From<&BarMaterial> for BarMaterialKey {
@@ -40,6 +42,7 @@ impl From<&BarMaterial> for BarMaterialKey {
         Self {
             vertical: material.vertical,
             border: material.value_and_dimensions.w > 0.,
+            world_space_offset: material.world_space_offset,
         }
     }
 }
@@ -75,6 +78,13 @@ impl Material for BarMaterial {
 
         if key.bind_group_data.border {
             fragment.shader_defs.push("HAS_BORDER".into());
+        }
+
+        if key.bind_group_data.world_space_offset {
+            descriptor
+                .vertex
+                .shader_defs
+                .push("WORLD_SPACE_OFFSET".into());
         }
 
         descriptor.vertex.buffers = vec![vertex_layout];

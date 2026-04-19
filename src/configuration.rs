@@ -18,6 +18,9 @@ pub struct BarSettings<T: Percentage + Component + TypePath> {
     pub height: BarHeight,
     pub border: BarBorder,
     pub orientation: BarOrientation,
+    /// Controls whether the offset is applied in camera space (screen-relative) or world space.
+    /// Defaults to [`BarOffsetMode::CameraSpace`] for backward compatibility.
+    pub offset_mode: BarOffsetMode,
     /// Optional foreground color override for this entity.
     /// If set, takes precedence over the [`ColorScheme`] resource configured for the component type.
     pub foreground_color: Option<ForegroundColor>,
@@ -70,6 +73,7 @@ impl<T: Percentage + Component + TypePath> Default for BarSettings<T> {
             height: default(),
             border: default(),
             orientation: default(),
+            offset_mode: default(),
             foreground_color: None,
             background_color: None,
             phantom_data: default(),
@@ -129,6 +133,19 @@ pub enum BarOrientation {
     #[default]
     Horizontal,
     Vertical,
+}
+
+/// Describes how the bar offset is applied.
+#[derive(Reflect, Debug, Clone, PartialEq, Eq, Default)]
+pub enum BarOffsetMode {
+    /// Offset is applied along the camera's up/right vectors (screen space).
+    /// This is the default (legacy) behavior.
+    #[default]
+    CameraSpace,
+    /// Offset is applied in world space.
+    /// For horizontal bars this offsets along the world Y axis;
+    /// for vertical bars along the world X axis.
+    WorldSpace,
 }
 
 /// Trait implemented by the component to be tracked by the health bar
