@@ -81,6 +81,10 @@ fn setup(
 Note the generic parameter of `BarSettings`. It is used to associate the configuration with the component it is tracking
 and necessary to support multiple bars per entity.
 
+## Offset Mode
+
+By default the bar offset is applied along the camera's up vector (`BarOffsetMode::CameraSpace`), which looks correct from the side but can cause the bar to drift away from its entity when the camera looks down from above. Set `offset_mode: BarOffsetMode::WorldSpace` to offset along the world Y axis instead, keeping the bar anchored above the entity at any camera angle. See the `offset_mode` example for a side-by-side comparison.
+
 ## Per-Entity Color Overrides
 
 Colors can also be set per entity directly in `BarSettings`, which takes precedence over the global `ColorScheme` resource. This is useful when entities share the same tracked component type but need different bar colors — for example, ally and enemy health bars:
