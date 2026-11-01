@@ -62,7 +62,7 @@ fn setup(
 
     // T-Rex Jim
     commands.spawn((
-        SceneRoot(scene.clone()),
+        WorldAssetRoot(scene.clone()),
         Transform {
             translation: Vec3::new(-1., 0., 0.),
             scale: Vec3::splat(0.04),
@@ -84,7 +84,7 @@ fn setup(
 
     // T-Rex Tom
     commands.spawn((
-        SceneRoot(scene.clone()),
+        WorldAssetRoot(scene.clone()),
         Transform {
             translation: Vec3::new(1., 0.75, 0.),
             scale: Vec3::splat(0.04),
@@ -109,7 +109,7 @@ fn setup(
     commands.spawn((
         PointLight {
             intensity: 1500.0,
-            shadows_enabled: true,
+            shadow_maps_enabled: true,
             ..Default::default()
         },
         Transform::from_xyz(4.0, 8.0, 4.0),

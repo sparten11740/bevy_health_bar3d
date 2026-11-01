@@ -101,7 +101,7 @@ fn setup(
 
     // T-Rex 1
     commands.spawn((
-        SceneRoot(scene.clone()),
+        WorldAssetRoot(scene.clone()),
         Transform::from_xyz(25., 0., -50.),
         Distance::new(80.),
         Health {
@@ -124,7 +124,7 @@ fn setup(
 
     // T-Rex 2
     commands.spawn((
-        SceneRoot(scene.clone()),
+        WorldAssetRoot(scene.clone()),
         Health {
             max: 10.,
             current: 10.,
@@ -140,7 +140,7 @@ fn setup(
     // Sunlight
     commands.spawn((
         DirectionalLight {
-            shadows_enabled: true,
+            shadow_maps_enabled: true,
             ..default()
         },
         Transform {

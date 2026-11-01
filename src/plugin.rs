@@ -195,7 +195,7 @@ fn update<T: Percentage + Component + TypePath>(
         let Ok(material_handle) = bar_query.get(bar.get()) else {
             return;
         };
-        let material = materials.get_mut(&material_handle.0).unwrap();
+        let mut material = materials.get_mut(&material_handle.0).unwrap();
         material.value_and_dimensions.x = percentage.value();
     });
 }
@@ -215,7 +215,7 @@ fn update_settings<T: Percentage + Component + TypePath>(
             return;
         };
 
-        let material = materials.get_mut(&material_handle.0).unwrap();
+        let mut material = materials.get_mut(&material_handle.0).unwrap();
         let offset = settings.normalized_offset().extend(0.);
         let width = settings.normalized_width();
         let height = settings.normalized_height();
