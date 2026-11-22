@@ -1,3 +1,5 @@
+#![recursion_limit = "256"]
+
 pub mod configuration;
 pub mod constants;
 #[cfg(feature = "3d")]
